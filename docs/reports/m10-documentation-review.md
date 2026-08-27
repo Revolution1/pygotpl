@@ -71,9 +71,9 @@ build job has read-only repository permission. The deploy job alone receives
 environment, and publishes the generated artifact. Official Pages actions are
 pinned to immutable commits for their current stable major releases.
 
-The owner must configure Pages to use GitHub Actions and confirm the deployed
-URL at `https://revolution1.github.io/pygotpl/`. A checked-in workflow is not
-evidence of successful publication.
+Pages uses GitHub Actions and the account's configured Pages domain, producing
+the project URL `https://blog.kyonr.com/pygotpl/`. A checked-in workflow is not
+evidence of successful publication; the deployment must still complete.
 
 ## Verification
 

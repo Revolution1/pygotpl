@@ -331,9 +331,8 @@ the pinned native Helm engine.
 
 ## Documentation
 
-The user documentation is organized as a generated MkDocs site and will be
-published at <https://revolution1.github.io/pygotpl/> after the repository's
-GitHub Pages environment is enabled.
+The user documentation is organized as a generated MkDocs site and published
+at <https://blog.kyonr.com/pygotpl/> through GitHub Pages.
 
 - [Getting started](docs/getting-started.md)
 - [Template language](docs/template-language.md)
