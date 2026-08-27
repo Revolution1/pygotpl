@@ -70,6 +70,7 @@ __all__ = [
     "Time",
     "Timer",
     "Weekday",
+    "__version__",
     "after",
     "after_func",
     "new_ticker",

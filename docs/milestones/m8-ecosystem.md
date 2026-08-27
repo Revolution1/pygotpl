@@ -1,5 +1,10 @@
 # M8: Ecosystem Integrations
 
+> Historical milestone: M10 later reintegrated the `gofmt` and `goregexp`
+> workspace packages under private `gotpl._compat`. References below to those
+> M7 packages describe the boundary validated during M8, not a current public
+> import surface.
+
 ## Outcome
 
 Provide isolated, opt-in `gotpl.funcs.sprout` registries and reusable
@@ -22,7 +27,7 @@ later gomplate-like runtimes.
 - [x] Helm function map including `include`, `required`, and `tpl` semantics;
   see `docs/reports/m8-helm-functions.md`.
 - [x] Core immutable multi-source namespaces, per-source
-  `gotpl.runtime.engine.TemplateEngine` execution, and synchronous/asynchronous
+  package-root `gotpl.TemplateEngine` execution, and synchronous/asynchronous
   dynamic-source inheritance.
 - [x] Explicit Helm chart globals and release-capability model in the example
   runtime, without adding them to the pygotpl public package API.
@@ -63,5 +68,5 @@ Complexity, performance, security, simplification, and deferral decisions are
 recorded in `docs/implementation-decisions.md`; an inventory entry alone never
 counts as an implementation.
 
-The completed gate-by-gate evidence is summarized in
-`docs/reports/m8-acceptance-audit.md`.
+The completed gate-by-gate evidence is summarized in the
+[M8 acceptance audit](../reports/m8-acceptance-audit.md).

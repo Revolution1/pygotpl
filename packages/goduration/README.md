@@ -12,15 +12,15 @@ Top-level imports default to the Go-compatible API. There is no global mode
 switch, so different parts of one application can safely use different
 surfaces, including across threads and asyncio tasks.
 
-The package is incubating inside the pygotpl workspace. It is not yet published
-as a stable release.
+The package is developed inside the pygotpl workspace and released as an
+independent distribution.
 
 ## Installation
 
-Install the standalone package from this repository:
+Install the standalone package from PyPI:
 
 ```console
-python -m pip install ./packages/goduration
+python -m pip install goduration
 ```
 
 The installed package is pure Python, typed with a `py.typed` marker, and has no
@@ -464,9 +464,9 @@ gotpl imports `goduration.go` explicitly for its default Go and Sprig
 compatibility profiles. Sprig input coercion, template registry names, clocks,
 and compatibility error translation remain gotpl responsibilities.
 
-Using `goduration.python` does not change gotpl globally. A future
-Python-native template profile must select the Python surface explicitly as
-part of immutable template configuration.
+Using `goduration.python` does not change gotpl globally. Convert values
+explicitly when crossing between a Python-native application boundary and a
+Go-compatible template integration.
 
 ## Development and Benchmarks
 

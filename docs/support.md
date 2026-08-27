@@ -22,13 +22,16 @@ requires coordinated major releases and a migration guide.
 
 ## Python and Platform Support
 
-The 1.0 line supports Python 3.11 and newer. Required CI covers:
+The 1.0 line supports CPython 3.11 through 3.14 and PyPy 3.11. Required CI
+covers:
 
-- CPython 3.11 through the latest supported stable minor;
+- CPython 3.11 through 3.14;
 - PyPy 3.11; and
 - Linux, macOS, and Windows.
 
-A new stable Python minor is adopted after the applicable full suite passes.
+A new stable Python minor is adopted after the applicable full suite passes;
+`Requires-Python >=3.11` is an installation floor, not an automatic support
+promise for every future Python release.
 Dropping a Python minor is a documented compatibility change and will not occur
 in a patch release. Pure Python wheels are the normal artifacts; runtime use
 does not require Go, a subprocess, a compiler, or a native extension.
@@ -77,11 +80,12 @@ coordinated rollback requirement.
 
 ## Getting Help
 
-Use GitHub issues for reproducible bugs, compatibility gaps, documentation
-problems, and feature proposals. Include the Python and package versions,
-platform, minimal template and data, selected function maps, format and
-missing-key modes, and the complete error chain. Compatibility reports should
-include native Go output when practical.
+Use [GitHub issues](https://github.com/Revolution1/pygotpl/issues) for
+reproducible bugs, compatibility gaps, documentation problems, and feature
+proposals. Include the Python and package versions, platform, minimal template
+and data, selected function maps, format and missing-key modes, and the complete
+error chain. Compatibility reports should include native Go output when
+practical.
 
 Use the private process in
 [SECURITY.md](https://github.com/Revolution1/pygotpl/blob/main/SECURITY.md) for

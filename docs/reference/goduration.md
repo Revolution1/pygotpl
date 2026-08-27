@@ -1,5 +1,7 @@
 # goduration API
 
+Install the standalone package with `pip install goduration`.
+
 Top-level `goduration.Duration` is the Go-compatible surface. Import
 `goduration.python.Duration` for Python-native arithmetic and unbounded numeric
 behavior.

@@ -11,6 +11,22 @@ and hosted quality gates.
 GitHub Pages publication completed successfully from the release-candidate
 branch on August 27, 2026.
 
+## Full-Surface Follow-up Review
+
+A second pass reviewed every Markdown document, generated evidence artifact,
+and public API group for design clarity, user friendliness, and redundant
+surface. It shortened the root README, removed the redundant “Why gotpl?”
+section, corrected stale package and internal import paths, made PyPI install
+and dependency guidance consistent across all three distributions, and added
+runnable examples for async writers and reuse, contextual HTML, sandbox
+budgets, function registries, compatibility adapters, Go formatting protocols,
+time precision, and deterministic scheduling.
+
+Generated signature pages remain deliberately low-redundancy: task guides own
+examples and reference pages link to them. Every changed example was executed
+directly or covered by its focused test suite, and the strict site still
+generates 138 files.
+
 ## Reviewed Material
 
 The review covered the root README, all top-level documents under `docs/`, both

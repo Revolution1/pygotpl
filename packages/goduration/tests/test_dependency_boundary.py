@@ -3,6 +3,8 @@ import tomllib
 from pathlib import Path
 from typing import cast
 
+import goduration
+
 PACKAGE_ROOT = Path(__file__).parents[1]
 SOURCE_ROOT = PACKAGE_ROOT / "src" / "goduration"
 
@@ -30,3 +32,8 @@ def test_goduration_declares_no_runtime_dependencies() -> None:
     project = cast(dict[str, object], raw["project"])
 
     assert project["dependencies"] == []
+
+
+def test_top_level_exports_its_version() -> None:
+    assert "__version__" in goduration.__all__
+    assert goduration.__version__ == "0.0.0"

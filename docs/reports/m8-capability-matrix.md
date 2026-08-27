@@ -2,8 +2,9 @@
 
 ## Purpose
 
-This matrix identifies capabilities that an M9 strict policy must treat as
-explicit grants. Registry membership alone is not a safety claim.
+This matrix identified the capabilities consumed by the completed M9 strict
+policy and remains its ecosystem audit input. Registry membership alone is not
+a safety claim.
 
 | Layer | Capability | Default state | Strict-policy requirement |
 | --- | --- | --- | --- |

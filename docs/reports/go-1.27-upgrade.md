@@ -14,8 +14,9 @@ optional, test, quality, or benchmark dependency.
 ## Reference Changes
 
 - `scripts/sync_references.sh` now checks out `go1.27.0`.
-- Both Go modules declare `go 1.27.0` and were normalized with Go 1.27
-  `go mod tidy`.
+- Repository oracle and benchmark modules use the Go 1.27 language level and
+  were normalized with Go 1.27 `go mod tidy`; CI selects the exact 1.27.0
+  toolchain.
 - CI and historical-performance jobs install exactly Go 1.27.0.
 - Local quality and generated-artifact gates reject any other Go version.
 - All 104 Go conformance fixtures identify `go1.27.0` as their verified

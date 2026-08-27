@@ -8,8 +8,8 @@
 - Fixture files: `tests/conformance/fixtures/parser`
 
 The checked-in inputs are independently authored compatibility cases. No
-upstream test body is copied into the repository while the project license and
-attribution policy remain undecided.
+upstream test body is copied into the repository; the approved attribution
+policy is recorded in [the M0 license review](m0-license-review.md).
 
 ## Evidence
 

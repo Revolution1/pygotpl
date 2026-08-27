@@ -74,8 +74,11 @@ cache, and support ambiguity without protecting an established stable API.
 
 ## Dependency and Import Evidence
 
-The root metadata depends on `goduration` and `gotime`; `gotime` alone depends
-on `goduration`. The executable architecture test verifies:
+Published root metadata depends on `goduration>=0.0.0,<2.0.0` and
+`gotime>=0.0.0,<2.0.0`; `gotime` declares the same pre-2.0 bound for
+`goduration`. Local `[tool.uv.sources]` entries select workspace members only
+during development and are not wheel metadata. The executable architecture
+test verifies:
 
 - the three-wheel metadata and source paths;
 - absence of retired top-level packages and directories;

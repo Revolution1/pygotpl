@@ -14,10 +14,11 @@ M8 problem. It adds 6.3% over the Python static chart case. The larger cost is
 rebuilding the chart template namespace and validating its 222-function map on
 every example render.
 
-No further Helm-example optimization is required for M8. D009 in
-`docs/implementation-decisions.md` keeps prepared-chart caching out of the
-example until a real embedding application establishes an API and latency
-budget. Applications can already retain the immutable core `TemplateEngine`.
+No further Helm-example optimization is required for M8.
+[Decision D009](../implementation-decisions.md#d009-keep-prepared-chart-caching-out-of-the-helm-example)
+keeps prepared-chart caching out of the example until a real embedding
+application establishes an API and latency budget. Applications can already
+retain the immutable core `TemplateEngine`.
 
 ## Workload
 
@@ -106,7 +107,7 @@ options, source definitions, async behavior, and security budgets.
 ## Reproduction
 
 ```console
-python -m benchmarks.helm_runtime \
+uv run --frozen python -m benchmarks.helm_runtime \
   --samples 7 --iterations 500 --memory-samples 25 \
   --profile-iterations 500 --top 20 \
   --output /tmp/pygotpl-m8-helm-python.json

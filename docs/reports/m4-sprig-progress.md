@@ -181,7 +181,7 @@ SHA-256, semantic-version constraints, integer arithmetic, and JSON encoding.
 Run it with:
 
 ```console
-python -m benchmarks.compare benchmarks/fixtures/sprig_render.json
+uv run --frozen python -m benchmarks.compare benchmarks/fixtures/sprig_render.json
 ```
 
 An August 26, 2026 development baseline on Darwin arm64 with CPython 3.13.7 and

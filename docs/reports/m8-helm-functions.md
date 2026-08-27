@@ -29,7 +29,7 @@ context-sensitive `fail`, DNS, JSON, and late-bound functions as required.
 Invalid YAML, TOML, and JSON diagnostics retain Helm's result shape but use the
 installed Python serializer's wording. tomli-w can encode a short array of
 tables inline rather than as repeated `[[table]]` sections. These boundaries
-are recorded in D008 of `docs/implementation-decisions.md`; they avoid shipping
+are recorded in [decision D008](../implementation-decisions.md#d008-use-python-serializers-with-explicit-helm-diagnostic-boundaries); they avoid shipping
 three template-specific parser implementations.
 
 ## Completed M8 Integration Matrix
@@ -42,5 +42,5 @@ three template-specific parser implementations.
   meaning; Python and Go host-map diagnostic wording is not identical.
 - The versioned latency, memory, allocation, and hotspot profile is published
   in `docs/reports/m8-helm-performance.md`.
-- The explicit capability matrix consumed by M9 is published in
-  `docs/reports/m8-capability-matrix.md`.
+- The explicit capability matrix consumed by M9 is published in the
+  [M8 capability matrix](m8-capability-matrix.md).

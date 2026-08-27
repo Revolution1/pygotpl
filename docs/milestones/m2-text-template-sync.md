@@ -19,7 +19,7 @@ Provide a reusable, thread-safe synchronous implementation of the targeted
 
 ## Acceptance Gates
 
-- [x] Required sync conformance fixtures match Go 1.27.x.
+- [x] Required sync conformance fixtures match Go 1.27.0.
 - [x] Python adaptation questions in `docs/compatibility.md` are resolved.
 - [x] VM code reaches 100% statement coverage.
 - [x] Public APIs and error paths have direct tests.
@@ -31,3 +31,6 @@ Provide a reusable, thread-safe synchronous implementation of the targeted
 - Awaiting asynchronous functions.
 - Sprig compatibility.
 - Contextual HTML escaping.
+
+See the [M2 acceptance audit](../reports/m2-acceptance-audit.md) for the
+gate-by-gate evidence and the explicit remaining proof boundary.

@@ -45,6 +45,21 @@ evolution.
 - Examples used both the root `TemplateEngine` export and its implementation
   module. User documentation now uses `from gotpl import TemplateEngine` as the
   canonical import.
+- `gotpl.parse`, `gotpl.compile`, and `gotpl.runtime` advertised internal
+  implementation objects through wildcard imports even though the stability
+  contract excludes those modules. Their existing explicit attributes remain
+  importable for internal compatibility, but their empty `__all__` no longer
+  presents them as stable public surfaces.
+- The `goduration` and `gotime` distribution roots exposed `__version__` as an
+  attribute but omitted it from wildcard exports. Both now follow the same
+  version-export policy as `gotpl`, with direct contract tests.
+- The public typed Sprout inventory had no schema discriminator. Its generator,
+  report, packaged resource, loader, and tests now agree on schema version 1
+  and reject an unsupported version.
+- Compiled templates had no immutable way to extend or replace their callback
+  registry. `Template`, `HTMLTemplate`, and `TemplateEngine` now expose
+  `with_functions()`: text programs and namespaces are reused, HTML context is
+  reanalyzed, and extension collisions and sandbox allowlists remain enforced.
 
 ### Accepted without change
 
@@ -56,6 +71,9 @@ evolution.
   raises `AsyncRequiredError` when required.
 - File discovery is application-owned. `from_sources()` accepts a mapping and
   avoids coupling the core API to filesystem or framework policy.
+- Function names referenced by the original source still need to be registered
+  before its first compilation. A derived registry can replace functions used
+  by existing programs and can add names for subsequently compiled sources.
 - Go-compatible formatting remains the default. Python formatting requires
   `format_mode="python"`; it is never a mutable global switch.
 - Function libraries remain constructors that return mappings. A universal
@@ -78,7 +96,8 @@ evolution.
 
 - `tests/unit/test_public_api_contract.py` freezes root exports, exception
   relationships, reusable method surfaces, function-library exports, and
-  text/HTML convenience option parity.
+  text/HTML convenience option parity. Standalone package tests also freeze
+  their root version exports.
 - Strict Pyright validates source and isolated wheel consumers.
 - `mkdocs build --strict` resolves the user guide and generated reference
   against the current source tree.

@@ -2,9 +2,10 @@
 
 ## Go Standard Library Material
 
-`src/gotpl/_compat/goregexp/_unicode_tables.py` is generated from the category, script,
-and category-alias tables exposed by the Go 1.27.0 standard library `unicode`
-package. The source tables identify Unicode 17.0.0 as their data version.
+`src/gotpl/_compat/goregexp/_unicode_tables.py` is generated from the category,
+script, and category-alias tables exposed by the Go 1.27.0 standard library
+`unicode` package. The source tables identify Unicode 17.0.0 as their data
+version.
 
 Reference-derived conformance fixtures whose metadata declares `project` as
 `go` are based on behavior and tests in the pinned Go standard-library

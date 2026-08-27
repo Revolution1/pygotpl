@@ -6,6 +6,10 @@ Local upstream checkouts provide the implementation and test references for
 compatibility work. They are development inputs, not runtime dependencies and
 are never committed to this repository.
 
+Ordinary users installing `gotpl`, `goduration`, or `gotime` do not need these
+checkouts. Contributors need them only for oracle-backed compatibility work and
+the complete repository gate.
+
 ## Pinned References
 
 | Reference | Revision | Local path |

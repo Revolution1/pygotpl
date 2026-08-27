@@ -31,6 +31,8 @@ normal, boundary, and failure evidence or an explicit not-applicable rationale.
 | Slim-Sprig | Slim-Sprig 3.0.0 | 45 shared fixtures, 7 fork-specific matrix templates, and all 164 exported names | compatible for named profiles |
 | Sprout | Sprout 1.1.1 | 20 registries, 234 raw entries, 45 aliases, and complete all/hermetic group evidence | compatible for raw registry/group scope |
 | Helm | Helm 4.2.3 | 10 pinned integration cases and a 222-name function-map audit | compatible example/function scope with serializer differences |
+| `goduration.go` | Go 1.27.0 `time.Duration` | 74 standalone tests and checked-in oracle vectors | compatible audited surface |
+| `gotime.go` | Go 1.27.0 `time` | 218 standalone tests and checked-in oracle vectors | partial overall; audited M7 surface passes |
 
 The complete local gate on CPython 3.14.7 passes 1,973 tests with no skipped
 release-blocking case, exact 98.1002% statement coverage, and exact 96.0893%

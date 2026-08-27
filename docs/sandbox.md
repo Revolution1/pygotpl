@@ -29,7 +29,6 @@ application grants additional capabilities:
 from gotpl import ExecutionBudget, SandboxPolicy, Template
 
 policy = SandboxPolicy.strict(
-    allow_attributes={"name"},
     allow_functions={"upper"},
     default_budget=ExecutionBudget(
         max_output_chars=100_000,
@@ -48,6 +47,41 @@ template = Template(
 assert template.render({"name": "gopher"}) == "GOPHER"
 ```
 
+Mapping keys do not require an attribute grant. The allowlists below apply when
+the application deliberately passes Python objects instead of mapping-only
+data.
+
+## Grant Python object access deliberately
+
+Plain attributes, descriptor-backed properties, and bound methods are separate
+capabilities:
+
+```python
+from gotpl import SandboxPolicy, Template
+
+
+class Record:
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+    @property
+    def label(self) -> str:
+        return f"user:{self.name}"
+
+    def greet(self) -> str:
+        return f"hello:{self.name}"
+
+
+policy = SandboxPolicy.strict(
+    allow_attributes={"name"},
+    allow_properties={"label"},
+    allow_methods={"greet"},
+)
+template = Template("{{.name}}/{{.label}}/{{.greet}}", sandbox=policy)
+
+assert template.render(Record("Ada")) == "Ada/user:Ada/hello:Ada"
+```
+
 Attributes, descriptor-backed properties, and methods have separate
 allowlists. Granting an attribute does not execute a property or method with
 the same name. Custom `__gotemplate_lookup__` adapters are disabled unless
@@ -59,12 +93,35 @@ function map. In particular, mutation, environment, network, random,
 cryptographic, serializer, and resource-amplifying functions should remain
 absent from untrusted profiles.
 
+## Execution budgets
+
 The default strict budget is one million output characters, 100,000 range
 items, 100 active template calls, and 10,000 function or method calls. An
 explicit `budget=` replaces that preset for the template. Counters are created
 fresh for every sync or async render and shared across associated template
 calls. Output is charged before each writer mutation, so a chunk that would
 exceed the limit is not written.
+
+```python
+from io import StringIO
+
+from gotpl import BudgetExceededError, ExecutionBudget, Template
+
+writer = StringIO()
+template = Template("ab{{.}}", budget=ExecutionBudget(max_output_chars=3))
+
+try:
+    template.render_to(writer, "cd")
+except BudgetExceededError as error:
+    assert "output character" in str(error)
+else:
+    raise AssertionError("output budget was not enforced")
+
+assert writer.getvalue() == "ab"
+```
+
+The literal prefix fits and is written. The dynamic chunk would exceed the
+limit, so the writer never receives that chunk.
 
 Budgets limit VM-visible work, not callback-internal work. For example, one
 function call can still perform expensive cryptography or construct a very

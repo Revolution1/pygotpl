@@ -45,13 +45,14 @@ never hidden inside an unrelated patch release.
 ## Procedure
 
 1. Confirm that the milestone exit gates are checked with linked evidence.
-2. Update the version, [`CHANGELOG.md`](https://github.com/Revolution1/pygotpl/blob/main/CHANGELOG.md), compatibility report,
-   and benchmark report.
+2. Update versions in all three `pyproject.toml` files, coordinated dependency
+   ranges, [`CHANGELOG.md`](https://github.com/Revolution1/pygotpl/blob/main/CHANGELOG.md),
+   the compatibility report, and the benchmark report.
 3. Open or update the release pull request and apply the `release` label.
 4. Regenerate `uv.lock` with the required stable uv version.
 5. Run `./scripts/check.sh` from a clean checkout.
 6. Require the release PR's complete hosted gate to pass before merging.
-7. Build distributions with `uv build`.
+7. Build all three distributions with `uv build --all-packages`.
 8. Run `scripts/check_reproducible_builds.sh` with the release epoch and compare
    its artifacts with the publication build.
 9. Install the wheel into an isolated environment and run the public smoke test.
@@ -60,8 +61,9 @@ never hidden inside an unrelated patch release.
 10. Create a signed `v*` release tag after the release PR passes and merge it.
 11. Require the tag CI and documentation deployment to pass.
 12. Publish through a trusted GitHub Actions environment using PyPI trusted
-   publishing.
-13. Verify package metadata and installation from PyPI.
+   publishing, in dependency order: `goduration`, then `gotime`, then `gotpl`.
+13. Install all three packages from PyPI in a clean environment and verify
+   package metadata, declared dependency bounds, imports, and a public render.
 14. Publish release notes containing compatibility counts, known differences,
     security notes, and benchmark environment details.
 

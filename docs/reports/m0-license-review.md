@@ -20,6 +20,7 @@ it is not a substitute for legal advice about a future exceptional artifact.
 | Masterminds Sprig | v3.3.0 | MIT | Independently expressed fixtures and compatibility behavior |
 | Slim-Sprig | v3.0.0 | MIT | Independently expressed fixtures and profile inventory |
 | Sprout | v1.1.1 | MIT | Independently expressed fixtures, function inventory, aliases, and notices |
+| Helm | v4.2.3 | Apache-2.0 | Independently expressed integration behavior; no copied Helm expression |
 
 The checked-out license texts under `.references/` were compared with
 `THIRD_PARTY_NOTICES.md`. The Go copyright, three redistribution conditions,

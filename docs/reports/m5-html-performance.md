@@ -23,7 +23,7 @@ output digest was
 Run from the repository root with the pinned environments installed:
 
 ```console
-python -m benchmarks.compare benchmarks/fixtures/html_render.json --samples 7
+uv run --frozen python -m benchmarks.compare benchmarks/fixtures/html_render.json --samples 7
 ```
 
 The command preserves every raw sample and reports the median, range, and

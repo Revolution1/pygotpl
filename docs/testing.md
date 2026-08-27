@@ -36,18 +36,21 @@ tests remain mandatory for behavior not represented upstream, including:
 - Python API validation, typing, and ergonomic error messages.
 - Event-loop independence of synchronous rendering.
 
-The intended test layout is:
+The current test layout is:
 
 ```text
 tests/
+    architecture/   dependency directions and package boundaries
+    async/          asyncio, cancellation, concurrency, and async writers
     unit/           isolated Python components
     conformance/    data-driven Go and Sprig compatibility cases
-    python/         Python value adaptation and public API behavior
-    async/          asyncio, cancellation, concurrency, and async writers
-    property/       Hypothesis strategies and invariant tests
+    internal/       private implementation contracts
     security/       contextual escaping and adversarial inputs
     performance/    benchmark correctness and fixture validation
 ```
+
+Python adaptation, public API, and Hypothesis property cases currently live in
+`unit/`; fixture data lives under `tests/fixtures/`.
 
 ### Conformance Tests
 
@@ -114,14 +117,13 @@ percentage printed by `coverage report` is informational only.
 
 ## CI Matrix
 
-The target matrix includes:
+The required matrix includes:
 
-- CPython 3.11 and every newer supported minor version.
-- The latest stable CPython version as the primary development job.
-- PyPy for supported versions.
+- CPython 3.11, 3.12, 3.13, and 3.14.
+- CPython 3.14 as the primary development job.
+- PyPy 3.11.
 - Linux, macOS, and Windows.
 - The exact pinned Go reference.
-- A forward-looking Go job that may initially be non-blocking.
 - Ruff, strict Pyright, a strict generated-documentation build, unit tests,
   conformance tests, and package installation.
 

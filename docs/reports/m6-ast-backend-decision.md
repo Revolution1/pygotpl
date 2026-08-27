@@ -8,7 +8,7 @@ retained VM optimizations. This is a reviewable decision, not a permanent ban.
 
 ## Evidence
 
-`python -m benchmarks.backend_feasibility` profiles the same prepared public
+`uv run --frozen python -m benchmarks.backend_feasibility` profiles the same prepared public
 operation as the shared timing and memory runners. It then makes the deliberately
 unrealistic assumption that all self time in the synchronous VM dispatcher can
 disappear while every semantic helper becomes free to call from generated code.

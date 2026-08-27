@@ -2,9 +2,11 @@
 
 ## Purpose
 
-This map turns the ignored upstream test repositories into a milestone-ordered
-TDD backlog. It identifies where behavior should be studied; it does not grant
-permission to copy upstream material without license and attribution review.
+This map is the maintained source index for oracle-backed TDD. The original
+milestone headings preserve when each behavior family entered the project;
+they are not a claim that completed milestones are still active. The map
+identifies where behavior should be studied and does not grant permission to
+copy upstream material without license and attribution review.
 
 ## M1: Lexer and Parser
 

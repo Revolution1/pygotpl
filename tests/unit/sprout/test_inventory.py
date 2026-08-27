@@ -4,6 +4,7 @@ from gotpl.funcs.sprout import INVENTORY
 
 
 def test_inventory_identifies_the_pinned_sprout_release() -> None:
+    assert INVENTORY.schema_version == 1
     assert INVENTORY.reference == "github.com/go-sprout/sprout"
     assert INVENTORY.version == "v1.1.1"
 

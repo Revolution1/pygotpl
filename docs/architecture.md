@@ -2,7 +2,7 @@
 
 ## Status
 
-This document defines the initial architecture. It should change through
+This document defines the current 1.0 architecture. It should change through
 explicit, reviewed decisions rather than incidental implementation pressure.
 
 ## Runtime Pipeline
@@ -87,7 +87,7 @@ options, source metadata, and instructions. Rendering creates an execution
 context containing dot, root, variables, call frames, and output state.
 
 `Template.from_sources()` is the core boundary for assembling named files into
-one namespace. `gotpl.runtime.engine.TemplateEngine` adds ordered batch
+one namespace. The package-root `gotpl.TemplateEngine` adds ordered batch
 execution with an independent context for each source. `with_source()` derives a new
 immutable namespace, while
 `render_source()` and `render_source_async()` compile and execute dynamic source
@@ -140,19 +140,18 @@ Escaping the final rendered string is not a valid implementation.
 
 ## Function Registries
 
-Registries are layered:
-
-1. Go template built-ins.
-2. Caller-provided functions.
-3. Sprig functions when explicitly selected by the public API.
-4. Python-native functions when explicitly selected.
+Every template starts with Go template built-ins. The caller supplies one
+explicit `functions=` mapping, which may come from a Sprig, Slim-Sprig, Sprout,
+or Helm constructor and may be composed with application functions before
+template construction. `PythonExtensions` supplies a separate opt-in mapping;
+construction rejects collisions between it and `functions=`.
 
 Collision and registration timing must follow the compatibility contract.
 Compatibility and Python-native functions must remain distinguishable for
 versioning and auditing.
 
 Sandbox policy and Python extensions are immutable construction inputs.
-`Template`, `HTMLTemplate`, and `runtime.engine.TemplateEngine` carry them into
+`Template`, `HTMLTemplate`, and `TemplateEngine` carry them into
 the sync or async VM; template source cannot modify them. Budget state is
 created per render and shared by frames in one associated-template execution.
 Workspace compatibility packages remain below this layer and never import the
@@ -168,9 +167,10 @@ chart model, loader, or rendering engine. The miniature runtime under
 built-in or Sprig maps.
 
 Optional integrations must be importable without their third-party extras.
-Functions that require an unavailable extra fail at registry construction with
-an actionable installation message. Optional packages are loaded lazily so the
-core parser and renderer retain a dependency-free import path.
+Functions that require an unavailable extra fail when that capability is
+explicitly selected or called, with an actionable installation message.
+Optional packages are loaded lazily so importing the core parser and renderer
+does not require extras.
 
 ## Performance Evolution
 

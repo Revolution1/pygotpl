@@ -98,10 +98,11 @@ expansion, and empty-match progression. Unicode category, script, alias,
 complement, and assigned-rune classes use generated Go 1.27.0 Unicode 17.0.0
 tables rather than interpreter-dependent Python tables. Go's `i`, `m`, `s`,
 and `U` flags, including scoped, removed, and mid-expression forms, are
-translated explicitly. The extracted `goregexp.go` surface uses a
+translated explicitly. The private `gotpl._compat.goregexp` engine uses a
 project-owned parser and does not import CPython's private parser or constants.
-Explicit source-length, repeat-count, instruction-count, and capture-count
-limits bound compilation work independently of the template registry.
+It is not a public standalone API. Explicit source-length, repeat-count,
+instruction-count, and capture-count limits bound compilation work
+independently of the template registry.
 
 ## Serialization and Mutable Data
 
@@ -134,7 +135,7 @@ For untrusted or multi-tenant workloads:
 
 `SandboxPolicy.strict()` enforces the function allowlist and VM-visible source,
 output, iteration, call, and associated-template-depth limits described in
-`docs/sandbox.md`. It denies complete ecosystem maps by default. It does not
+[the sandbox guide](sandbox.md). It denies complete ecosystem maps by default. It does not
 preempt work inside one admitted helper, so cryptography, Python `re`, eager
 CIDR expansion, blocking DNS, and serializer internals still require denial or
 an operating-system-limited worker.
@@ -151,4 +152,4 @@ either group and must be selected separately.
 an empty lookup result until the embedding application injects a cluster
 adapter. The miniature Helm example owns chart-directory reads and dynamic
 `tpl` compilation. The complete M8-to-M9 policy handoff is recorded in
-`docs/reports/m8-capability-matrix.md`.
+[the M8 capability matrix](reports/m8-capability-matrix.md).

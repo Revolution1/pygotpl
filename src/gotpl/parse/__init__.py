@@ -1,4 +1,7 @@
-"""Template parsing primitives."""
+"""Internal template parsing primitives; not a stable public API."""
+
+# pyright: reportUnusedImport=false
+# ruff: noqa: F401
 
 from .lexer import lex
 from .nodes import (
@@ -31,36 +34,4 @@ from .nodes import (
 from .parser import ParserLimits, parse, parse_template
 from .tokens import Token, TokenKind
 
-__all__ = [
-    "ActionNode",
-    "BlockNode",
-    "BoolNode",
-    "BreakNode",
-    "CharacterNode",
-    "CommandNode",
-    "ComplexNode",
-    "ContinueNode",
-    "DefinitionNode",
-    "DotNode",
-    "FieldNode",
-    "IdentifierNode",
-    "IfNode",
-    "ListNode",
-    "NilNode",
-    "NumberNode",
-    "ParenthesizedNode",
-    "ParsedTemplate",
-    "ParserLimits",
-    "PipeNode",
-    "RangeNode",
-    "StringNode",
-    "TemplateCallNode",
-    "TextNode",
-    "Token",
-    "TokenKind",
-    "VariableNode",
-    "WithNode",
-    "lex",
-    "parse",
-    "parse_template",
-]
+__all__: list[str] = []

@@ -21,7 +21,7 @@ classifiers = [
   "Programming Language :: Python :: 3.14",
   "Typing :: Typed",
 ]
-dependencies = ["goduration>=0.0.0", "tzdata>=2026.3"]
+dependencies = ["goduration>=0.0.0,<2.0.0", "tzdata>=2026.3"]
 
 [dependency-groups]
 test = ["hypothesis>=6.165.10", "pytest>=9.1.1"]

@@ -27,8 +27,8 @@ M3 is complete. Async iterables remain outside the approved milestone scope.
 Run:
 
 ```console
-python -m benchmarks.async_runtime --iterations 10000 --warmup 500
-python -m benchmarks.sync_guard --samples 7 --iterations 10000
+uv run --frozen python -m benchmarks.async_runtime --iterations 10000 --warmup 500
+uv run --frozen python -m benchmarks.sync_guard --samples 7 --iterations 10000
 ```
 
 On CPython 3.13.7, the async VM rendered a synchronous callback in 3,924 ns,

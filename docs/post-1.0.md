@@ -4,6 +4,10 @@ This backlog records proof and compatibility work that is outside the current
 M10 release gates. It does not weaken the required suites or turn discovered
 mismatches into accepted differences.
 
+The current measured claim boundary remains authoritative in the
+[compatibility contract](compatibility.md); completing a backlog item changes
+no public status until its evidence is reviewed there.
+
 ## Standard-Library Proof Expansion
 
 - Map every remaining applicable Go `text/template` test case to an

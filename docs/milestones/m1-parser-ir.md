@@ -30,3 +30,6 @@ to an immutable instruction stream.
 - Complete execution semantics.
 - Sprig functions.
 - Contextual HTML escaping.
+
+Evidence is recorded in the [M1 implementation report](../reports/m1-parser-ir.md)
+and [M1 conformance report](../reports/m1-conformance.md).

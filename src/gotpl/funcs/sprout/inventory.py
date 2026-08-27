@@ -49,6 +49,7 @@ class GroupInventory:
 class SproutInventory:
     """The complete versioned metadata snapshot used for conformance."""
 
+    schema_version: int
     reference: str
     version: str
     registries: MappingProxyType[str, RegistryInventory]
@@ -74,6 +75,7 @@ class _GroupData(TypedDict):
 
 
 class _InventoryData(TypedDict):
+    schema_version: int
     reference: str
     version: str
     registries: dict[str, _RegistryData]
@@ -83,6 +85,10 @@ class _InventoryData(TypedDict):
 def _load_inventory() -> SproutInventory:
     resource = files("gotpl.funcs.sprout").joinpath("data/sprout-v1.1.1-inventory.json")
     data = cast(_InventoryData, json.loads(resource.read_text(encoding="utf-8")))
+    if data["schema_version"] != 1:
+        raise ValueError(
+            f"unsupported Sprout inventory schema {data['schema_version']}"
+        )
     registries = {
         name: RegistryInventory(
             uid=registry["uid"],
@@ -112,6 +118,7 @@ def _load_inventory() -> SproutInventory:
         for name, group in data["groups"].items()
     }
     return SproutInventory(
+        schema_version=data["schema_version"],
         reference=data["reference"],
         version=data["version"],
         registries=MappingProxyType(registries),

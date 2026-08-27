@@ -1,16 +1,14 @@
 # M2 Synchronous Semantic Gap Register
 
-This register tracks known work required before M2 can claim compatible
-synchronous `text/template` behavior. A listed gap is not an accepted permanent
-difference unless `docs/compatibility.md` explicitly classifies it that way.
+This historical register tracks work identified during M2. M2 has no open
+owned row: later performance and recursion work closed in M6. A newly found
+gap is not an accepted permanent difference unless the
+[compatibility contract](../compatibility.md) explicitly classifies it that
+way.
 
-| Area | Current evidence | Required resolution | Owner milestone |
-| --- | --- | --- | --- |
-| Performance | The first warm-render baseline is reproducible but not optimized and does not measure Python allocations. | Profile, optimize hot paths, add variance and allocation evidence. | M6 |
+## Open Gaps
 
-M2 exits only after every M2-owned row is resolved or reclassified with a
-tested rationale. M3 and M6 rows remain visible dependencies rather than being
-silently omitted from the compatibility claim.
+None in the approved M2 scope.
 
 ## Resolved During M2
 
@@ -47,6 +45,8 @@ silently omitted from the compatibility claim.
 
 ## Resolved During M6
 
+- The complete performance suite added profiling, multi-sample variance,
+  Python memory evidence, optimization decisions, and cross-engine reports.
 - Sync and async named-template calls use an explicit, lazily allocated caller
   stack rather than Python recursion. A 1,500-template finite chain executes in
   both runtimes, callees retain isolated root-variable scopes and innermost

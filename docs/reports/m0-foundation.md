@@ -14,7 +14,7 @@ cross-platform failures, so the hosted gate cannot be claimed as passing.
 - Go oracle toolchain: Go 1.27.0.
 - Go template reference: tag `go1.27.0`.
 - Sprig reference and oracle module: v3.3.0.
-- Supported Python: 3.11 and newer.
+- Supported Python: CPython 3.11 through 3.14 and PyPy 3.11.
 - Primary development Python: latest stable release, Python 3.14.7.
 - Required uv: 0.12.5 or newer.
 
@@ -24,7 +24,7 @@ in `uv.lock`.
 ## Commands
 
 ```console
-uv sync --frozen --all-groups
+uv sync --frozen --all-packages --extra all --all-groups
 ./scripts/sync_references.sh
 ./scripts/check.sh
 uv run --frozen python -m benchmarks.compare

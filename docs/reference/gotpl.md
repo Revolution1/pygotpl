@@ -3,9 +3,14 @@
 The package root is the supported import surface for rendering, reusable
 templates, policies, errors, and compatibility value adapters.
 
+Start with the task-oriented [API overview](../api.md), then use the
+[async](../async.md), [HTML](../html.md), and [sandbox](../sandbox.md) guides for
+runnable examples. This page is the complete generated signature reference.
+
 ::: gotpl
     options:
       members:
+        - __version__
         - render
         - render_to
         - render_async

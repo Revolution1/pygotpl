@@ -160,6 +160,14 @@ class HTMLTemplate:
 
         return type(self)._from_text(self._text.with_source(source, name=name))
 
+    def with_functions(
+        self,
+        functions: Mapping[str, Callable[..., object]],
+    ) -> Self:
+        """Return a reanalyzed template with an extended function registry."""
+
+        return type(self)._from_text(self._text.with_functions(functions))
+
     def render_source(
         self,
         source: str,

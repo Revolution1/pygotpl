@@ -115,14 +115,15 @@ Dependency updates must:
    measured results.
 6. Record required migration or compatibility changes.
 
-Avoid upper bounds unless an observed incompatibility requires one. Runtime
-dependencies require an architecture decision that explains why the standard
-library is insufficient and assesses performance, security, maintenance, and
-platform impact.
+Avoid upper bounds unless an observed incompatibility requires one or a
+coordinated workspace dependency must exclude an unknown future major version.
+Runtime dependencies require an architecture decision that explains why the
+standard library is insufficient and assesses performance, security,
+maintenance, and platform impact.
 
 ## Reference Dependencies
 
-Go, Sprig, Slim-Sprig, and Sprout are special reference inputs. Their exact
+Go, Sprig, Slim-Sprig, Sprout, and Helm are special reference inputs. Their exact
 revisions remain pinned even when newer releases appear. Updating a reference
 changes the claimed compatibility baseline and requires the upgrade process in
 `docs/references.md`. Reference oracle modules are isolated when their pinned

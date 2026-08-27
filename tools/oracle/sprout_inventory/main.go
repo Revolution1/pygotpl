@@ -52,10 +52,11 @@ type groupInventory struct {
 }
 
 type inventory struct {
-	Reference  string                       `json:"reference"`
-	Version    string                       `json:"version"`
-	Registries map[string]registryInventory `json:"registries"`
-	Groups     map[string]groupInventory    `json:"groups"`
+	SchemaVersion int                          `json:"schema_version"`
+	Reference     string                       `json:"reference"`
+	Version       string                       `json:"version"`
+	Registries    map[string]registryInventory `json:"registries"`
+	Groups        map[string]groupInventory    `json:"groups"`
 }
 
 func registryFactories() map[string]func() sprout.Registry {
@@ -162,9 +163,10 @@ func main() {
 	}
 
 	output := inventory{
-		Reference:  "github.com/go-sprout/sprout",
-		Version:    "v1.1.1",
-		Registries: registries,
+		SchemaVersion: 1,
+		Reference:     "github.com/go-sprout/sprout",
+		Version:       "v1.1.1",
+		Registries:    registries,
 		Groups: map[string]groupInventory{
 			"all":      inspectGroup(all.RegistryGroup()),
 			"hermetic": inspectGroup(hermetic.RegistryGroup()),

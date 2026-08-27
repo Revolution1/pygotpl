@@ -45,5 +45,7 @@ Create the repository contracts and tooling needed to measure all later work.
 
 ## Exit Artifact
 
-An M0 completion note must record pinned tool versions, commands, initial CI
-matrix, fixture formats, and the first benchmark environment.
+The [M0 foundation report](../reports/m0-foundation.md) records pinned tool
+versions, commands, the initial CI matrix, fixture formats, and the first
+benchmark environment. The hosted matrix checkbox remains open until the
+release-candidate workflow passes on all required platforms.

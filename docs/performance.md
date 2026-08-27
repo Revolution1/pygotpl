@@ -1,4 +1,4 @@
-# Performance Strategy
+# Performance
 
 ## Objective
 
@@ -13,6 +13,34 @@ into the continuing performance history.
 
 The canonical combined M6 results are published in
 [`reports/m6-complete-performance-report.md`](reports/m6-complete-performance-report.md).
+
+## Current Measured Snapshot
+
+On the report's Apple M5 / CPython 3.14.7 environment, representative warm
+renders measured as follows. These are prioritization baselines, not latency
+guarantees for other templates or machines.
+
+| Workload | pygotpl compared with Go | pygotpl compared with Jinja |
+| --- | ---: | ---: |
+| Text control flow | 14.13x | 3.28x |
+| Contextual HTML | 9.21x | 2.27x |
+| Sprig-heavy | 7.28x | not measured in the Jinja fixture set |
+| Synchronous callback | not measured in the Go fixture set | 0.90x |
+
+The [complete report](reports/m6-complete-performance-report.md) owns the raw
+measurements, environment, memory results, uncertainty, and interpretation.
+
+## Reproduce in This Repository
+
+Install the locked benchmark toolchain once, then keep every run in that
+environment:
+
+```console
+uv sync --frozen --group benchmark
+```
+
+Go comparison commands also require the pinned Go toolchain and repository
+fixtures. They verify output equality before reporting timing results.
 
 ## Benchmark Categories
 
@@ -38,7 +66,7 @@ Python and Go benchmarks consume semantically equivalent checked-in fixtures.
 The M1 parser/compiler comparison can be run with:
 
 ```console
-python -m benchmarks.parser_baseline
+uv run --frozen python -m benchmarks.parser_baseline
 ```
 
 It reports Python parse, compile, and combined timings separately, alongside
@@ -49,8 +77,8 @@ Cold benchmarks state exactly which phases are included.
 The shared Sprig-heavy warm-render comparison can be run with:
 
 ```console
-python -m benchmarks.compare benchmarks/fixtures/sprig_render.json
-python -m benchmarks.compare benchmarks/fixtures/sprig_duration_render.json
+uv run --frozen python -m benchmarks.compare benchmarks/fixtures/sprig_render.json
+uv run --frozen python -m benchmarks.compare benchmarks/fixtures/sprig_duration_render.json
 ```
 
 Its request selects the explicit `sprig-v3.3.0` function profile. Benchmark
@@ -60,7 +88,7 @@ comparison target.
 The contextual HTML comparison can be sampled independently with:
 
 ```console
-python -m benchmarks.compare benchmarks/fixtures/html_render.json --samples 7
+uv run --frozen python -m benchmarks.compare benchmarks/fixtures/html_render.json --samples 7
 ```
 
 Both runners hash a reference render before timing, and the comparison aborts
@@ -72,8 +100,8 @@ The initial measured baseline is recorded in
 The M6 Python-ecosystem comparison can be reproduced with:
 
 ```console
-python -m benchmarks.jinja_compare --samples 7 --memory-samples 25
-python -m benchmarks.python_engine_compare --samples 7 --memory-samples 25
+uv run --frozen python -m benchmarks.jinja_compare --samples 7 --memory-samples 25
+uv run --frozen python -m benchmarks.python_engine_compare --samples 7 --memory-samples 25
 ```
 
 The measured results and capability caveats are recorded in
@@ -82,7 +110,7 @@ The measured results and capability caveats are recorded in
 The M8 cross-file runtime and Helm integration workload can be reproduced with:
 
 ```console
-python -m benchmarks.helm_runtime \
+uv run --frozen python -m benchmarks.helm_runtime \
   --samples 7 --iterations 500 --memory-samples 25 \
   --profile-iterations 500 --top 20
 go -C tools/helm_oracle test -run '^$' \
@@ -125,7 +153,7 @@ Python memory can be sampled independently on the exact same prepared public
 operation used by the timing runner:
 
 ```console
-python -m benchmarks.memory benchmarks/fixtures/html_render.json --samples 25
+uv run --frozen python -m benchmarks.memory benchmarks/fixtures/html_render.json --samples 25
 ```
 
 This reports the `tracemalloc` peak increment for one render and the retained
@@ -140,7 +168,7 @@ The generous upper bound from eliminating synchronous VM dispatcher self time
 can be reproduced with:
 
 ```console
-python -m benchmarks.backend_feasibility benchmarks/fixtures/text_render.json
+uv run --frozen python -m benchmarks.backend_feasibility benchmarks/fixtures/text_render.json
 ```
 
 This is an Amdahl-style feasibility diagnostic, not a generated-backend
@@ -185,8 +213,8 @@ The comprehensive profiler and rejected Cython sync-VM prototype can be
 reproduced with:
 
 ```console
-python -m benchmarks.profile_suite --iterations 20000 --sampling-seconds 1 --sampling-interval 0.001 --allocation-iterations 25 --top 20
-python -m benchmarks.native_accelerator --samples 7
+uv run --frozen python -m benchmarks.profile_suite --iterations 20000 --sampling-seconds 1 --sampling-interval 0.001 --allocation-iterations 25 --top 20
+uv run --frozen python -m benchmarks.native_accelerator --samples 7
 ```
 
 See [`reports/m6-profiling.md`](reports/m6-profiling.md) and

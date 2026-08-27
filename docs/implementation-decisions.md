@@ -64,10 +64,10 @@ than prematurely recorded as a permanent simplification.
   names in the `all` group, and 227 names in `hermetic`. Name-only placeholders
   would make parsing succeed and execution fail, producing a misleading
   compatibility claim.
-- Compatibility effect: an incomplete registry raises an explicit
-  `NotImplementedError` while M8 is active. M8 cannot complete until its final
-  support/difference matrix and acceptance gates account for every public
-  registry.
+- Compatibility effect: during M8, incomplete registries raised an explicit
+  `NotImplementedError`. The completed public registry set now has behavioral
+  evidence for every exposed entry; future inventory additions remain hidden
+  until equivalent evidence exists.
 - Evidence: `docs/reports/sprout-v1.1.1-inventory.json` and
   `scripts/check_sprout_inventory.sh`.
 
@@ -122,8 +122,8 @@ than prematurely recorded as a permanent simplification.
   the upstream resource cost outside the strict sandbox.
 - Compatibility effect: none in ordinary profiles. The strict sandbox is an
   explicit Python policy and will report its denial or budget failure.
-- Evidence: pinned Sprout `registry/network/functions.go` and the M8 network
-  oracle matrix; M9 security tests must cover denial and bounded admission.
+- Evidence: pinned Sprout `registry/network/functions.go`, the M8 network oracle
+  matrix, and M9 strict-sandbox denial tests.
 
 ### D006: Multi-source execution belongs to the core runtime
 
@@ -132,8 +132,8 @@ than prematurely recorded as a permanent simplification.
 - Profiles: core text-template API, Helm example, future gomplate-like runtimes
 - Decision: immutable named-source associations, per-source render contexts,
   per-source batch execution, and synchronous/asynchronous dynamic-source
-  inheritance are core APIs. `gotpl.runtime.engine.TemplateEngine` owns generic
-  cross-file execution and is also re-exported from the package root. The Helm
+  inheritance are core APIs. Package-root `gotpl.TemplateEngine` owns generic
+  cross-file execution. The Helm
   example retains chart traversal, chart globals, and the
   Helm-specific `include` and `tpl` contracts, but builds on the same compiled
   namespace and VM as ordinary templates.
@@ -214,7 +214,7 @@ than prematurely recorded as a permanent simplification.
   `Engine.render()` call and compiles each `tpl` source when invoked. M8 does
   not add a transparent chart cache or promote a prepared-chart abstraction to
   `gotpl.funcs.helm`. Applications that need reusable cross-file execution build
-  and retain `gotpl.runtime.engine.TemplateEngine` instances in their own
+  and retain `gotpl.TemplateEngine` instances in their own
   runtime layer.
 - Reason: the Helm engine is an example, while reusable immutable compilation
   already belongs to the core runtime. A transparent cache would need bounded

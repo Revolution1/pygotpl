@@ -29,3 +29,6 @@ the behavior and speed of the synchronous path.
 - Async iterable support unless separately approved.
 - Parallel evaluation of pipeline stages.
 - Implicit event-loop management in synchronous APIs.
+
+The [M3 async-runtime report](../reports/m3-async-runtime.md) owns parity,
+cancellation, writer, concurrency, and benchmark evidence.

@@ -1,4 +1,7 @@
-"""Template execution runtimes."""
+"""Internal template execution primitives; not a stable public API."""
+
+# pyright: reportUnusedImport=false
+# ruff: noqa: F401
 
 from .async_vm import AsyncTextWriter, render_program_async, render_program_async_to
 from .gofmt import FormatMode, GoFormatSpec, GoFormatter
@@ -16,24 +19,4 @@ from .values import (
     ValueAdapter,
 )
 
-__all__ = [
-    "INVALID",
-    "UNTYPED_NIL",
-    "AsyncTextWriter",
-    "ExecutionBudget",
-    "FormatMode",
-    "FunctionResult",
-    "GoFormatSpec",
-    "GoFormatter",
-    "GoPointer",
-    "GoSeq",
-    "GoSeq2",
-    "MissingKeyMode",
-    "SandboxPolicy",
-    "TypedMap",
-    "ValueAdapter",
-    "render_program",
-    "render_program_async",
-    "render_program_async_to",
-    "render_program_to",
-]
+__all__: list[str] = []

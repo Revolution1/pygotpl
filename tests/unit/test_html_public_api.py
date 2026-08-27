@@ -70,6 +70,17 @@ def test_html_template_with_source_is_immutable_and_reanalyzes_the_namespace() -
     )
 
 
+def test_html_template_with_functions_is_immutable_and_contextual() -> None:
+    parent = gotpl.HTMLTemplate("<p>{{value}}</p>", functions={"value": lambda: "safe"})
+    child = parent.with_functions({"value": lambda: "<&", "late": lambda: "<&"})
+
+    assert parent.render() == "<p>safe</p>"
+    assert child.render() == "<p>&lt;&amp;</p>"
+    assert child.render_source("<strong>{{late}}</strong>") == (
+        "<strong>&lt;&amp;</strong>"
+    )
+
+
 def test_html_template_rejects_incomplete_named_template_before_writing() -> None:
     template = gotpl.HTMLTemplate('{{define "fragment"}}<a{{end}}root')
     output = StringIO()

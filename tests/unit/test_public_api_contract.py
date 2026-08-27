@@ -3,11 +3,15 @@ from __future__ import annotations
 from inspect import signature
 
 import gotpl
+import gotpl.compile as compile_api
 import gotpl.funcs.helm as helm
 import gotpl.funcs.slim_sprig as slim_sprig
 import gotpl.funcs.sprig as sprig
 import gotpl.funcs.sprout as sprout
+import gotpl.html as html_api
+import gotpl.parse as parse_api
 import gotpl.pythonic as pythonic
+import gotpl.runtime as runtime_api
 
 ROOT_API = {
     "CSS",
@@ -85,6 +89,7 @@ def test_reusable_template_method_surfaces_are_frozen() -> None:
         "render_template_async_to",
         "render_template_to",
         "render_to",
+        "with_functions",
         "with_source",
     }
     assert all(callable(getattr(gotpl.Template, name)) for name in shared)
@@ -131,4 +136,27 @@ def test_function_library_public_apis_are_frozen() -> None:
         "__version__",
         "group",
         "registry",
+    }
+
+
+def test_internal_packages_do_not_advertise_wildcard_public_apis() -> None:
+    assert parse_api.__all__ == []
+    assert compile_api.__all__ == []
+    assert runtime_api.__all__ == []
+
+
+def test_html_subpackage_public_api_is_frozen() -> None:
+    assert set(html_api.__all__) == {
+        "CSS",
+        "HTML",
+        "HTMLAttr",
+        "HTMLTemplate",
+        "JS",
+        "JSStr",
+        "Srcset",
+        "URL",
+        "render_html",
+        "render_html_async",
+        "render_html_async_to",
+        "render_html_to",
     }

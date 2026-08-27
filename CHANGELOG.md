@@ -11,7 +11,8 @@ uses [Semantic Versioning](https://semver.org/) for stable releases.
   compilation, synchronous execution, and asynchronous execution.
 - Immutable single-source and multi-source template APIs, including named
   execution, streaming writers, dynamic source rendering, and reusable
-  cross-file namespaces.
+  cross-file namespaces. `with_functions()` derives a compiled template or
+  engine with added or replaced callbacks without mutating its parent.
 - Explicit Go-compatible and Python-native formatting modes.
 - Sprig 3.3.0, Slim-Sprig 3.0.0, Sprout 1.1.1, and Helm function profiles that
   remain separate from the default Go registry.
@@ -23,7 +24,8 @@ uses [Semantic Versioning](https://semver.org/) for stable releases.
   cross-engine benchmarks, reproducible builds, and compiler-free wheel smoke
   tests across supported local interpreters.
 - A task-oriented MkDocs Material site, generated API reference, strict local
-  documentation gate, and GitHub Pages deployment workflow.
+  documentation gate, a per-function built-in reference, and GitHub Pages
+  deployment workflow.
 
 ### Changed
 
@@ -34,18 +36,21 @@ uses [Semantic Versioning](https://semver.org/) for stable releases.
   under `gotpl._compat` instead of being published as separate distributions.
 - Contextual HTML convenience functions expose the same explicit typed options
   as their text equivalents.
+- Published `gotpl` metadata resolves `goduration` and `gotime` from PyPI with
+  compatible pre-2.0 version bounds; workspace sources remain development-only
+  overrides.
 
 ### Compatibility
 
 - Parser, runtime, HTML, Sprig, Slim-Sprig, Sprout, and Helm evidence is
-  classified in `docs/reports/m10-compatibility.md`.
+  classified in the
+  [M10 compatibility report](docs/reports/m10-compatibility.md).
 - Unqualified compatibility claims remain prohibited for areas whose complete
   upstream conformance suite has not yet been ported.
 
 ### Release blockers
 
 - Pass the hosted operating-system and interpreter matrix.
-- Publish and verify the GitHub Pages documentation site.
 - Sign and attest release artifacts.
 - Publish and verify the coordinated `gotpl`, `goduration`, and `gotime`
   distributions.

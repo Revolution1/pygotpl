@@ -156,19 +156,19 @@ dispatch cost to generic instructions.
 ## Reproduction
 
 ```console
-uv run python -m benchmarks.compare benchmarks/fixtures/text_render.json --samples 7
-uv run python -m benchmarks.compare benchmarks/fixtures/html_render.json --samples 7
-uv run python -m benchmarks.compare benchmarks/fixtures/sprig_render.json --samples 7
-uv run python -m benchmarks.history --samples 7
-uv run python -m benchmarks.parser_baseline --samples 7
-uv run python -m benchmarks.async_runtime --samples 7 --iterations 20000 --warmup 1000 --concurrency 32
-uv run python -m benchmarks.memory benchmarks/fixtures/text_render.json --samples 25
-uv run python -m benchmarks.memory benchmarks/fixtures/html_render.json --samples 25
-uv run python -m benchmarks.memory benchmarks/fixtures/named_large_render.json --samples 25
-uv run python -m benchmarks.jinja_compare --samples 7 --memory-samples 25
-uv run python -m benchmarks.python_engine_compare --samples 7 --memory-samples 25
-uv run python -m benchmarks.profile_suite --iterations 20000 --sampling-seconds 1 --sampling-interval 0.001 --allocation-iterations 25 --top 20
-uv run python -m benchmarks.sandbox --iterations 2000 --samples 7
+uv run --frozen python -m benchmarks.compare benchmarks/fixtures/text_render.json --samples 7
+uv run --frozen python -m benchmarks.compare benchmarks/fixtures/html_render.json --samples 7
+uv run --frozen python -m benchmarks.compare benchmarks/fixtures/sprig_render.json --samples 7
+uv run --frozen python -m benchmarks.history --samples 7
+uv run --frozen python -m benchmarks.parser_baseline --samples 7
+uv run --frozen python -m benchmarks.async_runtime --samples 7 --iterations 20000 --warmup 1000 --concurrency 32
+uv run --frozen python -m benchmarks.memory benchmarks/fixtures/text_render.json --samples 25
+uv run --frozen python -m benchmarks.memory benchmarks/fixtures/html_render.json --samples 25
+uv run --frozen python -m benchmarks.memory benchmarks/fixtures/named_large_render.json --samples 25
+uv run --frozen python -m benchmarks.jinja_compare --samples 7 --memory-samples 25
+uv run --frozen python -m benchmarks.python_engine_compare --samples 7 --memory-samples 25
+uv run --frozen python -m benchmarks.profile_suite --iterations 20000 --sampling-seconds 1 --sampling-interval 0.001 --allocation-iterations 25 --top 20
+uv run --frozen python -m benchmarks.sandbox --iterations 2000 --samples 7
 ```
 
 The complete methodology, stable-hardware rules, allocation caveats, and full

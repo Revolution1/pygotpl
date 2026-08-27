@@ -1,5 +1,9 @@
 # Semantic Surfaces
 
+For installation and runnable examples covering parsing, arithmetic, rounding,
+totals, and `timedelta`, start with the [goduration usage guide](../README.md).
+This page is the compact policy matrix for choosing and converting surfaces.
+
 `goduration` separates compatibility from Python convenience through explicit
 modules. Top-level exports alias `goduration.go`; no mutable mode exists.
 

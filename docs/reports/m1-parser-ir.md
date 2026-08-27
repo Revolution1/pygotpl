@@ -17,7 +17,7 @@ and compact IR passed the milestone acceptance gates recorded in
 ## Command
 
 ```console
-python -m benchmarks.parser_baseline
+uv run --frozen python -m benchmarks.parser_baseline
 ```
 
 ## Results

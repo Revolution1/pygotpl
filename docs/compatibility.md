@@ -2,21 +2,22 @@
 
 ## Reference Versions
 
-The initial target is:
+The pinned compatibility references are:
 
-- Go `1.27.x` for `text/template` and `html/template`.
+- Go `1.27.0` for `text/template`, `html/template`, `time`, and extracted
+  formatting primitives.
 - Sprig `v3.3.0`.
 - Slim-Sprig `v3.0.0` for its reduced function-map profile.
 - Sprout `v1.1.1` for opt-in registry compatibility.
 - Helm `v4.2.3` for opt-in chart-template compatibility.
 - Python `3.11` and newer.
 
-Exact patch versions used by CI will be pinned in the Go oracle module and the
-CI configuration. A reference upgrade is a deliberate compatibility change and
-requires a conformance report.
+CI and oracle scripts enforce these exact revisions. A reference upgrade is a
+deliberate compatibility change and requires a conformance report.
 
 Local source and test checkouts are pinned and managed as described in
-`docs/references.md`. They are ignored by Git and are not runtime dependencies.
+[Upstream references](references.md). They are ignored by Git and are not
+runtime dependencies.
 
 ## Meaning of Compatibility
 
@@ -59,6 +60,8 @@ Status values are `planned`, `partial`, `compatible`, and `documented-difference
 | Optimized backend decision | Python VM | compatible; AST backend not justified by M6 evidence | M6 |
 | Sprout registries | Sprout 1.1.1 | compatible M8 raw registry/group scope (234-function evidence ledger; safe generation excluded) | M8 |
 | Helm functions and example runtime | Helm 4.2.3 | compatible example scope (10 oracle integration cases) | M8 |
+| `goduration.go` | Go 1.27.0 `time.Duration` | compatible audited surface (74 standalone tests and checked-in oracle vectors) | M7 |
+| `gotime.go` | Go 1.27.0 `time` | partial overall; audited M7 surface passes 218 standalone tests | M7 |
 
 Sprig's only function-name intersection with the Go template built-ins is
 `slice`. This is the same intentional override installed by Sprig v3.3.0;
@@ -76,7 +79,8 @@ the [M10 compatibility report](reports/m10-compatibility.md).
   normal public attribute lookup, including dataclasses, named tuples, and
   properties.
 - A bound method used as a command is invoked with the command arguments.
-- Names beginning with an underscore are not exposed through field lookup.
+- Mapping keys may begin with an underscore. Private Python attributes beginning
+  with an underscore are not exposed through field lookup.
 - Sprout `hasField` rejects Python maps, scalars, and containers as non-struct
   values, then checks public attributes on an ordinary caller-provided Python
   object. Python class layout is not represented as Go reflection metadata.
@@ -189,7 +193,7 @@ no custom lookup adapter, no data-callable `call` built-in, and conservative
 per-render budgets. `ExecutionBudget` accounts for output characters, range
 items, active associated-template depth, and function or method calls. These
 limits cover VM-visible work only and are not hard CPU, wall-time, or heap
-limits. The operational boundary is documented in `docs/sandbox.md`.
+limits. The operational boundary is documented in the [Sandbox guide](sandbox.md).
 
 ## Upstream Test Material
 
@@ -197,7 +201,7 @@ The project uses Apache-2.0 for original work and retains the applicable Go BSD
 and Sprig-family MIT notices in `THIRD_PARTY_NOTICES.md`. Oracle fixtures contain
 independently authored inputs and recorded outputs with pinned source metadata.
 Copyrightable upstream expression requires a specific review and notice under
-`docs/licensing.md` before inclusion.
+[Licensing and attribution](licensing.md) before inclusion.
 
 All compatibility implementation follows a test-first workflow: establish a
 failing fixture from the reference behavior before changing runtime code.

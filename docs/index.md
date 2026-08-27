@@ -11,30 +11,17 @@ result = gotpl.render("Hello {{.Name}}", {"Name": "Gopher"})
 assert result == "Hello Gopher"
 ```
 
-## Why gotpl?
-
-- Run existing Go-style templates without embedding Go or starting a
-  subprocess.
-- Compile a `Template` once and safely reuse it across threads or asyncio
-  tasks.
-- Await Python functions directly from a template with `render_async()`.
-- Render HTML with contextual escaping compatible with Go's `html/template`.
-- Add function libraries explicitly, without changing the default Go
-  namespace.
-- Choose Go-compatible formatting by default or opt into Python-native value
-  formatting.
-
 ## Choose an entry point
 
 | Goal | Start with |
 | --- | --- |
-| Render a string once | `gotpl.render()` |
-| Reuse a compiled text template | `gotpl.Template` |
-| Render context-aware HTML | `gotpl.render_html()` or `gotpl.HTMLTemplate` |
-| Call async Python functions | `gotpl.render_async()` or `Template.render_async()` |
-| Compile associated files | `Template.from_sources()` |
-| Render several named files | `TemplateEngine.from_sources()` |
-| Add Sprig-compatible functions | `gotpl.funcs.sprig` |
+| Render a string once | [`gotpl.render()`](getting-started.md#render-a-template) |
+| Reuse a compiled text template | [`gotpl.Template`](getting-started.md#compile-once-render-many-times) |
+| Render context-aware HTML | [`gotpl.render_html()` or `gotpl.HTMLTemplate`](html.md) |
+| Call async Python functions | [`gotpl.render_async()` or `gotpl.Template.render_async()`](async.md) |
+| Compile associated files | [`gotpl.Template.from_sources()`](helm.md#core-cross-file-execution) |
+| Render several named files | [`gotpl.TemplateEngine.from_sources()`](helm.md#batch-rendering) |
+| Add Sprig-compatible functions | [`gotpl.funcs.sprig`](function-libraries.md#sprig) |
 
 [Install gotpl and render your first template](getting-started.md){ .md-button .md-button--primary }
 [Browse the API](api.md){ .md-button }

@@ -3,7 +3,9 @@
 > Historical milestone: M10 decision D012 retained the `goduration` and
 > `gotime` extractions but reintegrated the non-product `gofmt` and `goregexp`
 > distributions under `gotpl._compat`. Completed checkboxes below record the M7
-> state rather than the current package layout.
+> state rather than the current package layout. Use the current
+> [architecture](../architecture.md) and [D012](../implementation-decisions.md#d012-publish-gotpl-and-reintegrate-non-product-compatibility-leaves)
+> for new work.
 
 ## Outcome
 

@@ -9,6 +9,7 @@ registries; `hermetic` builds 227 names from 14 registries.
 The complete machine-readable inventory is
 `docs/reports/sprout-v1.1.1-inventory.json`. It includes:
 
+- schema version 1 for explicit consumer compatibility;
 - every registry name and UID;
 - sorted raw function names;
 - original-to-alias mappings;

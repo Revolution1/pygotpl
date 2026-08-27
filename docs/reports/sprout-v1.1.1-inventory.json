@@ -1,4 +1,5 @@
 {
+  "schema_version": 1,
   "reference": "github.com/go-sprout/sprout",
   "version": "v1.1.1",
   "registries": {

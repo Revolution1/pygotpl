@@ -20,8 +20,8 @@ recorded in [`reports/m0-license-review.md`](reports/m0-license-review.md).
 
 ## Behavioral Compatibility Work
 
-Go, Sprig, Slim-Sprig, and Sprout implementations and tests may be used to
-identify observable behavior, edge cases, and error semantics. Contributors
+Go, Sprig, Slim-Sprig, Sprout, and Helm implementations and tests may be used
+to identify observable behavior, edge cases, and error semantics. Contributors
 must express that behavior in pygotpl's own fixture schema or Python test
 structure. Do not mechanically translate or copy upstream source or test
 bodies.
@@ -52,6 +52,7 @@ artifacts follow the same rule and must document their generator and source.
 | `sprig` and Sprig material | MIT | Retain the Masterminds notice in `THIRD_PARTY_NOTICES.md`. |
 | Slim-Sprig material | MIT | Retain the Masterminds notice in `THIRD_PARTY_NOTICES.md`. |
 | Sprout material | MIT | Retain the notice shipped by the pinned Sprout revision in `THIRD_PARTY_NOTICES.md`. |
+| Helm material | Apache-2.0 | No Helm expression is currently distributed; copied or adapted material requires a specific attribution review. |
 
 These permissive upstream licenses allow modification and redistribution when
 their notice conditions are met. They do not determine the license for

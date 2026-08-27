@@ -4,6 +4,10 @@ Milestones are acceptance-gated. Dates are planning estimates, not completion
 criteria. Work should remain inside the active milestone unless it removes a
 documented prerequisite.
 
+For current release blockers, use the
+[M10 release-readiness report](../reports/m10-release-readiness.md); completed
+milestone pages remain historical scope and evidence ledgers.
+
 | Milestone | Outcome | Estimate | Status |
 | --- | --- | --- | --- |
 | [M0](m0-foundation.md) | Repository, contracts, oracle, and benchmark foundation | 1 week | awaiting hosted CI evidence |

@@ -10,9 +10,11 @@ add a Python-AST backend at this time.
 This report is the completed August 26, 2026 Go-comparison baseline. The
 milestone was later reopened for a separate Jinja comparison, broader profiling,
 and optional native-accelerator feasibility work. Those follow-up results are
-recorded in `m6-python-engine-comparison.md`, `m6-profiling.md`, and
-`m6-native-accelerator-decision.md` rather than rewriting this baseline.
-The canonical combined view is `m6-complete-performance-report.md`.
+recorded in the [Python-engine comparison](m6-python-engine-comparison.md),
+[profiling report](m6-profiling.md), and
+[native-accelerator decision](m6-native-accelerator-decision.md) rather than
+rewriting this baseline. The canonical combined view is the
+[complete performance report](m6-complete-performance-report.md).
 
 The final implementation passes the complete compatibility, async, contextual
 HTML security, type, formatting, generated-artifact, and Go-oracle gates.
@@ -164,13 +166,11 @@ hardware and statistically credible samples.
 From the repository root with the locked environments installed:
 
 ```console
-python -m benchmarks.history --samples 7 --output benchmark-history.json
-python -m benchmarks.parser_baseline --samples 7 --output parser-history.json
-python -m benchmarks.async_runtime --samples 7 --iterations 20000 --warmup 1000 --concurrency 32 --output async-history.json
-python -m benchmarks.memory benchmarks/fixtures/html_render.json --samples 25 --output memory-html.json
-python -m benchmarks.backend_feasibility benchmarks/fixtures/html_render.json
+uv run --python 3.14 --frozen python -m benchmarks.history --samples 7 --output benchmark-history.json
+uv run --python 3.14 --frozen python -m benchmarks.parser_baseline --samples 7 --output parser-history.json
+uv run --python 3.14 --frozen python -m benchmarks.async_runtime --samples 7 --iterations 20000 --warmup 1000 --concurrency 32 --output async-history.json
+uv run --python 3.14 --frozen python -m benchmarks.memory benchmarks/fixtures/html_render.json --samples 25 --output memory-html.json
+uv run --python 3.14 --frozen python -m benchmarks.backend_feasibility benchmarks/fixtures/html_render.json
 ```
 
-Use `uv run --python 3.14 --frozen` before each Python command to reproduce the
-reported interpreter and lockfile selection. The complete project gate is
-`./scripts/check.sh`.
+The complete project gate is `./scripts/check.sh`.

@@ -38,6 +38,19 @@ def test_template_engine_derives_a_reusable_dynamic_source() -> None:
         engine.render({"main.txt": "two"})
 
 
+def test_template_engine_with_functions_returns_a_new_engine() -> None:
+    def decorate(value: object) -> str:
+        return f"<{value}>"
+
+    parent = TemplateEngine.from_sources(
+        {"page.tpl": "{{decorate .}}"}, functions={"decorate": str}
+    )
+    child = parent.with_functions({"decorate": decorate})
+
+    assert parent.render({"page.tpl": "value"}) == {"page.tpl": "value"}
+    assert child.render({"page.tpl": "value"}) == {"page.tpl": "<value>"}
+
+
 @pytest.mark.asyncio
 async def test_template_engine_awaits_functions_across_source_contexts() -> None:
     async def identify(value: str) -> str:

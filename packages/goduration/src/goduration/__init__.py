@@ -28,6 +28,7 @@ __all__ = [
     "SECOND",
     "Duration",
     "DurationParseError",
+    "__version__",
 ]
 
 __version__ = "0.0.0"

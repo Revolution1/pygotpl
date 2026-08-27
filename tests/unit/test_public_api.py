@@ -103,6 +103,37 @@ def test_with_source_returns_a_reusable_immutable_template_association() -> None
         parent.render_template("main.tpl", "three")
 
 
+def test_with_functions_returns_an_immutable_extended_registry() -> None:
+    def decorate(value: object) -> str:
+        return f"<{value}>"
+
+    def upper(value: object) -> str:
+        return str(value).upper()
+
+    parent = gotpl.Template("{{decorate .}}", functions={"decorate": str})
+    child = parent.with_functions(
+        {
+            "decorate": decorate,
+            "upper": upper,
+        }
+    )
+
+    assert parent.render("value") == "value"
+    assert child.render("value") == "<value>"
+    assert child.render_source("{{upper .}}", "value") == "VALUE"
+    assert "upper" not in parent.functions
+
+
+def test_with_functions_enforces_extension_and_sandbox_collisions() -> None:
+    extended = gotpl.Template("ok", extensions=gotpl.PythonExtensions(re_match=True))
+    with pytest.raises(ValueError, match="extension function collision"):
+        extended.with_functions({"reMatch": lambda: False})
+
+    sandboxed = gotpl.Template("ok", sandbox=gotpl.SandboxPolicy.strict())
+    with pytest.raises(gotpl.SandboxViolationError, match="registered functions"):
+        sandboxed.with_functions({"late": lambda: "late"})
+
+
 def test_template_rejects_an_unknown_named_template() -> None:
     template = gotpl.Template("root", name="root")
 

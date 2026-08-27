@@ -32,3 +32,6 @@ plus the pinned Slim-Sprig v3.0.0 registry profile.
 
 - Project extras in the Sprig namespace.
 - Silent behavior changes intended to make Sprig more Pythonic.
+
+The [M4 progress report](../reports/m4-sprig-progress.md) links the complete
+function ledger, differential fixtures, security profiles, and benchmarks.

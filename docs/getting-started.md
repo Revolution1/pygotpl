@@ -7,18 +7,27 @@ compiler, a subprocess, or a compiled extension.
 
 ## Installation
 
-gotpl has not yet published its first stable package-index release. Install all
-three workspace distributions from a checkout:
-
 ```console
-python -m pip install ./packages/goduration ./packages/gotime .
+python -m pip install gotpl
 ```
 
+This installs compatible `goduration` and `gotime` releases automatically.
 Optional capabilities are installed only when an application needs them:
 
 ```console
-python -m pip install './packages/goduration' './packages/gotime' '.[crypto]'
-python -m pip install './packages/goduration' './packages/gotime' '.[helm]'
+python -m pip install "gotpl[crypto]"
+python -m pip install "gotpl[helm]"
+```
+
+Installing an extra makes its dependencies available; it does not implicitly
+add functions to a template. Function registries remain explicit.
+
+Install `goduration` or `gotime` directly only when using those standalone APIs
+without the template engine:
+
+```console
+python -m pip install goduration
+python -m pip install gotime
 ```
 
 ## Render a template
@@ -36,6 +45,13 @@ assert message == "Admin: Ada"
 
 Mapping keys and public Python attributes can be selected with Go field syntax.
 Use exported-looking names when sharing a template with a Go application.
+
+!!! important "Rendering HTML"
+
+    `render()` produces text and does not apply contextual HTML escaping. Use
+    `render_html()` or `HTMLTemplate` for HTML output; the
+    [HTML guide](html.md) contains a runnable escaping example and explains the
+    trusted-content boundary.
 
 ## Compile once, render many times
 
@@ -71,5 +87,46 @@ template = Template("{{title .}}", functions={"title": title})
 assert template.render("hello gopher") == "Hello Gopher"
 ```
 
-Continue with the [template language guide](template-language.md),
-[async rendering](async.md), or [function libraries](function-libraries.md).
+### Extend an already compiled template
+
+Templates stay immutable. Use `with_functions()` to derive a template with an
+added or replaced registry while reusing its compiled programs and associated
+template namespace:
+
+```python
+from gotpl import Template
+
+plain = Template("{{decorate .}}", functions={"decorate": str})
+loud = plain.with_functions(
+    {
+        "decorate": lambda value: f"<{value}>",
+        "upper": lambda value: str(value).upper(),
+    }
+)
+
+assert plain.render("hello") == "hello"
+assert loud.render("hello") == "<hello>"
+assert loud.render_source("{{upper .}}", "hello") == "HELLO"
+```
+
+An original source cannot refer to an unknown function and then add it after
+construction: Go-compatible semantic validation rejects the unknown name while
+compiling. Register those names in the constructor. Newly added names are
+available to later `with_source()` and `render_source()` calls. The same
+`with_functions()` method is available on `HTMLTemplate` and `TemplateEngine`;
+HTML derivatives rerun contextual analysis.
+
+## Next steps
+
+- Learn pipelines, control flow, variables, and built-ins in the
+  [template language guide](template-language.md).
+- Await Python callbacks and write output with backpressure in
+  [async rendering](async.md).
+- Add Sprig, Slim-Sprig, Sprout, Helm, or Python-native functions through
+  [explicit function libraries](function-libraries.md).
+- Compile associated files and batch-render named roots in the
+  [multi-file guide](helm.md#core-cross-file-execution).
+- Set policy and resource limits for untrusted input in the
+  [sandbox guide](sandbox.md).
+- Browse construction options and the complete public surface in the
+  [API overview](api.md).

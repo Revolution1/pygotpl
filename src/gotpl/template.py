@@ -246,6 +246,48 @@ class Template:
             sandbox=self.sandbox,
         )
 
+    def with_functions(
+        self,
+        functions: Mapping[str, Callable[..., object]],
+    ) -> Self:
+        """Return a template with added or replaced registered functions.
+
+        Existing compiled programs and associated templates are reused. Newly
+        added names are available to sources compiled later through
+        :meth:`with_source` or :meth:`render_source`.
+        """
+
+        extension_functions = self.extensions.function_map()
+        collisions = sorted(set(functions) & set(extension_functions))
+        if collisions:
+            raise ValueError("extension function collision: " + ", ".join(collisions))
+        registry = _validated_functions({**self.functions, **functions})
+        if self.sandbox is not None:
+            self.sandbox.validate_functions(registry)
+
+        template = object.__new__(type(self))
+        object.__setattr__(template, "source", self.source)
+        object.__setattr__(template, "name", self.name)
+        object.__setattr__(template, "delimiters", self.delimiters)
+        object.__setattr__(template, "functions", registry)
+        object.__setattr__(template, "missing_key", self.missing_key)
+        object.__setattr__(template, "format_mode", self.format_mode)
+        object.__setattr__(template, "sandbox", self.sandbox)
+        object.__setattr__(template, "budget", self.budget)
+        object.__setattr__(template, "extensions", self.extensions)
+        object.__setattr__(template, "_program", self._program)
+        object.__setattr__(template, "_namespace", self._namespace)
+        object.__setattr__(
+            template,
+            "_runtime_functions",
+            _execution_function_registry(
+                self.format_mode,
+                registry,
+                sandbox=self.sandbox,
+            ),
+        )
+        return template
+
     def with_source(self, source: str, *, name: str = "template") -> Self:
         """Return a template whose new source inherits this template namespace."""
 

@@ -1,6 +1,7 @@
 # Go 1.27 Time API Scope
 
-This document is the implementation ledger for `gotime`. The compatibility
+This document is the implementation and proof ledger for `gotime`, not its
+task-oriented usage guide. The compatibility
 reference is the pinned Go 1.27.0 checkout at `.references/go/src/time`.
 Implementation work starts from the upstream implementation and tests; the
 current pygotpl date helpers are migration inputs, not the definition of a
@@ -19,6 +20,13 @@ conversion is always explicit. Top-level exports default to `gotime.go`.
 
 Python names are idiomatic snake_case. Go names shown below identify behavior,
 not a requirement to expose non-Pythonic method spelling.
+
+`Implemented` means the named API exists with direct evidence. `Partial` and
+`pending` qualify the strength or platform breadth of conformance evidence;
+they do not silently broaden the public compatibility claim. See the package
+README for runnable use and the
+[M7 extraction report](https://github.com/Revolution1/pygotpl/blob/main/docs/reports/m7-gotime-extraction.md)
+for measured gate results.
 
 ## Value and Calendar API
 
@@ -100,7 +108,7 @@ mistaken for calendar APIs.
 - Deterministic tests use `ManualClock` and injected async sleepers. A small,
   tolerance-aware system-clock integration suite covers real scheduling.
 
-## Delivery Slices
+## Completed Delivery Slices
 
 1. Complete value, calendar, location, comparison, Unix, and duration APIs.
 2. Extract and complete Go layout formatting and parsing against
@@ -112,6 +120,7 @@ mistaken for calendar APIs.
 6. Run the full upstream-derived matrix, property tests, independent coverage,
    strict typing, wheel isolation, and performance gates.
 
-The package is not complete until every row is implemented, explicitly
-deferred with rationale, or declared inapplicable because Go's construct has no
-honest Python representation. A small pygotpl-facing subset is not sufficient.
+All six implementation slices above are delivered for the audited M7 surface.
+An unqualified complete-Go-`time` claim remains withheld until every pending
+proof qualifier is closed, explicitly deferred with rationale, or declared
+inapplicable because Go's construct has no honest Python representation.

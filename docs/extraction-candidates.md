@@ -12,10 +12,10 @@ versions, typing quality, and differential evidence. A new package must be
 useful outside template rendering and must not force pygotpl users to install
 unrelated dependencies.
 
-Package names in this document are provisional until package-index availability
-and ownership are reviewed. M7 authorizes an in-repository workspace
-extraction, but does not authorize a repository split or an externally
-published release by itself.
+`goduration` and `gotime` are the selected distribution names and are declared
+as bounded PyPI dependencies of `gotpl`. The completed M7 in-repository
+extraction does not by itself authorize a repository split; external
+publication still follows the coordinated release gates.
 
 ## Incubation Decision
 
@@ -59,7 +59,7 @@ modules may be imported only by the explicitly allowed gotpl owners recorded in
 | `gofmt` | `gotpl._compat.gofmt`; adapter in `gotpl.runtime.gofmt` | M10 package review | reintegrated-private |
 | `goregexp` | `gotpl._compat.goregexp`; adapter in `gotpl.funcs.sprig.regex` | M10 package review | reintegrated-private |
 
-`gotime` and `goduration` are candidates for independently useful products.
+`gotime` and `goduration` are retained independently useful products.
 `gofmt` and `goregexp` are not standalone candidates. Their compatibility,
 generated-data, security, and performance boundaries remain directly tested,
 but they no longer own distribution metadata or a public release lifecycle.
@@ -125,8 +125,8 @@ or coercion policy.
 
 ## Candidate: gotime
 
-Current locations: `gotpl.funcs.sprig._gotime`, `gotpl.funcs.sprig._tzfile`, and
-`gotpl.funcs.sprig.dates`.
+Current implementation: `packages/gotime`, with template-facing coercion and
+error adapters in `gotpl.funcs.sprig.dates`.
 
 Potential scope:
 

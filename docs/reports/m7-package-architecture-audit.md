@@ -1,5 +1,11 @@
 # M7 Package Architecture Acceptance Audit
 
+> Historical evidence: this audit records the five-distribution M7 state. M10
+> decision D012 later retained `gotpl`, `goduration`, and `gotime`, reintegrated
+> `gofmt` and `goregexp` under private `gotpl._compat`, and reduced publication
+> to three distributions. Use the current [architecture](../architecture.md)
+> for implementation and release work.
+
 ## Outcome
 
 M7 is complete. The repository is a coordinated uv workspace with five

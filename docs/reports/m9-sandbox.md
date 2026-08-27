@@ -37,7 +37,7 @@ rejection, strict-policy admission, and registry isolation.
 The implementation does not claim process isolation. CPU-bound callbacks,
 blocking native code, large allocations inside one admitted function, and
 Python regex backtracking require a resource-limited worker. This boundary and
-deployment guidance are in `docs/sandbox.md` and decision D011.
+deployment guidance are in the [sandbox guide](../sandbox.md) and decision D011.
 
 ## Performance Evidence
 
@@ -56,7 +56,7 @@ measured overhead is confined to the explicitly selected policy. Reproduce
 with:
 
 ```console
-uv run python -m benchmarks.sandbox --iterations 2000 --samples 7
+uv run --frozen python -m benchmarks.sandbox --iterations 2000 --samples 7
 ```
 
 Results are machine-local evidence rather than a cross-machine regression
@@ -85,7 +85,7 @@ The local M9 gate on CPython 3.14.7 completed with:
 - all three workspace wheels built offline and installed together in an empty
   environment with only mandatory timezone dependencies; and
 - the installed wheel exercising the strict policy, execution budget, Python
-  extension, and `gotpl.runtime.engine.TemplateEngine` path without optional
+  extension, and package-root `gotpl.TemplateEngine` path without optional
   extras.
 
 The configured multi-interpreter and multi-platform CI matrix remains the

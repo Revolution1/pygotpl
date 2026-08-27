@@ -2,12 +2,14 @@
 
 ## Project Mission
 
-The `pygotpl` repository publishes `gotpl`, a pure Python implementation of Go's `text/template` and
-`html/template`, with compatibility for Sprig v3. Runtime use must not require
-Go, a subprocess, or a compiled extension.
+The `pygotpl` repository publishes `gotpl`, a pure Python implementation of
+Go's `text/template` and `html/template`, plus the standalone `goduration` and
+`gotime` value packages. Runtime use must not require Go, a subprocess, or a
+compiled extension.
 
-Slim-Sprig, Sprout, Helm, and other ecosystem layers are explicit opt-in
-packages. They must not alter the default Go or Sprig compatibility paths.
+Sprig, Slim-Sprig, Sprout, Helm, and other ecosystem layers are explicit
+opt-in registries in `gotpl`. They must not alter the default Go compatibility
+path or one another's named compatibility paths.
 
 Correctness means observable compatibility with the pinned Go and Sprig
 references. Similar-looking behavior is not sufficient.
@@ -18,10 +20,12 @@ Use these sources in descending order of authority:
 
 1. The pinned Go standard-library source and tests.
 2. The pinned Sprig source and tests.
-3. The pinned Slim-Sprig or Sprout source and tests for their named profiles.
-4. The repository's differential conformance fixtures.
-5. The public compatibility contract in `docs/compatibility.md`.
-6. Project documentation and examples.
+3. The pinned Slim-Sprig, Sprout, or Helm source and tests for their named
+   profiles.
+4. The pinned Go `time` source and tests for `goduration.go` and `gotime.go`.
+5. The repository's differential conformance fixtures.
+6. The public compatibility contract in `docs/compatibility.md`.
+7. Project documentation and examples.
 
 When sources disagree, preserve the reference implementation's observable
 behavior and document the decision. Never silently normalize a Go behavior into

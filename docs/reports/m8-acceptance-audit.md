@@ -1,5 +1,10 @@
 # M8 Acceptance Audit
 
+> Historical architecture note: this audit predates M10 decision D012. Its
+> five-wheel and standalone `goregexp` evidence remains valid for M8, while the
+> current release has three distributions and keeps the regex engine private
+> under `gotpl._compat`.
+
 ## Outcome
 
 M8 is complete for its declared ecosystem scope. Sprout raw registries and
@@ -10,7 +15,7 @@ performance evidence.
 Sprout's optional generated safe-function feature is an explicit excluded
 surface under D010. The Helm chart runtime remains an example; reusable
 functions live in `gotpl.funcs.helm`, and reusable cross-file execution lives in
-`gotpl.runtime.engine`.
+package-root `gotpl.TemplateEngine`.
 
 ## Deliverable Evidence
 
@@ -63,7 +68,7 @@ while the package job deliberately installs no optional extras.
 ./scripts/check.sh
 
 uv build --offline --all-packages --wheel
-python -m benchmarks.helm_runtime \
+uv run --frozen python -m benchmarks.helm_runtime \
   --samples 7 --iterations 500 --memory-samples 25 \
   --profile-iterations 500 --top 20
 go -C tools/helm_oracle test -run '^$' \

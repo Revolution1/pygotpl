@@ -5,11 +5,12 @@
 The repository is named `pygotpl`; the distribution and Python import package
 are named `gotpl`.
 
-From a checkout:
-
 ```console
-python -m pip install ./packages/goduration ./packages/gotime .
+python -m pip install gotpl
 ```
+
+The distribution installs compatible `goduration` and `gotime` versions as
+dependencies; application code does not need to install them separately.
 
 Application code imports `gotpl`:
 
@@ -74,8 +75,18 @@ awaitable; use `render_async` for mixed synchronous and asynchronous callbacks.
 
 ## Associated and Cross-File Templates
 
-Use `Template.from_sources` when Go code would assemble associated templates
-with `ParseFiles`, `ParseFS`, or repeated parsing:
+| Go operation | gotpl replacement |
+| --- | --- |
+| `template.New(...).Parse(...)` | `Template(...)` |
+| `ParseFiles`, `ParseFS`, or repeated `Parse` | Application loading plus `Template.from_sources(...)` |
+| `ExecuteTemplate(writer, name, data)` | `render_template_to(name, writer, data)` |
+| `Clone()` followed by `Parse()` | Immutable `with_source(...)` |
+| Execute several named roots with separate data | `TemplateEngine.from_sources(...).render(contexts)` |
+
+Use `Template.from_sources()` for one associated namespace; a runnable
+[multi-source example](helm.md#core-cross-file-execution) shows selecting a root
+with `render_template()`. `TemplateEngine` is the additional batch API for
+rendering several roots with independent contexts:
 
 ```python
 from gotpl import TemplateEngine
@@ -96,29 +107,49 @@ assert engine.render(
 ) == {"first.txt": "first:1", "second.txt": "second:2"}
 ```
 
-`with_source` derives a new immutable namespace. `render_source` and
-`render_source_async` compile dynamic source against existing definitions.
+`with_source()` derives a new immutable namespace. `render_source()` and
+`render_source_async()` compile dynamic source against existing definitions.
 These are the core primitives used by the miniature Helm example and intended
 for gomplate-like runtimes.
 
 ## Missing Keys and Formatting
 
-Go-compatible formatting is the default. Select missing-key behavior at
-construction:
+Go-compatible formatting is the default. Missing-key modes differ only when a
+lookup is absent, so test the selected policy explicitly during migration:
 
 ```python
-Template("{{.missing}}", missing_key="default")
-Template("{{.missing}}", missing_key="zero")
-Template("{{.missing}}", missing_key="error")
+from gotpl import Template, TemplateExecutionError, TypedMap
+
+assert Template("{{.missing}}").render({}) == "<no value>"
+
+typed = TypedMap({}, zero=0)
+assert Template("{{.missing}}", missing_key="zero").render(typed) == "0"
+
+strict = Template("{{.missing}}", missing_key="error")
+try:
+    strict.render({})
+except TemplateExecutionError as error:
+    assert "missing" in str(error)
+else:
+    raise AssertionError("missing key did not fail")
 ```
 
 `format_mode="python"` preserves Go template syntax and `printf` verbs but uses
 Python representations and type names for the documented output paths. It is
 an explicit Python extension, not the default compatibility profile.
 
+```python
+from gotpl import render
+
+assert render("{{.}}", True) == "true"
+assert render("{{.}}", True, format_mode="python") == "True"
+```
+
 Use public `TypedMap`, `GoSeq`, `GoSeq2`, `GoPointer`, `GoFormatter`, and
 `FunctionResult` adapters where Python values need otherwise unavailable Go
-type or result metadata.
+type or result metadata. The [API overview](api.md#values-and-formatting)
+describes their individual contracts; do not add an adapter unless the input
+actually needs that missing metadata.
 
 ## Sprig and Ecosystem Functions
 
@@ -160,11 +191,12 @@ Go compatibility does not imply a sandbox. Apply `SandboxPolicy.strict()` and
 an `ExecutionBudget` explicitly, start from a minimal function map, and isolate
 hostile workloads in an operating-system-limited worker. Contextual HTML
 escaping, capability sandboxing, and process isolation are separate boundaries.
-See `docs/sandbox.md` for the complete model.
+See the [sandbox guide](sandbox.md) for the complete model.
 
 ## Known Compatibility Boundaries
 
-Consult `docs/compatibility.md` before migration. It records measured fixture
-counts, Python adaptation rules, intentional extensions, and documented
+Consult the [compatibility contract](compatibility.md) before migration. It
+records measured fixture counts, Python adaptation rules, intentional
+extensions, and documented
 differences. Do not infer complete Go API compatibility from matching template
 syntax; the public claim applies only to areas classified by that matrix.

@@ -52,6 +52,14 @@ class TemplateEngine:
 
         return type(self)(self.template.with_source(source, name=name))
 
+    def with_functions(
+        self,
+        functions: Mapping[str, Callable[..., object]],
+    ) -> Self:
+        """Return an engine with added or replaced registered functions."""
+
+        return type(self)(self.template.with_functions(functions))
+
     def render(self, contexts: Mapping[str, object]) -> dict[str, str]:
         """Render each named source using its corresponding context."""
 

@@ -11,8 +11,9 @@ Python versions and platforms follow [the support policy](docs/support.md).
 
 ## Reporting a Vulnerability
 
-Report suspected vulnerabilities through GitHub's private vulnerability
-reporting flow for `Revolution1/pygotpl`. Include:
+Report suspected vulnerabilities through
+[GitHub private vulnerability reporting](https://github.com/Revolution1/pygotpl/security/advisories/new).
+Include:
 
 - the affected version or commit;
 - the relevant template, data shape, function registry, and policy;

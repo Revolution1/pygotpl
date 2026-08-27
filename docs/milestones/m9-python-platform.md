@@ -65,3 +65,7 @@ for untrusted templates or patterns and are disabled by the strict sandbox.
 - Adding a template-controlled feature-flag function.
 - Replacing Sprig regex functions with Python `re` behavior.
 - Redesigning or moving the workspace packages established in M7.
+
+Implementation and security evidence is in the
+[M9 sandbox report](../reports/m9-sandbox.md). The platform-install checkbox
+remains open with the shared hosted-matrix gate tracked by M10.

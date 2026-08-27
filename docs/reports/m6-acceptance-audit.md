@@ -13,9 +13,9 @@ comprehensive profiling, and optional native-accelerator feasibility. That
 follow-up scope is now complete and is audited below without rewriting the
 historical measurements in the original sections.
 
-The canonical reader-facing synthesis is
-`m6-complete-performance-report.md`; this audit remains the gate-by-gate
-evidence map.
+The canonical reader-facing synthesis is the
+[complete performance report](m6-complete-performance-report.md); this audit
+remains the gate-by-gate evidence map.
 
 ## Reopened-Scope Audit
 

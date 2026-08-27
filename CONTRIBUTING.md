@@ -2,10 +2,13 @@
 
 ## Before Starting
 
-Read `AGENTS.md`, the active milestone, and the relevant architecture,
-compatibility, testing, performance, dependency, and reference documents.
+Read [AGENTS.md](AGENTS.md), the active milestone, and the relevant
+[architecture](docs/architecture.md), [compatibility](docs/compatibility.md),
+[testing](docs/testing.md), [performance](docs/performance.md),
+[dependency](docs/dependencies.md), and [reference](docs/references.md)
+documents.
 
-Read `docs/licensing.md` before using upstream material. Do not mechanically
+Read [the licensing policy](docs/licensing.md) before using upstream material. Do not mechanically
 copy upstream source or tests. Copyrightable upstream expression or substantial
 data requires a specific notice and review. Local upstream checkouts are
 created with `./scripts/sync_references.sh` and remain ignored by Git.
@@ -21,14 +24,20 @@ Install a current uv release satisfying `pyproject.toml`, Go 1.27.0, and a
 supported Python version. Python 3.14 is the primary development runtime.
 
 ```console
-uv sync --frozen --all-groups
+uv sync --frozen --all-packages --extra all --all-groups
+```
+
+Run focused tests while developing. Compatibility work and the complete local
+gate also require the ignored pinned reference checkouts:
+
+```console
 ./scripts/sync_references.sh
 ./scripts/check.sh
 ```
 
-Preview documentation with `uv run --group docs mkdocs serve`. The full check
-builds it with `--strict`, so broken internal links and unresolved API objects
-fail CI.
+Preview documentation with `uv run --frozen --group docs mkdocs serve`. The
+full check builds it with `--strict`, so broken internal links and unresolved
+API objects fail CI.
 
 ## Test-Driven Workflow
 
@@ -52,8 +61,9 @@ cancellation, concurrency, exceptions, writers, and value adaptation.
 - Do not reduce coverage or weaken strict type checking.
 - Add benchmarks for hot-path changes or performance claims.
 - Update compatibility and milestone documents with behavior changes.
-- Keep runtime dependencies at zero unless an architecture decision approves
-  one.
+- Keep runtime dependencies minimal, lazy where optional, and justified by an
+  architecture decision; update every affected distribution's metadata and
+  lock file together.
 - Keep public APIs small, typed, and documented.
 
 ## Pull Requests

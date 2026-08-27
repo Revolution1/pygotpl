@@ -64,8 +64,8 @@ optimization and release-wide compatibility work stays assigned to M6 and M10.
 Run with:
 
 ```console
-python -m benchmarks.compare benchmarks/fixtures/literal.json
-python -m benchmarks.compare benchmarks/fixtures/text_render.json
+uv run --frozen python -m benchmarks.compare benchmarks/fixtures/literal.json
+uv run --frozen python -m benchmarks.compare benchmarks/fixtures/text_render.json
 ```
 
 | Case | Python ns/op | Go ns/op | Python/Go |
@@ -78,8 +78,9 @@ and 848 bytes per control-flow render. Python allocation counts are not yet
 recorded. Results are directional measurements from one local run and are not
 release thresholds.
 
-## Remaining M2 Gates
+## Later Closure
 
-- Complete the Go built-in function behavior and error matrix.
-- Expand the required synchronous conformance matrix.
-- Produce the final optimized performance report.
+The later M2 acceptance audit completed the scoped built-in and synchronous
+conformance matrices. M6 produced the final optimized performance and profiling
+reports. Broader full-upstream proof remains classified separately in the
+public compatibility contract rather than as an untracked M2 gate.
