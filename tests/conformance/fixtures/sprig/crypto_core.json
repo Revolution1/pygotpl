@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/crypto-core",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "crypto.go and crypto_test.go",
+    "behavior": "Password derivation vectors, AES pipeline order, empty AES values, and unknown key types have deterministic Sprig results.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "crypto-core",
+    "template": "{{derivePassword 1 \"long\" \"password\" \"user\" \"example.com\"}}|{{derivePassword 1 \"missing\" \"password\" \"user\" \"example.com\"}}|{{\"plaintext\" | encryptAES \"secretkey\" | decryptAES \"secretkey\"}}|{{encryptAES \"secretkey\" \"\"}}/{{decryptAES \"secretkey\" \"\"}}|{{genPrivateKey \"bad\"}}",
+    "data": null,
+    "function_profile": "sprig"
+  },
+  "expected": {
+    "output": "ZedaFaxcZaso9*|cannot find password template missing|plaintext|/|Unknown type bad",
+    "error": null
+  }
+}

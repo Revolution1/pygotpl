@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "html/template-recursive",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEscapeSet recursive helper",
+    "behavior": "A recursive named template that returns to its input HTML text context is analyzed once and safely reused at every depth.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-template-recursive",
+    "template": "{{template \"tree\" .}}{{define \"tree\"}}{{if .Children}}<ul>{{range .Children}}<li>{{template \"tree\" .}}</li>{{end}}</ul>{{else}}{{.X}}{{end}}{{end}}",
+    "data": {
+      "Children": [
+        {"X": "foo"},
+        {"X": "<bar>"},
+        {"Children": [{"X": "baz"}]}
+      ]
+    }
+  },
+  "expected": {
+    "output": "<ul><li>foo</li><li>&lt;bar&gt;</li><li><ul><li>baz</li></ul></li></ul>",
+    "error": null
+  }
+}

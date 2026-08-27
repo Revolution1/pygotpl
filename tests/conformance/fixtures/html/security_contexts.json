@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "html/security-contexts",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEscape and url_test.go:TestSrcsetFilter",
+    "behavior": "Structure-changing dynamic names and active-content payloads are filtered independently in tag, attribute, CSS, srcset, and meta-refresh URL contexts.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-security-contexts",
+    "template": "<{{.Tag}}>payload</{{.Tag}}>|<img {{.Attr}}=\"{{.BadURL}}\">|<p style=\"width: {{.CSS}}\">|<img srcset=\"{{.Srcset}}\">|<meta http-equiv=\"refresh\" content=\"0; url={{.BadURL}}\">",
+    "data": {
+      "Tag": "script",
+      "Attr": "src",
+      "BadURL": "javascript:evil()",
+      "CSS": "-express\\69 on(alert(1))",
+      "Srcset": "/safe.png 1x, javascript:evil() 2x, /also-safe.png 3x"
+    }
+  },
+  "expected": {
+    "output": "&lt;script>payload&lt;/script>|<img ZgotmplZ=\"javascript:evil()\">|<p style=\"width: ZgotmplZ\">|<img srcset=\"/safe.png 1x,#ZgotmplZ, /also-safe.png 3x\">|<meta http-equiv=\"refresh\" content=\"0; url=#ZgotmplZ\">",
+    "error": null
+  }
+}

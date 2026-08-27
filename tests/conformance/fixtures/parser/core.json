@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/parse/lex_test.go and src/text/template/parse/parse_test.go",
+    "behavior": "Core control-flow, definition, delimiter, and invalid-literal parse outcomes.",
+    "derived": true
+  },
+  "cases": [
+    {
+      "id": "if-else",
+      "template": "{{if .}}yes{{else}}no{{end}}",
+      "data": true,
+      "accepted": true
+    },
+    {
+      "id": "range-loop-control",
+      "template": "{{range .}}{{if .}}{{continue}}{{end}}{{break}}{{end}}",
+      "data": [true, false],
+      "accepted": true
+    },
+    {
+      "id": "definition-and-call",
+      "template": "{{define \"item\"}}item{{end}}{{template \"item\" .}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "block",
+      "template": "{{block \"item\" .}}item{{end}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "custom-delimiters",
+      "template": "[[if .]]yes[[else]]no[[end]]",
+      "data": true,
+      "delimiters": {"left": "[[", "right": "]]"},
+      "accepted": true
+    },
+    {
+      "id": "unknown-string-escape",
+      "template": "{{\"\\q\"}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "break-outside-range",
+      "template": "{{break}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "non-executable-pipeline-stage",
+      "template": "{{. | 1}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "unterminated-control",
+      "template": "{{if .}}",
+      "data": true,
+      "accepted": false
+    },
+    {
+      "id": "unquoted-template-name",
+      "template": "{{template 42}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "sequential-variable-scope",
+      "template": "{{$value := .}}{{$value}}",
+      "data": "value",
+      "accepted": true
+    },
+    {
+      "id": "undefined-variable",
+      "template": "{{$missing}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "variable-outside-control-scope",
+      "template": "{{if .}}{{$local := .}}{{end}}{{$local}}",
+      "data": true,
+      "accepted": false
+    },
+    {
+      "id": "multiple-action-declarations",
+      "template": "{{$first, $second := .}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "three-range-declarations",
+      "template": "{{range $first, $second, $third := .}}{{end}}",
+      "data": [],
+      "accepted": false
+    },
+    {
+      "id": "unknown-function",
+      "template": "{{notRegistered .}}",
+      "data": null,
+      "accepted": false
+    }
+  ]
+}

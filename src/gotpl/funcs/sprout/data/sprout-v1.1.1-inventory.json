@@ -1,0 +1,1386 @@
+{
+  "reference": "github.com/go-sprout/sprout",
+  "version": "v1.1.1",
+  "registries": {
+    "backward": {
+      "uid": "go-sprout/sprout.backwardcompatibilitywithsprig",
+      "functions": [
+        "fail",
+        "getHostByName",
+        "urlJoin",
+        "urlParse"
+      ],
+      "aliases": {},
+      "notices": []
+    },
+    "checksum": {
+      "uid": "go-sprout/sprout.checksum",
+      "functions": [
+        "adler32Sum",
+        "md5Sum",
+        "sha1Sum",
+        "sha256Sum",
+        "sha512Sum"
+      ],
+      "aliases": {
+        "adler32Sum": [
+          "adler32sum"
+        ],
+        "md5Sum": [
+          "md5sum"
+        ],
+        "sha1Sum": [
+          "sha1sum"
+        ],
+        "sha256Sum": [
+          "sha256sum"
+        ],
+        "sha512Sum": [
+          "sha512sum"
+        ]
+      },
+      "notices": [
+        {
+          "functions": [
+            "sha1sum"
+          ],
+          "kind": "deprecated",
+          "message": "use `sha1Sum` instead."
+        },
+        {
+          "functions": [
+            "sha256sum"
+          ],
+          "kind": "deprecated",
+          "message": "use `sha256Sum` instead."
+        },
+        {
+          "functions": [
+            "adler32sum"
+          ],
+          "kind": "deprecated",
+          "message": "use `adler32Sum` instead."
+        },
+        {
+          "functions": [
+            "md5sum"
+          ],
+          "kind": "deprecated",
+          "message": "use `md5Sum` instead."
+        }
+      ]
+    },
+    "conversion": {
+      "uid": "go-sprout/sprout.conversion",
+      "functions": [
+        "toBool",
+        "toDate",
+        "toDuration",
+        "toFloat64",
+        "toInt",
+        "toInt64",
+        "toLocalDate",
+        "toOctal",
+        "toString",
+        "toUint",
+        "toUint64"
+      ],
+      "aliases": {
+        "toDate": [
+          "mustToDate"
+        ]
+      },
+      "notices": [
+        {
+          "functions": [
+            "mustToDate"
+          ],
+          "kind": "deprecated",
+          "message": "please use `toDate` instead"
+        }
+      ]
+    },
+    "crypto": {
+      "uid": "go-sprout/sprout.crypto",
+      "functions": [
+        "bcrypt",
+        "buildCustomCert",
+        "decryptAES",
+        "derivePassword",
+        "encryptAES",
+        "genCA",
+        "genCAWithKey",
+        "genPrivateKey",
+        "genSelfSignedCert",
+        "genSelfSignedCertWithKey",
+        "genSignedCert",
+        "genSignedCertWithKey",
+        "htpasswd"
+      ],
+      "aliases": {},
+      "notices": []
+    },
+    "encoding": {
+      "uid": "go-sprout/sprout.encoding",
+      "functions": [
+        "base32Decode",
+        "base32Encode",
+        "base64Decode",
+        "base64Encode",
+        "fromJSON",
+        "fromYAML",
+        "toIndentYAML",
+        "toJSON",
+        "toPrettyJSON",
+        "toRawJSON",
+        "toYAML"
+      ],
+      "aliases": {
+        "fromJSON": [
+          "fromJson",
+          "mustFromJson"
+        ],
+        "fromYAML": [
+          "fromYaml",
+          "mustFromYaml"
+        ],
+        "toJSON": [
+          "mustToJson",
+          "toJson"
+        ],
+        "toPrettyJSON": [
+          "mustToPrettyJson",
+          "toPrettyJson"
+        ],
+        "toRawJSON": [
+          "mustToRawJson",
+          "toRawJson"
+        ],
+        "toYAML": [
+          "mustToYaml",
+          "toYaml"
+        ]
+      },
+      "notices": [
+        {
+          "functions": [
+            "mustFromJson"
+          ],
+          "kind": "deprecated",
+          "message": "please use `fromJSON` instead"
+        },
+        {
+          "functions": [
+            "mustToJson"
+          ],
+          "kind": "deprecated",
+          "message": "please use `toJSON` instead"
+        },
+        {
+          "functions": [
+            "mustToPrettyJson"
+          ],
+          "kind": "deprecated",
+          "message": "please use `toPrettyJSON` instead"
+        },
+        {
+          "functions": [
+            "mustToRawJson"
+          ],
+          "kind": "deprecated",
+          "message": "please use `toRawJSON` instead"
+        },
+        {
+          "functions": [
+            "mustFromYaml"
+          ],
+          "kind": "deprecated",
+          "message": "please use `fromYAML` instead"
+        },
+        {
+          "functions": [
+            "mustToYaml"
+          ],
+          "kind": "deprecated",
+          "message": "please use `toYAML` instead"
+        },
+        {
+          "functions": [
+            "fromJson"
+          ],
+          "kind": "deprecated",
+          "message": "please use `fromJSON` instead"
+        },
+        {
+          "functions": [
+            "toJson"
+          ],
+          "kind": "deprecated",
+          "message": "please use `toJSON` instead"
+        },
+        {
+          "functions": [
+            "toPrettyJson"
+          ],
+          "kind": "deprecated",
+          "message": "please use `toPrettyJSON` instead"
+        },
+        {
+          "functions": [
+            "toRawJson"
+          ],
+          "kind": "deprecated",
+          "message": "please use `toRawJSON` instead"
+        },
+        {
+          "functions": [
+            "fromYaml"
+          ],
+          "kind": "deprecated",
+          "message": "please use `fromYAML` instead"
+        },
+        {
+          "functions": [
+            "toYaml"
+          ],
+          "kind": "deprecated",
+          "message": "please use `toYAML` instead"
+        }
+      ]
+    },
+    "env": {
+      "uid": "go-sprout/sprout.env",
+      "functions": [
+        "env",
+        "expandEnv"
+      ],
+      "aliases": {},
+      "notices": []
+    },
+    "filesystem": {
+      "uid": "go-sprout/sprout.filesystem",
+      "functions": [
+        "osBase",
+        "osClean",
+        "osDir",
+        "osExt",
+        "osIsAbs",
+        "pathBase",
+        "pathClean",
+        "pathDir",
+        "pathExt",
+        "pathIsAbs"
+      ],
+      "aliases": {},
+      "notices": []
+    },
+    "maps": {
+      "uid": "go-sprout/sprout.maps",
+      "functions": [
+        "dict",
+        "dig",
+        "get",
+        "hasKey",
+        "keys",
+        "merge",
+        "mergeOverwrite",
+        "omit",
+        "pick",
+        "pluck",
+        "set",
+        "unset",
+        "values"
+      ],
+      "aliases": {
+        "merge": [
+          "mustMerge"
+        ],
+        "mergeOverwrite": [
+          "mustMergeOverwrite"
+        ]
+      },
+      "notices": [
+        {
+          "functions": [
+            "mustMerge"
+          ],
+          "kind": "deprecated",
+          "message": "please use `merge` instead"
+        },
+        {
+          "functions": [
+            "mustMergeOverwrite"
+          ],
+          "kind": "deprecated",
+          "message": "please use `mergeOverwrite` instead"
+        }
+      ]
+    },
+    "network": {
+      "uid": "go-sprout/sprout.network",
+      "functions": [
+        "cidrContains",
+        "cidrFirst",
+        "cidrLast",
+        "cidrOverlap",
+        "cidrRangeList",
+        "cidrSize",
+        "ipDecrement",
+        "ipIncrement",
+        "ipIsGlobalUnicast",
+        "ipIsLoopback",
+        "ipIsMulticast",
+        "ipIsPrivate",
+        "ipVersion",
+        "parseCIDR",
+        "parseIP",
+        "parseMAC"
+      ],
+      "aliases": {},
+      "notices": []
+    },
+    "numeric": {
+      "uid": "go-sprout/sprout.numeric",
+      "functions": [
+        "add",
+        "add1",
+        "ceil",
+        "div",
+        "divf",
+        "floor",
+        "max",
+        "maxf",
+        "min",
+        "minf",
+        "mod",
+        "mul",
+        "mulf",
+        "round",
+        "sub"
+      ],
+      "aliases": {
+        "add": [
+          "addf"
+        ],
+        "add1": [
+          "add1f"
+        ],
+        "sub": [
+          "subf"
+        ]
+      },
+      "notices": [
+        {
+          "functions": [
+            "addf"
+          ],
+          "kind": "deprecated",
+          "message": "please use `add` instead"
+        },
+        {
+          "functions": [
+            "add1f"
+          ],
+          "kind": "deprecated",
+          "message": "please use `add1` instead"
+        },
+        {
+          "functions": [
+            "subf"
+          ],
+          "kind": "deprecated",
+          "message": "please use `sub` instead"
+        }
+      ]
+    },
+    "random": {
+      "uid": "go-sprout/sprout.random",
+      "functions": [
+        "randAlpha",
+        "randAlphaNum",
+        "randAscii",
+        "randBytes",
+        "randInt",
+        "randNumeric"
+      ],
+      "aliases": {},
+      "notices": []
+    },
+    "reflect": {
+      "uid": "go-sprout/sprout.reflect",
+      "functions": [
+        "deepCopy",
+        "deepEqual",
+        "hasField",
+        "kindIs",
+        "kindOf",
+        "typeIs",
+        "typeIsLike",
+        "typeOf"
+      ],
+      "aliases": {
+        "deepCopy": [
+          "mustDeepCopy"
+        ]
+      },
+      "notices": [
+        {
+          "functions": [
+            "mustDeepCopy"
+          ],
+          "kind": "deprecated",
+          "message": "please use `deepCopy` instead"
+        }
+      ]
+    },
+    "regex": {
+      "uid": "go-sprout/sprout.regex",
+      "functions": [
+        "regexFind",
+        "regexFindAll",
+        "regexFindAllGroups",
+        "regexFindAllNamed",
+        "regexFindGroups",
+        "regexFindNamed",
+        "regexMatch",
+        "regexQuoteMeta",
+        "regexReplaceAll",
+        "regexReplaceAllLiteral",
+        "regexSplit"
+      ],
+      "aliases": {},
+      "notices": []
+    },
+    "regexp": {
+      "uid": "go-sprout/sprout.regexp",
+      "functions": [
+        "regexFind",
+        "regexFindAll",
+        "regexFindAllGroups",
+        "regexFindAllNamed",
+        "regexFindGroups",
+        "regexFindNamed",
+        "regexMatch",
+        "regexQuoteMeta",
+        "regexReplaceAll",
+        "regexReplaceAllLiteral",
+        "regexSplit"
+      ],
+      "aliases": {
+        "regexFind": [
+          "mustRegexFind"
+        ],
+        "regexFindAll": [
+          "mustRegexFindAll"
+        ],
+        "regexMatch": [
+          "mustRegexMatch"
+        ],
+        "regexReplaceAll": [
+          "mustRegexReplaceAll"
+        ],
+        "regexReplaceAllLiteral": [
+          "mustRegexReplaceAllLiteral"
+        ],
+        "regexSplit": [
+          "mustRegexSplit"
+        ]
+      },
+      "notices": [
+        {
+          "functions": [
+            "regexFind",
+            "regexFindAllGroups",
+            "regexFindAllNamed",
+            "regexFindGroups",
+            "regexFindNamed",
+            "regexMatch",
+            "regexQuoteMeta"
+          ],
+          "kind": "info",
+          "message": "the `regexp` registry is deprecated in favor of `regex` and will be removed in v1.2, this function keeps the same signature"
+        },
+        {
+          "functions": [
+            "regexFindAll"
+          ],
+          "kind": "info",
+          "message": "the `regexp` registry is deprecated in favor of `regex` and will be removed in v1.2, where the signature becomes `regexFindAll <regex> <n> <value>`"
+        },
+        {
+          "functions": [
+            "regexSplit"
+          ],
+          "kind": "info",
+          "message": "the `regexp` registry is deprecated in favor of `regex` and will be removed in v1.2, where the signature becomes `regexSplit <regex> <n> <value>`"
+        },
+        {
+          "functions": [
+            "regexReplaceAll"
+          ],
+          "kind": "info",
+          "message": "the `regexp` registry is deprecated in favor of `regex` and will be removed in v1.2, where the signature becomes `regexReplaceAll <regex> <replacedBy> <value>`"
+        },
+        {
+          "functions": [
+            "regexReplaceAllLiteral"
+          ],
+          "kind": "info",
+          "message": "the `regexp` registry is deprecated in favor of `regex` and will be removed in v1.2, where the signature becomes `regexReplaceAllLiteral <regex> <replacedBy> <value>`"
+        },
+        {
+          "functions": [
+            "mustRegexFind"
+          ],
+          "kind": "deprecated",
+          "message": "please use `regexFind` instead"
+        },
+        {
+          "functions": [
+            "mustRegexFindAll"
+          ],
+          "kind": "deprecated",
+          "message": "please use `regexFindAll` instead"
+        },
+        {
+          "functions": [
+            "mustRegexMatch"
+          ],
+          "kind": "deprecated",
+          "message": "please use `regexMatch` instead"
+        },
+        {
+          "functions": [
+            "mustRegexSplit"
+          ],
+          "kind": "deprecated",
+          "message": "please use `regexSplit` instead"
+        },
+        {
+          "functions": [
+            "mustRegexReplaceAll"
+          ],
+          "kind": "deprecated",
+          "message": "please use `regexReplaceAll` instead"
+        },
+        {
+          "functions": [
+            "mustRegexReplaceAllLiteral"
+          ],
+          "kind": "deprecated",
+          "message": "please use `regexReplaceAllLiteral` instead"
+        }
+      ]
+    },
+    "semver": {
+      "uid": "go-sprout/sprout.semver",
+      "functions": [
+        "semver",
+        "semverCompare"
+      ],
+      "aliases": {},
+      "notices": []
+    },
+    "slices": {
+      "uid": "go-sprout/sprout.slices",
+      "functions": [
+        "append",
+        "chunk",
+        "compact",
+        "concat",
+        "first",
+        "flatten",
+        "flattenDepth",
+        "has",
+        "initial",
+        "last",
+        "list",
+        "prepend",
+        "rest",
+        "reverse",
+        "slice",
+        "sortAlpha",
+        "splitList",
+        "strSlice",
+        "uniq",
+        "until",
+        "untilStep",
+        "without"
+      ],
+      "aliases": {
+        "append": [
+          "mustAppend"
+        ],
+        "chunk": [
+          "mustChunk"
+        ],
+        "compact": [
+          "mustCompact"
+        ],
+        "first": [
+          "mustFirst"
+        ],
+        "has": [
+          "mustHas"
+        ],
+        "initial": [
+          "mustInitial"
+        ],
+        "last": [
+          "mustLast"
+        ],
+        "prepend": [
+          "mustPrepend"
+        ],
+        "rest": [
+          "mustRest"
+        ],
+        "reverse": [
+          "mustReverse"
+        ],
+        "slice": [
+          "mustSlice"
+        ],
+        "uniq": [
+          "mustUniq"
+        ],
+        "without": [
+          "mustWithout"
+        ]
+      },
+      "notices": [
+        {
+          "functions": [
+            "mustAppend"
+          ],
+          "kind": "deprecated",
+          "message": "please use `append` instead"
+        },
+        {
+          "functions": [
+            "mustPrepend"
+          ],
+          "kind": "deprecated",
+          "message": "please use `prepend` instead"
+        },
+        {
+          "functions": [
+            "mustChunk"
+          ],
+          "kind": "deprecated",
+          "message": "please use `chunk` instead"
+        },
+        {
+          "functions": [
+            "mustUniq"
+          ],
+          "kind": "deprecated",
+          "message": "please use `uniq` instead"
+        },
+        {
+          "functions": [
+            "mustCompact"
+          ],
+          "kind": "deprecated",
+          "message": "please use `compact` instead"
+        },
+        {
+          "functions": [
+            "mustSlice"
+          ],
+          "kind": "deprecated",
+          "message": "please use `slice` instead"
+        },
+        {
+          "functions": [
+            "mustHas"
+          ],
+          "kind": "deprecated",
+          "message": "please use `has` instead"
+        },
+        {
+          "functions": [
+            "mustWithout"
+          ],
+          "kind": "deprecated",
+          "message": "please use `without` instead"
+        },
+        {
+          "functions": [
+            "mustRest"
+          ],
+          "kind": "deprecated",
+          "message": "please use `rest` instead"
+        },
+        {
+          "functions": [
+            "mustInitial"
+          ],
+          "kind": "deprecated",
+          "message": "please use `initial` instead"
+        },
+        {
+          "functions": [
+            "mustFirst"
+          ],
+          "kind": "deprecated",
+          "message": "please use `first` instead"
+        },
+        {
+          "functions": [
+            "mustLast"
+          ],
+          "kind": "deprecated",
+          "message": "please use `last` instead"
+        },
+        {
+          "functions": [
+            "mustReverse"
+          ],
+          "kind": "deprecated",
+          "message": "please use `reverse` instead"
+        }
+      ]
+    },
+    "std": {
+      "uid": "go-sprout/sprout.std",
+      "functions": [
+        "all",
+        "any",
+        "cat",
+        "coalesce",
+        "default",
+        "empty",
+        "hello",
+        "ternary"
+      ],
+      "aliases": {},
+      "notices": []
+    },
+    "strings": {
+      "uid": "go-sprout/sprout.strings",
+      "functions": [
+        "capitalize",
+        "contains",
+        "ellipsis",
+        "ellipsisBoth",
+        "escape",
+        "hasPrefix",
+        "hasSuffix",
+        "indent",
+        "initials",
+        "join",
+        "nindent",
+        "nospace",
+        "plural",
+        "quote",
+        "repeat",
+        "replace",
+        "seq",
+        "shuffle",
+        "split",
+        "splitn",
+        "squote",
+        "substr",
+        "swapCase",
+        "toCamelCase",
+        "toConstantCase",
+        "toDotCase",
+        "toKebabCase",
+        "toLower",
+        "toPascalCase",
+        "toPathCase",
+        "toSnakeCase",
+        "toTitleCase",
+        "toUpper",
+        "trim",
+        "trimAll",
+        "trimPrefix",
+        "trimSuffix",
+        "trunc",
+        "uncapitalize",
+        "unescape",
+        "untitle",
+        "wrap",
+        "wrapWith"
+      ],
+      "aliases": {},
+      "notices": []
+    },
+    "time": {
+      "uid": "go-sprout/sprout.time",
+      "functions": [
+        "date",
+        "dateAgo",
+        "dateInZone",
+        "dateModify",
+        "duration",
+        "durationRound",
+        "fromUnix",
+        "fromUnixMicro",
+        "fromUnixMilli",
+        "htmlDate",
+        "htmlDateInZone",
+        "now",
+        "toUnixMicro",
+        "toUnixMilli",
+        "unixEpoch"
+      ],
+      "aliases": {
+        "dateModify": [
+          "mustDateModify"
+        ],
+        "unixEpoch": [
+          "toUnix"
+        ]
+      },
+      "notices": [
+        {
+          "functions": [
+            "mustDateModify"
+          ],
+          "kind": "deprecated",
+          "message": "please use `dateModify` instead"
+        }
+      ]
+    },
+    "uniqueid": {
+      "uid": "go-sprout/sprout.uniqueid",
+      "functions": [
+        "isUUID",
+        "uuidNil",
+        "uuidTime",
+        "uuidVersion",
+        "uuidv3",
+        "uuidv4",
+        "uuidv5",
+        "uuidv7"
+      ],
+      "aliases": {},
+      "notices": []
+    }
+  },
+  "groups": {
+    "all": {
+      "registries": [
+        "go-sprout/sprout.checksum",
+        "go-sprout/sprout.conversion",
+        "go-sprout/sprout.encoding",
+        "go-sprout/sprout.env",
+        "go-sprout/sprout.filesystem",
+        "go-sprout/sprout.maps",
+        "go-sprout/sprout.network",
+        "go-sprout/sprout.numeric",
+        "go-sprout/sprout.random",
+        "go-sprout/sprout.reflect",
+        "go-sprout/sprout.regexp",
+        "go-sprout/sprout.semver",
+        "go-sprout/sprout.slices",
+        "go-sprout/sprout.std",
+        "go-sprout/sprout.strings",
+        "go-sprout/sprout.time",
+        "go-sprout/sprout.uniqueid"
+      ],
+      "functions": [
+        "add",
+        "add1",
+        "add1f",
+        "addf",
+        "adler32Sum",
+        "adler32sum",
+        "all",
+        "any",
+        "append",
+        "base32Decode",
+        "base32Encode",
+        "base64Decode",
+        "base64Encode",
+        "capitalize",
+        "cat",
+        "ceil",
+        "chunk",
+        "cidrContains",
+        "cidrFirst",
+        "cidrLast",
+        "cidrOverlap",
+        "cidrRangeList",
+        "cidrSize",
+        "coalesce",
+        "compact",
+        "concat",
+        "contains",
+        "date",
+        "dateAgo",
+        "dateInZone",
+        "dateModify",
+        "deepCopy",
+        "deepEqual",
+        "default",
+        "dict",
+        "dig",
+        "div",
+        "divf",
+        "duration",
+        "durationRound",
+        "ellipsis",
+        "ellipsisBoth",
+        "empty",
+        "env",
+        "escape",
+        "expandEnv",
+        "first",
+        "flatten",
+        "flattenDepth",
+        "floor",
+        "fromJSON",
+        "fromJson",
+        "fromUnix",
+        "fromUnixMicro",
+        "fromUnixMilli",
+        "fromYAML",
+        "fromYaml",
+        "get",
+        "has",
+        "hasField",
+        "hasKey",
+        "hasPrefix",
+        "hasSuffix",
+        "hello",
+        "htmlDate",
+        "htmlDateInZone",
+        "indent",
+        "initial",
+        "initials",
+        "ipDecrement",
+        "ipIncrement",
+        "ipIsGlobalUnicast",
+        "ipIsLoopback",
+        "ipIsMulticast",
+        "ipIsPrivate",
+        "ipVersion",
+        "isUUID",
+        "join",
+        "keys",
+        "kindIs",
+        "kindOf",
+        "last",
+        "list",
+        "max",
+        "maxf",
+        "md5Sum",
+        "md5sum",
+        "merge",
+        "mergeOverwrite",
+        "min",
+        "minf",
+        "mod",
+        "mul",
+        "mulf",
+        "mustAppend",
+        "mustChunk",
+        "mustCompact",
+        "mustDateModify",
+        "mustDeepCopy",
+        "mustFirst",
+        "mustFromJson",
+        "mustFromYaml",
+        "mustHas",
+        "mustInitial",
+        "mustLast",
+        "mustMerge",
+        "mustMergeOverwrite",
+        "mustPrepend",
+        "mustRegexFind",
+        "mustRegexFindAll",
+        "mustRegexMatch",
+        "mustRegexReplaceAll",
+        "mustRegexReplaceAllLiteral",
+        "mustRegexSplit",
+        "mustRest",
+        "mustReverse",
+        "mustSlice",
+        "mustToDate",
+        "mustToJson",
+        "mustToPrettyJson",
+        "mustToRawJson",
+        "mustToYaml",
+        "mustUniq",
+        "mustWithout",
+        "nindent",
+        "nospace",
+        "now",
+        "omit",
+        "osBase",
+        "osClean",
+        "osDir",
+        "osExt",
+        "osIsAbs",
+        "parseCIDR",
+        "parseIP",
+        "parseMAC",
+        "pathBase",
+        "pathClean",
+        "pathDir",
+        "pathExt",
+        "pathIsAbs",
+        "pick",
+        "pluck",
+        "plural",
+        "prepend",
+        "quote",
+        "randAlpha",
+        "randAlphaNum",
+        "randAscii",
+        "randBytes",
+        "randInt",
+        "randNumeric",
+        "regexFind",
+        "regexFindAll",
+        "regexFindAllGroups",
+        "regexFindAllNamed",
+        "regexFindGroups",
+        "regexFindNamed",
+        "regexMatch",
+        "regexQuoteMeta",
+        "regexReplaceAll",
+        "regexReplaceAllLiteral",
+        "regexSplit",
+        "repeat",
+        "replace",
+        "rest",
+        "reverse",
+        "round",
+        "semver",
+        "semverCompare",
+        "seq",
+        "set",
+        "sha1Sum",
+        "sha1sum",
+        "sha256Sum",
+        "sha256sum",
+        "sha512Sum",
+        "sha512sum",
+        "shuffle",
+        "slice",
+        "sortAlpha",
+        "split",
+        "splitList",
+        "splitn",
+        "squote",
+        "strSlice",
+        "sub",
+        "subf",
+        "substr",
+        "swapCase",
+        "ternary",
+        "toBool",
+        "toCamelCase",
+        "toConstantCase",
+        "toDate",
+        "toDotCase",
+        "toDuration",
+        "toFloat64",
+        "toIndentYAML",
+        "toInt",
+        "toInt64",
+        "toJSON",
+        "toJson",
+        "toKebabCase",
+        "toLocalDate",
+        "toLower",
+        "toOctal",
+        "toPascalCase",
+        "toPathCase",
+        "toPrettyJSON",
+        "toPrettyJson",
+        "toRawJSON",
+        "toRawJson",
+        "toSnakeCase",
+        "toString",
+        "toTitleCase",
+        "toUint",
+        "toUint64",
+        "toUnix",
+        "toUnixMicro",
+        "toUnixMilli",
+        "toUpper",
+        "toYAML",
+        "toYaml",
+        "trim",
+        "trimAll",
+        "trimPrefix",
+        "trimSuffix",
+        "trunc",
+        "typeIs",
+        "typeIsLike",
+        "typeOf",
+        "uncapitalize",
+        "unescape",
+        "uniq",
+        "unixEpoch",
+        "unset",
+        "until",
+        "untilStep",
+        "untitle",
+        "uuidNil",
+        "uuidTime",
+        "uuidVersion",
+        "uuidv3",
+        "uuidv4",
+        "uuidv5",
+        "uuidv7",
+        "values",
+        "without",
+        "wrap",
+        "wrapWith"
+      ]
+    },
+    "hermetic": {
+      "registries": [
+        "go-sprout/sprout.checksum",
+        "go-sprout/sprout.conversion",
+        "go-sprout/sprout.encoding",
+        "go-sprout/sprout.filesystem",
+        "go-sprout/sprout.maps",
+        "go-sprout/sprout.numeric",
+        "go-sprout/sprout.reflect",
+        "go-sprout/sprout.regexp",
+        "go-sprout/sprout.semver",
+        "go-sprout/sprout.slices",
+        "go-sprout/sprout.std",
+        "go-sprout/sprout.strings",
+        "go-sprout/sprout.time",
+        "go-sprout/sprout.uniqueid"
+      ],
+      "functions": [
+        "add",
+        "add1",
+        "add1f",
+        "addf",
+        "adler32Sum",
+        "adler32sum",
+        "all",
+        "any",
+        "append",
+        "base32Decode",
+        "base32Encode",
+        "base64Decode",
+        "base64Encode",
+        "capitalize",
+        "cat",
+        "ceil",
+        "chunk",
+        "coalesce",
+        "compact",
+        "concat",
+        "contains",
+        "date",
+        "dateAgo",
+        "dateInZone",
+        "dateModify",
+        "deepCopy",
+        "deepEqual",
+        "default",
+        "dict",
+        "dig",
+        "div",
+        "divf",
+        "duration",
+        "durationRound",
+        "ellipsis",
+        "ellipsisBoth",
+        "empty",
+        "escape",
+        "first",
+        "flatten",
+        "flattenDepth",
+        "floor",
+        "fromJSON",
+        "fromJson",
+        "fromUnix",
+        "fromUnixMicro",
+        "fromUnixMilli",
+        "fromYAML",
+        "fromYaml",
+        "get",
+        "has",
+        "hasField",
+        "hasKey",
+        "hasPrefix",
+        "hasSuffix",
+        "hello",
+        "htmlDate",
+        "htmlDateInZone",
+        "indent",
+        "initial",
+        "initials",
+        "isUUID",
+        "join",
+        "keys",
+        "kindIs",
+        "kindOf",
+        "last",
+        "list",
+        "max",
+        "maxf",
+        "md5Sum",
+        "md5sum",
+        "merge",
+        "mergeOverwrite",
+        "min",
+        "minf",
+        "mod",
+        "mul",
+        "mulf",
+        "mustAppend",
+        "mustChunk",
+        "mustCompact",
+        "mustDateModify",
+        "mustDeepCopy",
+        "mustFirst",
+        "mustFromJson",
+        "mustFromYaml",
+        "mustHas",
+        "mustInitial",
+        "mustLast",
+        "mustMerge",
+        "mustMergeOverwrite",
+        "mustPrepend",
+        "mustRegexFind",
+        "mustRegexFindAll",
+        "mustRegexMatch",
+        "mustRegexReplaceAll",
+        "mustRegexReplaceAllLiteral",
+        "mustRegexSplit",
+        "mustRest",
+        "mustReverse",
+        "mustSlice",
+        "mustToDate",
+        "mustToJson",
+        "mustToPrettyJson",
+        "mustToRawJson",
+        "mustToYaml",
+        "mustUniq",
+        "mustWithout",
+        "nindent",
+        "nospace",
+        "now",
+        "omit",
+        "osBase",
+        "osClean",
+        "osDir",
+        "osExt",
+        "osIsAbs",
+        "pathBase",
+        "pathClean",
+        "pathDir",
+        "pathExt",
+        "pathIsAbs",
+        "pick",
+        "pluck",
+        "plural",
+        "prepend",
+        "quote",
+        "regexFind",
+        "regexFindAll",
+        "regexFindAllGroups",
+        "regexFindAllNamed",
+        "regexFindGroups",
+        "regexFindNamed",
+        "regexMatch",
+        "regexQuoteMeta",
+        "regexReplaceAll",
+        "regexReplaceAllLiteral",
+        "regexSplit",
+        "repeat",
+        "replace",
+        "rest",
+        "reverse",
+        "round",
+        "semver",
+        "semverCompare",
+        "seq",
+        "set",
+        "sha1Sum",
+        "sha1sum",
+        "sha256Sum",
+        "sha256sum",
+        "sha512Sum",
+        "sha512sum",
+        "shuffle",
+        "slice",
+        "sortAlpha",
+        "split",
+        "splitList",
+        "splitn",
+        "squote",
+        "strSlice",
+        "sub",
+        "subf",
+        "substr",
+        "swapCase",
+        "ternary",
+        "toBool",
+        "toCamelCase",
+        "toConstantCase",
+        "toDate",
+        "toDotCase",
+        "toDuration",
+        "toFloat64",
+        "toIndentYAML",
+        "toInt",
+        "toInt64",
+        "toJSON",
+        "toJson",
+        "toKebabCase",
+        "toLocalDate",
+        "toLower",
+        "toOctal",
+        "toPascalCase",
+        "toPathCase",
+        "toPrettyJSON",
+        "toPrettyJson",
+        "toRawJSON",
+        "toRawJson",
+        "toSnakeCase",
+        "toString",
+        "toTitleCase",
+        "toUint",
+        "toUint64",
+        "toUnix",
+        "toUnixMicro",
+        "toUnixMilli",
+        "toUpper",
+        "toYAML",
+        "toYaml",
+        "trim",
+        "trimAll",
+        "trimPrefix",
+        "trimSuffix",
+        "trunc",
+        "typeIs",
+        "typeIsLike",
+        "typeOf",
+        "uncapitalize",
+        "unescape",
+        "uniq",
+        "unixEpoch",
+        "unset",
+        "until",
+        "untilStep",
+        "untitle",
+        "uuidNil",
+        "uuidTime",
+        "uuidVersion",
+        "uuidv3",
+        "uuidv4",
+        "uuidv5",
+        "uuidv7",
+        "values",
+        "without",
+        "wrap",
+        "wrapWith"
+      ]
+    }
+  }
+}

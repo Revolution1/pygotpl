@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "id": "text/literal",
+  "request": {
+    "engine": "text",
+    "name": "literal",
+    "template": "Hello, Gopher!\n",
+    "data": null
+  },
+  "warmup": 1000,
+  "iterations": 20000
+}

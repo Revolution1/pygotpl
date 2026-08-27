@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/semver-relaxed-uint64",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "semver.go and Masterminds semver v3.3.0",
+    "behavior": "The relaxed parser accepts leading zeroes, preserves the original spelling, normalizes output, and supports uint64 segments.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "semver-relaxed",
+    "template": "{{semver \"01.02.003\"}}/{{(semver \"01.02.003\").Original}}|{{semver \"18446744073709551615.0.0\"}}|{{semverCompare \"=>1.2.3\" \"2.0.0\"}}/{{semverCompare \"=<2.0.0\" \"1.2.3\"}}/{{semverCompare \"~>1.2.3\" \"1.2.9\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "1.2.3/01.02.003|18446744073709551615.0.0|true/true/true",
+    "error": null
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/js-builtins",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/funcs.go",
+    "behavior": "The js built-in applies Go JavaScript string escaping.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "js-builtins",
+    "template": "{{js \"<script>\\n'\\\"&\"}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "\\u003Cscript\\u003E\\u000A\\'\\\"\\u0026",
+    "error": null
+  }
+}

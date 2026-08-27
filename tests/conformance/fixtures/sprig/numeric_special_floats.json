@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/numeric-special-floats",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "numeric.go, spf13/cast v1.7.0, and Go math",
+    "behavior": "Non-finite float conversion and Go math helpers retain NaN and infinity semantics.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "numeric-special-floats",
+    "template": "{{float64 \"NaN\"}}/{{float64 \"+NaN\"}}/{{float64 \"-NaN\"}}/{{float64 \"Inf\"}}/{{ceil \"Inf\"}}/{{floor \"-Inf\"}}/{{round \"NaN\" 2}}/{{maxf \"NaN\" 1}}/{{minf \"Inf\" 1}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "NaN/0/0/+Inf/+Inf/-Inf/NaN/NaN/1",
+    "error": null
+  }
+}

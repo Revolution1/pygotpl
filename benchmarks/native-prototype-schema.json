@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Revolution1/pygotpl/benchmarks/native-prototype-schema.json",
+  "title": "pygotpl native accelerator prototype result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "prototype",
+    "environment",
+    "workloads",
+    "retention_gate"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "prototype": {"const": "cython-compiled-sync-vm"},
+    "environment": {"type": "object"},
+    "workloads": {"type": "array", "minItems": 2},
+    "retention_gate": {
+      "type": "object",
+      "required": ["required_improvement", "required_workloads", "passed"],
+      "properties": {
+        "required_improvement": {"const": 0.25},
+        "required_workloads": {"const": 2},
+        "passed": {"type": "boolean"}
+      }
+    }
+  },
+  "additionalProperties": false
+}

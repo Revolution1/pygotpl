@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/aliases-remaining",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "functions.go and upstream function-family tests",
+    "behavior": "Remaining public aliases and registry entry points preserve their family behavior.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "aliases-remaining",
+    "template": "{{dict \"a\" 1 | deepCopy | toJson}}|{{\"42\" | int64}}|{{mergeOverwrite (dict \"a\" 1) (dict \"a\" 2) | toJson}}|{{mustMerge (dict \"a\" 1) (dict \"b\" 2) | toJson}}|{{toDate \"2006-01-02\" \"2025-01-01\" | mustDateModify \"24h\" | date \"2006-01-02\"}}|{{toDate \"2006-01-02\" \"2025-01-01\" | htmlDate}}|{{trimall \"-\" \"--x--\"}}|{{$u := uuidv4}}{{regexMatch \"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$\" $u}}",
+    "data": null,
+    "function_profile": "sprig"
+  },
+  "expected": {
+    "output": "{\"a\":1}|42|{\"a\":2}|{\"a\":1,\"b\":2}|2025-01-02|2025-01-01|x|true",
+    "error": null
+  }
+}

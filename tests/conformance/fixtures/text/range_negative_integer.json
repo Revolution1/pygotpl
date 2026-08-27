@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/range-negative-integer",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "Range treats a negative integer as an empty sequence.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "range-negative",
+    "template": "{{range -2}}x{{else}}empty{{end}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "empty",
+    "error": null
+  }
+}

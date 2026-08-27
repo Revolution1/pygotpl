@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "text/comparison-order-error",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/funcs.go",
+    "behavior": "Ordering rejects Boolean operands.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "order-bool",
+    "template": "before/{{lt false true}}/after",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: order-bool:1:9: executing \"order-bool\" at <lt false true>: error calling lt: invalid type for comparison"
+    }
+  }
+}

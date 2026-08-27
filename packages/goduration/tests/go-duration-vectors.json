@@ -1,0 +1,194 @@
+{
+  "schema_version": 2,
+  "go_version": "go1.27.0",
+  "parse": [
+    {
+      "text": "0",
+      "nanoseconds": 0,
+      "formatted": "0s"
+    },
+    {
+      "text": "+5s",
+      "nanoseconds": 5000000000,
+      "formatted": "5s"
+    },
+    {
+      "text": "-2m3.4s",
+      "nanoseconds": -123400000000,
+      "formatted": "-2m3.4s"
+    },
+    {
+      "text": ".5ms",
+      "nanoseconds": 500000,
+      "formatted": "500µs"
+    },
+    {
+      "text": "12us",
+      "nanoseconds": 12000,
+      "formatted": "12µs"
+    },
+    {
+      "text": "12µs",
+      "nanoseconds": 12000,
+      "formatted": "12µs"
+    },
+    {
+      "text": "12μs",
+      "nanoseconds": 12000,
+      "formatted": "12µs"
+    },
+    {
+      "text": "1h2m3s4ms5us6ns",
+      "nanoseconds": 3723004005006,
+      "formatted": "1h2m3.004005006s"
+    },
+    {
+      "text": "0.3333333333333333333h",
+      "nanoseconds": 1200000000000,
+      "formatted": "20m0s"
+    },
+    {
+      "text": "9007199254740993ns",
+      "nanoseconds": 9007199254740993,
+      "formatted": "2501h59m59.254740993s"
+    },
+    {
+      "text": "9223372036854775807ns",
+      "nanoseconds": 9223372036854775807,
+      "formatted": "2562047h47m16.854775807s"
+    },
+    {
+      "text": "-9223372036854775808ns",
+      "nanoseconds": -9223372036854775808,
+      "formatted": "-2562047h47m16.854775808s"
+    }
+  ],
+  "invalid": [
+    {
+      "text": "",
+      "error": "time: invalid duration \"\""
+    },
+    {
+      "text": "3",
+      "error": "time: missing unit in duration \"3\""
+    },
+    {
+      "text": ".s",
+      "error": "time: invalid duration \".s\""
+    },
+    {
+      "text": "1d",
+      "error": "time: unknown unit \"d\" in duration \"1d\""
+    },
+    {
+      "text": "1h!",
+      "error": "time: unknown unit \"h!\" in duration \"1h!\""
+    },
+    {
+      "text": "1..s",
+      "error": "time: missing unit in duration \"1..s\""
+    },
+    {
+      "text": "1h+2s",
+      "error": "time: unknown unit \"h+\" in duration \"1h+2s\""
+    },
+    {
+      "text": "1h2x3s",
+      "error": "time: unknown unit \"x\" in duration \"1h2x3s\""
+    },
+    {
+      "text": "9223372036854775808ns",
+      "error": "time: invalid duration \"9223372036854775808ns\""
+    },
+    {
+      "text": "-9223372036854775809ns",
+      "error": "time: invalid duration \"-9223372036854775809ns\""
+    }
+  ],
+  "operations": [
+    {
+      "operation": "round",
+      "value": 150000000000,
+      "multiple": 60000000000,
+      "result": 180000000000
+    },
+    {
+      "operation": "round",
+      "value": -150000000000,
+      "multiple": 60000000000,
+      "result": -180000000000
+    },
+    {
+      "operation": "round",
+      "value": 9000000000000000000,
+      "multiple": 5000000000000000000,
+      "result": 9223372036854775807
+    },
+    {
+      "operation": "round",
+      "value": -9000000000000000000,
+      "multiple": 5000000000000000000,
+      "result": -9223372036854775808
+    },
+    {
+      "operation": "truncate",
+      "value": 610000000000,
+      "multiple": 180000000000,
+      "result": 540000000000
+    },
+    {
+      "operation": "truncate",
+      "value": -610000000000,
+      "multiple": 180000000000,
+      "result": -540000000000
+    },
+    {
+      "operation": "truncate",
+      "value": 60000000000,
+      "multiple": -1000000000,
+      "result": 60000000000
+    },
+    {
+      "operation": "add",
+      "value": 9223372036854775807,
+      "multiple": 1,
+      "result": -9223372036854775808
+    },
+    {
+      "operation": "subtract",
+      "value": -9223372036854775808,
+      "multiple": 1,
+      "result": 9223372036854775807
+    },
+    {
+      "operation": "negate",
+      "value": -9223372036854775808,
+      "multiple": 0,
+      "result": -9223372036854775808
+    },
+    {
+      "operation": "multiply",
+      "value": 9223372036854775807,
+      "multiple": 2,
+      "result": -2
+    },
+    {
+      "operation": "divide",
+      "value": 5000000000,
+      "multiple": 2000000000,
+      "result": 2
+    },
+    {
+      "operation": "divide",
+      "value": -9223372036854775808,
+      "multiple": -1,
+      "result": -9223372036854775808
+    },
+    {
+      "operation": "modulo",
+      "value": 5000000000,
+      "multiple": 2000000000,
+      "result": 1000000000
+    }
+  ]
+}

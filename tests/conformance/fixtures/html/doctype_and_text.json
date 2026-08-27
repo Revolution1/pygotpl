@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "html/doctype-and-text",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEscape doctype and HTML normalization cases",
+    "behavior": "Static case-insensitive HTML doctypes retain their less-than sign while CDATA, XML-like declarations, comparison text, and split doctype injection are escaped.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-doctype-and-text",
+    "template": "<!doCtYPE htMl>|<![CDATA[x]]>|<?xml?>|I <3 Ponies!|<!{{.}}|<textarea><!DOCTYPE html></textarea>",
+    "data": "DOCTYPE"
+  },
+  "expected": {
+    "output": "<!doCtYPE htMl>|&lt;![CDATA[x]]>|&lt;?xml?>|I &lt;3 Ponies!|&lt;!DOCTYPE|<textarea><!DOCTYPE html></textarea>",
+    "error": null
+  }
+}

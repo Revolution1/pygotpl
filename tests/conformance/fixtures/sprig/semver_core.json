@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/semver-core",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "semver.go and semver_test.go",
+    "behavior": "Semantic version parsing, methods, and common constraint forms match Sprig's Masterminds semver integration.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "semver-core",
+    "template": "{{$s := semver \"1.2.3-beta.1+c0ff33\"}}{{$s.Major}}.{{$s.Minor}}.{{$s.Patch}}/{{$s.Prerelease}}/{{$s.Metadata}}/{{$s.Original}}|{{semver \"1.2.3\" | (semver \"1.3.3\").Compare}}/{{semver \"1.4.3\" | (semver \"1.2.3\").Compare}}|{{semverCompare \"^1.2.0\" \"1.9.0\"}}/{{semverCompare \"~1.2.3\" \"1.2.9\"}}/{{semverCompare \">= 1.2.3, < 2.0.0\" \"1.8.0\"}}/{{semverCompare \"1.2.x\" \"1.2.8\"}}/{{semverCompare \">=1.2.3\" \"1.3.0-beta.1\"}}/{{semverCompare \">=1.2.3-0\" \"1.3.0-beta.1\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "1.2.3/beta.1/c0ff33/1.2.3-beta.1+c0ff33|1/-1|true/true/true/true/false/true",
+    "error": null
+  }
+}

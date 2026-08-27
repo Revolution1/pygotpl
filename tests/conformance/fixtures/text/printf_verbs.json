@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/printf-verbs",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/fmt/print.go",
+    "behavior": "Printf delegates value, Go-syntax, type, quoted, hexadecimal, floating-point, and Boolean verbs to fmt.Sprintf.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "printf-verbs",
+    "template": "{{printf \"%v|%#v|%T|%q|%x|%.2f|%t\" .List .Map \"go\" \"go\" 31 3.14159 true}}",
+    "data": {"List": [1, true], "Map": {"a": 1}},
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "[1 true]|map[string]interface {}{\"a\":1}|string|\"go\"|1f|3.14|true",
+    "error": null
+  }
+}

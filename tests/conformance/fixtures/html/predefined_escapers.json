@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "id": "html/predefined-escapers",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEnsurePipelineContains and TestEscapeMap",
+    "behavior": "Trailing predefined html and urlquery escapers merge with contextual escapers without double escaping, unrelated contextual filters retain their required order, and fields named like predefined escapers remain ordinary field operands.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-predefined-escapers",
+    "template": "{{.Safe | html}}|{{html .A .B .C}}|<a href=\"{{.Bad | urlquery}}\">|<script>{{.JS | html}}</script>|{{.html | print}}|{{.urlquery | print}}",
+    "data": {
+      "Safe": "<&",
+      "A": 1,
+      "B": 2,
+      "C": "<&",
+      "Bad": "javascript:evil()",
+      "JS": "<&",
+      "html": "<h1>Hi!</h1>",
+      "urlquery": "http://example.test/x?y=z"
+    }
+  },
+  "expected": {
+    "output": "&lt;&amp;|1 2&lt;&amp;|<a href=\"%23ZgotmplZ\">|<script>\"\\u0026lt;\\u0026amp;\"</script>|&lt;h1&gt;Hi!&lt;/h1&gt;|http://example.test/x?y=z",
+    "error": null
+  }
+}

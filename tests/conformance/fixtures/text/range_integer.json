@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/range-integer",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "Range accepts a non-negative integer and visits values from zero.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "range-int",
+    "template": "{{range 3}}[{{.}}]{{else}}empty{{end}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "[0][1][2]",
+    "error": null
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/field",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "A field chain resolves mapping keys from the current value.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "field",
+    "template": "Hello, {{.User.Name}}!",
+    "data": {"User": {"Name": "Ada"}},
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "Hello, Ada!",
+    "error": null
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "html/css-urls-and-comments",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEscape CSS URL and comment cases",
+    "behavior": "CSS comments are elided, quoted and unquoted URLs select path or query escaping, CSS strings are encoded conservatively, and style attributes receive HTML escaping.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-css-urls",
+    "template": "<style>/*{{.X}}*/a{background:url('{{.Good}}');mask:url(/img?name={{.Query}});font-family:'{{.Encoded}}'}//{{.X}}\nb{background:URL(#{{.X}})}</style>|<p style=\"background: '{{.Good}}'; border-image: url({{.Path}})\">x</p>",
+    "data": {
+      "X": "<x>",
+      "Good": "http://example.test/O'Reilly (1).png",
+      "Query": "O'Reilly A(1)<2>",
+      "Encoded": "javascript\\3a alert(1)",
+      "Path": "/**/'\";:// \\"
+    }
+  },
+  "expected": {
+    "output": "<style> a{background:url('http://example.test/O%27Reilly%20%281%29.png');mask:url(/img?name=O%27Reilly%20A%281%29%3c2%3e);font-family:'javascript%5c3a%20alert%281%29'}\nb{background:URL(#%3cx%3e)}</style>|<p style=\"background: 'http\\3a\\2f\\2f example.test\\2fO\\27Reilly \\28 1\\29.png'; border-image: url(/**/%27%22;://%20%5c)\">x</p>",
+    "error": null
+  }
+}

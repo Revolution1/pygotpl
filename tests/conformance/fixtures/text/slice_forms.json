@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/slice-forms",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/funcs.go",
+    "behavior": "Slice accepts zero, one, and two indexes after its value.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "slice-all",
+    "template": "{{slice .}}|{{slice . 1}}|{{slice . 1 4}}",
+    "data": "hello",
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "hello|ello|ell",
+    "error": null
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/date-fraction-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "date.go and Go time.Parse fractional-second bounds",
+    "behavior": "mustToDate rejects fractional seconds longer than Go's nanosecond precision after preserving prior output.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "date-fraction-overflow",
+    "template": "before/{{mustToDate \"2006-01-02 15:04:05.000000000\" \"2024-07-09 13:04:05.1234567890\"}}/after",
+    "data": null,
+    "function_profile": "sprig"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: date-fraction-overflow:1:9: executing \"date-fraction-overflow\" at <mustToDate \"2006-01-02 15:04:05.000000000\" \"2024-07-09 13:04:05.1234567890\">: error calling mustToDate: parsing time \"2024-07-09 13:04:05.1234567890\": extra text: \"0\""
+    }
+  }
+}

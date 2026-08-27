@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "text/function-variadic-type-error",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "Every variadic argument must match the variadic element type.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "function-variadic-type-error",
+    "template": "before/{{variadic \"p\" 1}}/after",
+    "data": null,
+    "function_profile": "execution-functions"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: function-variadic-type-error:1:22: executing \"function-variadic-type-error\" at <1>: expected string; found 1"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "html/conditional-and-partial-names",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEscape conditional valueless attr name and dynamic attribute name cases",
+    "behavior": "Conditional valueless attributes preserve the surrounding tag context, while a dynamically completed event attribute keeps its JavaScript value context.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-conditional-and-partial-names",
+    "template": "<input{{if .Enabled}} checked{{end}} name=n>|<input{{if .Enabled}} {{.Checked}}{{end}} name=n>|<input {{if .Enabled}}{{.Checked}} {{end}}name=n>|<p title={{if .Enabled}}{{.Value}}{{end}}>|<img on{{.Suffix}}=\"alert({{.Value}})\">",
+    "data": {
+      "Enabled": true,
+      "Checked": "checked",
+      "Suffix": "load",
+      "Value": "loaded"
+    }
+  },
+  "expected": {
+    "output": "<input checked name=n>|<input checked name=n>|<input checked name=n>|<p title=loaded>|<img onload=\"alert(&#34;loaded&#34;)\">",
+    "error": null
+  }
+}

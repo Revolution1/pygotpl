@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/numeric-special-decimal-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "numeric.go and shopspring/decimal v1.4.0",
+    "behavior": "Sprig decimal arithmetic rejects NaN before producing output from the function call.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "numeric-special-add",
+    "template": "before/{{addf \"NaN\" 1}}/after",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: numeric-special-add:1:9: executing \"numeric-special-add\" at <addf \"NaN\" 1>: error calling addf: Cannot create a Decimal from NaN"
+    }
+  }
+}

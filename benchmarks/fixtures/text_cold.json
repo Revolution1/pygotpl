@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "id": "text/cold-render",
+  "mode": "cold_render",
+  "request": {
+    "engine": "text",
+    "name": "cold-render",
+    "template": "{{range .Items}}{{if .Enabled}}{{.Name}}={{.Value}};{{end}}{{end}}",
+    "data": {
+      "Items": [
+        {"Name": "alpha", "Value": 7, "Enabled": true},
+        {"Name": "beta", "Value": 13, "Enabled": false},
+        {"Name": "gamma", "Value": 42, "Enabled": true}
+      ]
+    }
+  },
+  "warmup": 100,
+  "iterations": 2000
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/range",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "Range binds index and value variables for each sequence element.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "range",
+    "template": "{{range $index, $value := .Items}}{{$index}}={{$value}};{{else}}empty{{end}}",
+    "data": {"Items": ["a", "b"]},
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "0=a;1=b;",
+    "error": null
+  }
+}

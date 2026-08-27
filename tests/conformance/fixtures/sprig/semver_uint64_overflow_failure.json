@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/semver-uint64-overflow-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "semver.go and Masterminds semver v3.3.0",
+    "behavior": "Version segments above uint64 fail during parsing.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "semver-overflow",
+    "template": "before/{{semver \"18446744073709551616.0.0\"}}/after",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: semver-overflow:1:9: executing \"semver-overflow\" at <semver \"18446744073709551616.0.0\">: error calling semver: Error parsing version segment: strconv.ParseUint: parsing \"18446744073709551616\": value out of range"
+    }
+  }
+}

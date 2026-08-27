@@ -1,0 +1,5 @@
+apiVersion: v2
+name: basic
+version: 1.2.3
+appVersion: 2.0.0
+description: Representative pygotpl Helm fixture

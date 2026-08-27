@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "text/composite-format",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "Composite values use Go fmt-style sequence and mapping representations.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "composite-format",
+    "template": "{{.List}}|{{.Map}}",
+    "data": {
+      "List": [1, true, null, "x"],
+      "Map": {"b": 2, "a": 1}
+    },
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "[1 true <nil> x]|map[a:1 b:2]",
+    "error": null
+  }
+}

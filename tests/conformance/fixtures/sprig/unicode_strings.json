@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/unicode-strings",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "functions.go, strings.go, Go strings.Title, and goutils v1.1.1",
+    "behavior": "Go simple Unicode casing, legacy word boundaries, and goutils byte iteration differ observably from Python string methods.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "unicode-strings",
+    "template": "{{upper \"ßﬃı\"}}|{{lower \"İẞ\"}}|{{title \"ßeta ﬃoo foo—bar foo.bar foo_bar\"}}|{{untitle \"İstanbul ẞeta\"}}|{{swapcase \"ßeta İST\"}}|{{initials \"Élan 中文\"}}|{{nospace \"a b c\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "ßﬃI|iß|ßeta ﬃoo Foo—bar Foo.Bar Foo_bar|istanbul ßeta|ßETA ist|Ãä|aÂbâc",
+    "error": null
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/regex-core",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "regex.go and regex_test.go",
+    "behavior": "Regex matching, finding, replacement expansion, literal replacement, splitting, and quoting match Go regexp semantics.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "regex-core",
+    "template": "{{regexMatch \"fo+\" \"food\"}}/{{mustRegexMatch \"^x$\" \"x\"}}|{{regexFind \"fo.?\" \"food\"}}/{{regexFindAll \"a{2}\" \"aaaaaa\" 2}}|{{regexReplaceAll \"a(x*)b\" \"-ab-axxb-\" \"$1\"}}/{{regexReplaceAll \"a(x*)b\" \"-ab-axxb-\" \"$1W\"}}/{{regexReplaceAll \"a(x*)b\" \"-ab-axxb-\" \"${1}W\"}}|{{regexReplaceAllLiteral \"a(x*)b\" \"-ab-axxb-\" \"$1\"}}|{{regexSplit \"a\" \"banana\" 2}}/{{regexSplit \"a\" \"banana\" 0}}|{{regexQuoteMeta \"1.2+[x]- y\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "true/true|foo/[aa aa]|--xx-/---/-W-xxW-|-$1-$1-|[b nana]/[]|1\\.2\\+\\[x\\]- y",
+    "error": null
+  }
+}

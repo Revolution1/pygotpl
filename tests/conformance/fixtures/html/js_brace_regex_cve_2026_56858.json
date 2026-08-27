@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "html/js-brace-regex-cve-2026-56858",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestCVE202656858",
+    "behavior": "JavaScript braces update slash context so dynamic values in following regular-expression literals receive regexp escaping, including inside template-literal interpolation.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "js-brace-regex-cve-2026-56858",
+    "template": "<script>if(true){/{{.Safe}}/g.test(\"x\")}</script>|<script>if(true){x=1}/{{.Safe}}/g.test(\"x\")</script>|<script>if(true){/{{.Attack}}/g.test(\"x\")}</script>|<script>`${ (function(){/{{.Safe}}/g.test(x)}) }`</script>|<script>`${ (function(){}/{{.Safe}}/g.test(x)) }`</script>",
+    "data": {
+      "Safe": "a.b",
+      "Attack": "./;alert(1);var q=/."
+    }
+  },
+  "expected": {
+    "output": "<script>if(true){/a\\.b/g.test(\"x\")}</script>|<script>if(true){x=1}/a\\.b/g.test(\"x\")</script>|<script>if(true){/\\.\\/;alert\\(1\\);var q=\\/\\./g.test(\"x\")}</script>|<script>`${ (function(){/a\\.b/g.test(x)}) }`</script>|<script>`${ (function(){}/a\\.b/g.test(x)) }`</script>",
+    "error": null
+  }
+}

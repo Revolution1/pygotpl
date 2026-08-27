@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "python-engines/html-escape",
+  "engine": "html",
+  "gotpl_template": "<p>{{.message}}</p>",
+  "mako_template": "<p>${message}</p>",
+  "chameleon_template": "<p>${message}</p>",
+  "data": {"message": "<b>\"A&B\"</b>"},
+  "expected_output": {
+    "gotpl": "<p>&lt;b&gt;&#34;A&amp;B&#34;&lt;/b&gt;</p>",
+    "mako": "<p>&lt;b&gt;&#34;A&amp;B&#34;&lt;/b&gt;</p>",
+    "chameleon": "<p>&lt;b&gt;\"A&amp;B\"&lt;/b&gt;</p>"
+  },
+  "warmup": 1000,
+  "iterations": 10000,
+  "cold_iterations": 500
+}

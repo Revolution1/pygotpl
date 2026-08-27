@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "id": "html/js-contexts",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEscape and js_test.go",
+    "behavior": "JavaScript values, quoted strings, regular expressions, template literals, empty patterns, and event attributes use distinct contextual escapers.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-js-contexts",
+    "template": "<script>const s={{.S}};const n={{.N}};const b={{.B}};const a={{.A}};const z={{.Z}};const q=\"{{.Raw}}\";const r=/{{.Pattern}}/;const e=/{{.Empty}}/;const t=`{{.Raw}}`;</script>|<button onclick='return {{.S}}'>x</button>",
+    "data": {
+      "S": "</script><b>&",
+      "N": 42,
+      "B": true,
+      "A": ["<a>", null],
+      "Z": null,
+      "Raw": "\"'`&+/${}</script>\n\u2028",
+      "Pattern": "a+b[c](d)?",
+      "Empty": ""
+    }
+  },
+  "expected": {
+    "output": "<script>const s=\"\\u003c/script\\u003e\\u003cb\\u003e\\u0026\";const n= 42 ;const b= true ;const a=[\"\\u003ca\\u003e\",null];const z= null ;const q=\"\\u0022\\u0027\\u0060\\u0026\\u002b\\/${}\\u003c\\/script\\u003e\\n\\u2028\";const r=/a\\u002bb\\[c\\]\\(d\\)\\?/;const e=/(?:)/;const t=`\\u0022\\u0027\\u0060\\u0026\\u002b\\/\\u0024\\u007b\\u007d\\u003c\\/script\\u003e\\n\\u2028`;</script>|<button onclick='return &#34;\\u003c/script\\u003e\\u003cb\\u003e\\u0026&#34;'>x</button>",
+    "error": null
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "id": "text/named-large-render",
+  "mode": "named_render",
+  "request": {
+    "engine": "text",
+    "name": "named-large-render",
+    "execute_template": "main",
+    "template": "{{define \"main\"}}{{template \"t00\" .}}{{end}}{{define \"t00\"}}00>{{template \"t01\" .}}{{end}}{{define \"t01\"}}01>{{template \"t02\" .}}{{end}}{{define \"t02\"}}02>{{template \"t03\" .}}{{end}}{{define \"t03\"}}03>{{template \"t04\" .}}{{end}}{{define \"t04\"}}04>{{template \"t05\" .}}{{end}}{{define \"t05\"}}05>{{template \"t06\" .}}{{end}}{{define \"t06\"}}06>{{template \"t07\" .}}{{end}}{{define \"t07\"}}07>{{template \"t08\" .}}{{end}}{{define \"t08\"}}08>{{template \"t09\" .}}{{end}}{{define \"t09\"}}09>{{template \"t10\" .}}{{end}}{{define \"t10\"}}10>{{template \"t11\" .}}{{end}}{{define \"t11\"}}11>{{template \"t12\" .}}{{end}}{{define \"t12\"}}12>{{template \"t13\" .}}{{end}}{{define \"t13\"}}13>{{template \"t14\" .}}{{end}}{{define \"t14\"}}14>{{template \"t15\" .}}{{end}}{{define \"t15\"}}15>{{template \"t16\" .}}{{end}}{{define \"t16\"}}16>{{template \"t17\" .}}{{end}}{{define \"t17\"}}17>{{template \"t18\" .}}{{end}}{{define \"t18\"}}18>{{template \"t19\" .}}{{end}}{{define \"t19\"}}19>{{template \"t20\" .}}{{end}}{{define \"t20\"}}20>{{template \"t21\" .}}{{end}}{{define \"t21\"}}21>{{template \"t22\" .}}{{end}}{{define \"t22\"}}22>{{template \"t23\" .}}{{end}}{{define \"t23\"}}23>{{template \"t24\" .}}{{end}}{{define \"t24\"}}24>{{template \"t25\" .}}{{end}}{{define \"t25\"}}25>{{template \"t26\" .}}{{end}}{{define \"t26\"}}26>{{template \"t27\" .}}{{end}}{{define \"t27\"}}27>{{template \"t28\" .}}{{end}}{{define \"t28\"}}28>{{template \"t29\" .}}{{end}}{{define \"t29\"}}29>{{template \"t30\" .}}{{end}}{{define \"t30\"}}30>{{template \"t31\" .}}{{end}}{{define \"t31\"}}31={{.Value}}{{end}}",
+    "data": {"Value": "done"}
+  },
+  "warmup": 500,
+  "iterations": 5000
+}

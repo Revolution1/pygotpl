@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/variables",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "A declared variable can be used by later actions in its scope.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "variables",
+    "template": "{{$greeting := .Greeting}}{{$greeting}}, {{.Name}}!",
+    "data": {"Greeting": "Hello", "Name": "Ada"},
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "Hello, Ada!",
+    "error": null
+  }
+}

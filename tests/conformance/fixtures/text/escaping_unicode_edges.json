@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/escaping-unicode-edges",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/funcs.go",
+    "behavior": "Text-template escapers use Go's exact HTML entities, invalid-NUL replacement, JavaScript Unicode rules, and UTF-8 URL encoding.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "escaping-unicode-edges",
+    "template": "{{html \"'\\\"+\\u0000\"}}|{{js \"\u00e9\ud83d\ude00\\u2028\\u2029\\u007f\"}}|{{urlquery \"\u00e9/~\"}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "&#39;&#34;+\ufffd|\u00e9\ud83d\ude00\\u2028\\u2029\u007f|%C3%A9%2F~",
+    "error": null
+  }
+}

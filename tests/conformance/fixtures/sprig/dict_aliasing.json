@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/dict-aliasing",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "dict.go, dict_test.go, and Sprig dict documentation",
+    "behavior": "Merge, overwrite, pick, and omit preserve nested object identity while deepCopy isolates it.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "dict-aliasing",
+    "template": "{{$s1 := dict \"nested\" (dict \"x\" 1)}}{{$m1 := merge (dict) $s1}}{{$i := set (get $s1 \"nested\") \"x\" 2}}{{get (get $m1 \"nested\") \"x\"}}/{{$s2 := dict \"nested\" (dict \"x\" 1)}}{{$m2 := mergeOverwrite (dict) $s2}}{{$i = set (get $s2 \"nested\") \"x\" 2}}{{get (get $m2 \"nested\") \"x\"}}/{{$s3 := dict \"nested\" (dict \"x\" 1)}}{{$p := pick $s3 \"nested\"}}{{$i = set (get $s3 \"nested\") \"x\" 2}}{{get (get $p \"nested\") \"x\"}}/{{$s4 := dict \"nested\" (dict \"x\" 1)}}{{$o := omit $s4 \"other\"}}{{$i = set (get $s4 \"nested\") \"x\" 2}}{{get (get $o \"nested\") \"x\"}}/{{$s5 := dict \"nested\" (dict \"x\" 1)}}{{$c := deepCopy $s5}}{{$i = set (get $s5 \"nested\") \"x\" 2}}{{get (get $c \"nested\") \"x\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "2/2/2/2/1",
+    "error": null
+  }
+}

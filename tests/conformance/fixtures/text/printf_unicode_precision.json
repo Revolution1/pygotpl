@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/printf-unicode-precision",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/fmt/format.go",
+    "behavior": "String precision counts runes for string and quote verbs but bytes for hexadecimal output.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "printf-unicode-precision",
+    "template": "{{printf \"%.3s|%.3q|%.3x|%.2s\" \"\u00e9\ud83d\ude00x\" \"\u00e9\ud83d\ude00x\" \"\u00e9\ud83d\ude00x\" bytes}}",
+    "data": null,
+    "function_profile": "execution-functions"
+  },
+  "expected": {
+    "output": "\u00e9\ud83d\ude00x|\"\u00e9\ud83d\ude00x\"|c3a9f0|Go",
+    "error": null
+  }
+}

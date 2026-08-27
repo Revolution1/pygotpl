@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "id": "helm-runtime-v1",
+  "reference": "helm-v4.2.3",
+  "chart": {
+    "name": "benchmark",
+    "version": "1.0.0",
+    "templates": {
+      "templates/_helpers.tpl": "{{define \"benchmark.label\"}}{{.Release.Name}}-{{.Chart.Name}}{{end}}",
+      "templates/config.txt": "{{include \"benchmark.label\" .}}|{{range .Values.ports}}{{.}},{{end}}|{{.Files.Get \"payload.txt\"}}",
+      "templates/dynamic.txt": "{{tpl .Values.dynamic .}}"
+    },
+    "static_templates": {
+      "templates/_helpers.tpl": "{{define \"benchmark.label\"}}{{.Release.Name}}-{{.Chart.Name}}{{end}}",
+      "templates/config.txt": "{{include \"benchmark.label\" .}}|{{range .Values.ports}}{{.}},{{end}}|{{.Files.Get \"payload.txt\"}}",
+      "templates/dynamic.txt": "{{include \"benchmark.label\" .}}/{{.Values.image}}"
+    },
+    "files": {
+      "payload.txt": "abcdefghijklmnopqrstuvwxyz0123456789"
+    }
+  },
+  "values": {
+    "ports": [80, 443, 8080, 8443],
+    "image": "example:v1",
+    "dynamic": "{{include \"benchmark.label\" .}}/{{.Values.image}}"
+  },
+  "core_sources": {
+    "helpers.tpl": "{{define \"label\"}}{{.release}}-{{.chart}}{{end}}",
+    "config.txt": "{{template \"label\" .}}|{{range .ports}}{{.}},{{end}}|{{.payload}}",
+    "dynamic.txt": "{{template \"label\" .}}/{{.image}}"
+  },
+  "core_contexts": {
+    "config.txt": {
+      "release": "demo",
+      "chart": "benchmark",
+      "ports": [80, 443, 8080, 8443],
+      "payload": "abcdefghijklmnopqrstuvwxyz0123456789"
+    },
+    "dynamic.txt": {
+      "release": "demo",
+      "chart": "benchmark",
+      "image": "example:v1"
+    }
+  }
+}

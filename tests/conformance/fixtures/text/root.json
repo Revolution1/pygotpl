@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/root",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "The root variable remains stable while with changes dot.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "root",
+    "template": "{{with .User}}{{$.Title}}:{{.Name}}{{end}}",
+    "data": {"Title": "Owner", "User": {"Name": "Ada"}},
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "Owner:Ada",
+    "error": null
+  }
+}

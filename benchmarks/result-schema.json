@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Revolution1/pygotpl/benchmarks/result-schema.json",
+  "title": "pygotpl benchmark comparison",
+  "type": "object",
+  "required": ["schema_version", "case_id", "python", "go", "python_to_go_ratio"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "case_id": {"type": "string"},
+    "python": {"$ref": "#/$defs/result"},
+    "go": {"$ref": "#/$defs/result"},
+    "python_to_go_ratio": {"type": "number", "exclusiveMinimum": 0}
+  },
+  "$defs": {
+    "result": {
+      "type": "object",
+      "required": [
+        "runtime",
+        "case_id",
+        "mode",
+        "iterations",
+        "ns_per_op",
+        "allocations_per_op",
+        "bytes_per_op",
+        "output_sha256"
+      ],
+      "properties": {
+        "runtime": {"enum": ["python", "go"]},
+        "case_id": {"type": "string"},
+        "mode": {
+          "enum": ["warm_render", "cold_render", "writer_render", "named_render"]
+        },
+        "iterations": {"type": "integer", "minimum": 1},
+        "ns_per_op": {"type": "number", "exclusiveMinimum": 0},
+        "allocations_per_op": {"type": ["number", "null"]},
+        "bytes_per_op": {"type": ["number", "null"]},
+        "output_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Revolution1/pygotpl/benchmarks/jinja-schema.json",
+  "title": "pygotpl and Jinja equivalent-work benchmark fixture",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "id",
+    "engine",
+    "gotpl_template",
+    "jinja_template",
+    "data",
+    "expected_output",
+    "warmup",
+    "iterations",
+    "cold_iterations",
+    "cache_iterations"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "id": {"type": "string", "minLength": 1},
+    "engine": {"enum": ["text", "html"]},
+    "gotpl_template": {"type": "string"},
+    "jinja_template": {"type": "string"},
+    "data": {"type": "object"},
+    "expected_output": {"type": "string"},
+    "function_profile": {"enum": ["identity"]},
+    "warmup": {"type": "integer", "minimum": 0},
+    "iterations": {"type": "integer", "minimum": 1},
+    "cold_iterations": {"type": "integer", "minimum": 1},
+    "cache_iterations": {"type": "integer", "minimum": 1}
+  },
+  "additionalProperties": false
+}

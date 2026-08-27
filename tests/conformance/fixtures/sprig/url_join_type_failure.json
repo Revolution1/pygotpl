@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/url-join-type-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "url.go",
+    "behavior": "urlJoin reports Go reflection kind names for non-string dictionary components.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "url-join-type-failure",
+    "template": "before/{{urlJoin (dict \"path\" (list 1))}}/after",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: url-join-type-failure:1:9: executing \"url-join-type-failure\" at <urlJoin (dict \"path\" (list 1))>: error calling urlJoin: unable to parse path key, must be of type string, but slice found"
+    }
+  }
+}

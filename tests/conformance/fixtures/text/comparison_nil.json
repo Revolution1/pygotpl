@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/comparison-nil",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/funcs.go",
+    "behavior": "Missing values and untyped nil compare as nil values.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "eq-nil",
+    "template": "{{eq .missing nil}}/{{eq nil nil}}",
+    "data": {},
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "true/true",
+    "error": null
+  }
+}

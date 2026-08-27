@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "vectors": [
+    {"name": "ascii-digit", "output": false},
+    {"name": "leftmost-first", "output": "a"},
+    {"name": "find-all-empty", "output": ["", "aaa", ""]},
+    {"name": "find-all-zero", "output": null},
+    {"name": "named-replacement", "output": "<abc>-12"},
+    {"name": "literal-replacement", "output": "b$1n$1n$1"},
+    {"name": "split-capture", "output": ["b", "n", "n", ""]},
+    {"name": "split-one", "output": ["banana"]},
+    {"name": "quote-meta", "output": "a\\+b\\[0\\]"},
+    {"name": "unicode-greek", "output": true},
+    {"name": "unicode-complement", "output": true},
+    {"name": "ungreedy", "output": "a1b"},
+    {"name": "octal", "output": true},
+    {"name": "empty-split", "output": ["é", "x"]}
+  ]
+}

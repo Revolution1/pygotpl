@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Revolution1/pygotpl/benchmarks/memory-schema.json",
+  "title": "pygotpl Python memory measurement",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "runtime",
+    "case_id",
+    "mode",
+    "samples",
+    "measurement",
+    "peak_traced_bytes_per_render",
+    "retained_traced_bytes_per_render",
+    "retained_traced_blocks_per_render",
+    "output_sha256",
+    "environment"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "runtime": {"const": "python"},
+    "case_id": {"type": "string"},
+    "mode": {
+      "enum": ["warm_render", "cold_render", "writer_render", "named_render"]
+    },
+    "samples": {"type": "integer", "minimum": 1},
+    "measurement": {"const": "tracemalloc-single-render"},
+    "peak_traced_bytes_per_render": {"$ref": "#/$defs/distribution"},
+    "retained_traced_bytes_per_render": {"$ref": "#/$defs/distribution"},
+    "retained_traced_blocks_per_render": {"$ref": "#/$defs/distribution"},
+    "output_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "environment": {
+      "type": "object",
+      "required": ["python", "platform", "machine"],
+      "additionalProperties": {"type": "string"}
+    }
+  },
+  "$defs": {
+    "distribution": {
+      "type": "object",
+      "required": [
+        "values",
+        "median",
+        "minimum",
+        "maximum",
+        "relative_standard_deviation"
+      ],
+      "properties": {
+        "values": {"type": "array", "items": {"type": "number"}},
+        "median": {"type": "number"},
+        "minimum": {"type": "number"},
+        "maximum": {"type": "number"},
+        "relative_standard_deviation": {"type": "number", "minimum": 0}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

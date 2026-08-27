@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/strings-advanced",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "strings.go, strings_test.go, and functions_test.go",
+    "behavior": "Advanced string slicing, quoting, word transforms, abbreviation, wrapping, splitting, and concatenation match Sprig.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "strings-advanced",
+    "template": "{{substr 0 3 \"fooo\"}}/{{substr 1 -1 \"fooo\"}}/{{trunc 3 \"fooooo\"}}/{{trunc -3 \"baaaaaar\"}}/{{trunc -99 \"short\"}}|{{quote \"a\" 1 nil \"b\"}}/{{squote \"a\" 1 nil}}/{{cat \"a\" nil 2}}|{{$s := split \"$\" \"foo$bar$baz\"}}{{$s._1}}/{{$n := splitn \"$\" 2 \"foo$bar$baz\"}}{{$n._1}}/{{splitList \"$\" \"foo$bar\"}}|{{nospace \"h e\\tl\\nlo\"}}/{{initials \"First Try\"}}/{{title \"hello world\"}}/{{untitle \"First Try\"}}/{{swapcase \"This Is A.Test\"}}|{{snakecase \"HTTPServer\"}}/{{camelcase \"_complex__case_\"}}/{{kebabcase \"NoHTTPS\"}}|{{abbrev 5 \"hello world\"}}/{{abbrevboth 5 10 \"1234 5678 9123\"}}|{{wrap 5 \"Hello World\"}}/{{wrapWith 5 \"\\t\" \"Hello World\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "foo/ooo/foo/aar/short|\"a\" \"1\" \"b\"/'a' '1'/a 2|bar/bar$baz/[foo bar]|hello/FT/Hello World/first try/tHIS iS a.tEST|http_server/_Complex_Case_/no-https|he.../...5678...|Hello\nWorld/Hello\tWorld",
+    "error": null
+  }
+}

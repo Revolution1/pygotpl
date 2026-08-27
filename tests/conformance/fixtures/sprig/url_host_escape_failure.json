@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/url-host-escape-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "url.go and Go net/url",
+    "behavior": "Percent escapes outside an IPv6 zone are rejected in URL hosts.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "url-host-escapes",
+    "template": "before/{{urlParse \"http://exa%6Dple.com/a\"}}/after",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: url-host-escapes:1:9: executing \"url-host-escapes\" at <urlParse \"http://exa%6Dple.com/a\">: error calling urlParse: unable to parse url: parse \"http://exa%6Dple.com/a\": invalid URL escape \"%6D\""
+    }
+  }
+}

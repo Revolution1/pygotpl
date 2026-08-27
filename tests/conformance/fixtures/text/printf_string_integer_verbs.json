@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/printf-string-integer-verbs",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/fmt/format.go",
+    "behavior": "Printf applies hexadecimal and quoted verbs to strings and integer characters.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "printf-string-int",
+    "template": "{{printf \"%x|%X|%q|%q|%+q|%#q\" \"Go!\" \"Go!\" 65 \"line\\n\" \"caf\u00e9\" \"raw text\"}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "476f21|476F21|'A'|\"line\\n\"|\"caf\\u00e9\"|`raw text`",
+    "error": null
+  }
+}

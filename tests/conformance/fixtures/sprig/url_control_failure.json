@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/url-control-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "url.go and Go net/url",
+    "behavior": "urlParse rejects ASCII control bytes before parsing instead of silently stripping them.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "url-control-failure",
+    "template": "before/{{urlParse .Value}}/after",
+    "data": {"Value": "http://example.test/a\nb"},
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: url-control-failure:1:9: executing \"url-control-failure\" at <urlParse .Value>: error calling urlParse: unable to parse url: parse \"http://example.test/a\\nb\": net/url: invalid control character in URL"
+    }
+  }
+}

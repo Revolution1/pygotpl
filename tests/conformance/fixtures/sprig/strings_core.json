@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/strings-core",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "strings.go and strings_test.go",
+    "behavior": "Core deterministic string helpers preserve pipeline argument order.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "strings-core",
+    "template": "{{hello}}|{{trim \"  value  \"}}|{{\"go\" | upper}}|{{\"GO\" | lower}}|{{trimAll \"$\" \"$5$\"}}|{{trimPrefix \"pre\" \"prefix\"}}|{{trimSuffix \"fix\" \"prefix\"}}|{{contains \"cat\" \"catch\"}}/{{hasPrefix \"cat\" \"catch\"}}/{{hasSuffix \"cat\" \"ducat\"}}|{{\"go\" | repeat 3}}|{{\"a b\" | replace \" \" \"-\"}}|{{indent 2 \"a\\nb\"}}|{{nindent 0 \"x\"}}|{{plural \"one\" \"many\" 1}}/{{plural \"one\" \"many\" 0}}",
+    "data": null,
+    "function_profile": "sprig"
+  },
+  "expected": {
+    "output": "Hello!|value|GO|go|5|fix|pre|true/true/true|gogogo|a-b|  a\n  b|\nx|one/many",
+    "error": null
+  }
+}

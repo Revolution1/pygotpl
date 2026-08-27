@@ -1,0 +1,73 @@
+[build-system]
+requires = ["hatchling>=1.32.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gotime"
+version = "0.0.0"
+description = "Dual-surface Go-compatible and Python-native time values"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+authors = [{ name = "Revolution1" }]
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Typing :: Typed",
+]
+dependencies = ["goduration>=0.0.0", "tzdata>=2026.3"]
+
+[dependency-groups]
+test = ["hypothesis>=6.165.10", "pytest>=9.1.1"]
+quality = ["pyright>=1.1.411", "ruff>=0.16.4"]
+dev = [
+  { include-group = "test" },
+  { include-group = "quality" },
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gotime"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "src/gotime",
+  "benchmarks",
+  "docs",
+  "LICENSE",
+  "tests",
+  "tools/oracle",
+  "README.md",
+  "pyproject.toml",
+]
+
+[tool.uv.sources]
+goduration = { workspace = true }
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers --import-mode=importlib"
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.pyright]
+include = ["src", "tests"]
+pythonVersion = "3.11"
+typeCheckingMode = "strict"
+
+[tool.coverage.run]
+branch = true
+source = ["gotime"]
+
+[tool.coverage.report]
+show_missing = true

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "html/dynamic-name-security",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/attr.go:attrTypeMap and escape_test.go:TestEscape",
+    "behavior": "Dynamic attribute names are lowercased but replaced when their normalized Go content type is URL, JavaScript, CSS, HTML, srcset, or unsafe; known plain names remain available.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-dynamic-name-security",
+    "template": "<input {{.Async}}=x {{.Type}}=x {{.DataType}}=x {{.SVGMethod}}=x {{.Safe}}=x>",
+    "data": {
+      "Async": "async",
+      "Type": "type",
+      "DataType": "data-type",
+      "SVGMethod": "svg:method",
+      "Safe": "TITLE"
+    }
+  },
+  "expected": {
+    "output": "<input ZgotmplZ=x ZgotmplZ=x ZgotmplZ=x ZgotmplZ=x title=x>",
+    "error": null
+  }
+}

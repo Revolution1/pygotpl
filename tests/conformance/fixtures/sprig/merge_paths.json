@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/merge-paths",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "dict.go, dict_test.go, and functions_test.go",
+    "behavior": "Deep merge precedence and OS-path aliases match Sprig on the oracle platform.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "merge-paths",
+    "template": "{{$a := merge (dict \"x\" 1 \"nested\" (dict \"a\" 1)) (dict \"x\" 2 \"y\" 3 \"nested\" (dict \"b\" 2))}}{{get $a \"x\"}}/{{get $a \"y\"}}/{{get (get $a \"nested\") \"a\"}}/{{get (get $a \"nested\") \"b\"}}|{{$b := mustMergeOverwrite (dict \"x\" 1 \"nested\" (dict \"a\" 1)) (dict \"x\" 2 \"nested\" (dict \"a\" 3 \"b\" 2))}}{{get $b \"x\"}}/{{get (get $b \"nested\") \"a\"}}/{{get (get $b \"nested\") \"b\"}}|{{osBase \"foo/bar.txt\"}}/{{osDir \"foo/bar.txt\"}}/{{osClean \"/a/../b\"}}/{{osExt \"foo/bar.txt\"}}/{{osIsAbs \"/root\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "1/3/1/2|2/3/2|bar.txt/foo//b/.txt/true",
+    "error": null
+  }
+}

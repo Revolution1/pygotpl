@@ -1,0 +1,452 @@
+{
+  "schema_version": 1,
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/parse/lex_test.go and src/text/template/parse/parse_test.go",
+    "behavior": "Independently authored coverage of the M1 lexical and grammatical compatibility surface.",
+    "derived": true
+  },
+  "cases": [
+    {
+      "id": "empty-source",
+      "template": "",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "plain-unicode-text",
+      "template": "hello-\ud83d\ude00-world",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "field-chain",
+      "template": "{{.User.Profile.Name}}",
+      "data": {},
+      "accepted": true
+    },
+    {
+      "id": "unicode-letter-field",
+      "template": "{{.\u00c9clair}}",
+      "data": {},
+      "accepted": true
+    },
+    {
+      "id": "non-decimal-numeric-field-character",
+      "template": "{{.Value\u00b2}}",
+      "data": {},
+      "accepted": false
+    },
+    {
+      "id": "root-variable-field",
+      "template": "{{$.Name}}",
+      "data": {"Name": "root"},
+      "accepted": true
+    },
+    {
+      "id": "builtin-multi-argument-command",
+      "template": "{{printf \"%04d\" 7}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "registered-custom-function",
+      "template": "{{custom .}}",
+      "data": "value",
+      "function_profile": "parser-functions",
+      "functions": ["custom"],
+      "accepted": true
+    },
+    {
+      "id": "registered-break-function",
+      "template": "{{range .}}{{break 20}}{{end}}",
+      "data": [1],
+      "function_profile": "parser-functions",
+      "functions": ["break"],
+      "accepted": true
+    },
+    {
+      "id": "registered-continue-function",
+      "template": "{{range .}}{{continue 20}}{{end}}",
+      "data": [1],
+      "function_profile": "parser-functions",
+      "functions": ["continue"],
+      "accepted": true
+    },
+    {
+      "id": "parenthesized-field-chain",
+      "template": "{{(.User).Name}}",
+      "data": {"User": {"Name": "value"}},
+      "accepted": true
+    },
+    {
+      "id": "field-pipeline",
+      "template": "{{.User | printf \"%v\"}}",
+      "data": {"User": "value"},
+      "accepted": true
+    },
+    {
+      "id": "trailing-pipeline-separator",
+      "template": "{{printf \"value\" |}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "action-declaration-and-use",
+      "template": "{{$value := .Name}}{{$value}}",
+      "data": {"Name": "value"},
+      "accepted": true
+    },
+    {
+      "id": "if-else-if-chain",
+      "template": "{{if .A}}a{{else if .B}}b{{else}}c{{end}}",
+      "data": {"A": false, "B": true},
+      "accepted": true
+    },
+    {
+      "id": "with-else-with-chain",
+      "template": "{{with .A}}a{{else with .B}}b{{else}}c{{end}}",
+      "data": {"A": null, "B": true},
+      "accepted": true
+    },
+    {
+      "id": "range-two-variable-declaration",
+      "template": "{{range $index, $value := .}}{{$index}}={{$value}};{{end}}",
+      "data": ["a", "b"],
+      "accepted": true
+    },
+    {
+      "id": "range-variables-visible-in-else",
+      "template": "{{range $index, $value := .}}{{else}}{{$index}}{{$value}}{{end}}",
+      "data": [],
+      "accepted": true
+    },
+    {
+      "id": "if-pipeline-variable-visible-in-both-branches",
+      "template": "{{if $value := .}}{{$value}}{{else}}{{$value}}{{end}}",
+      "data": false,
+      "accepted": true
+    },
+    {
+      "id": "body-variable-not-visible-in-else",
+      "template": "{{if .}}{{$value := .}}{{else}}{{$value}}{{end}}",
+      "data": false,
+      "accepted": true
+    },
+    {
+      "id": "multiline-pipeline",
+      "template": "{{\n\"%s\"\n|\nprintf \"value=%s\"\n}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "raw-string-containing-delimiter",
+      "template": "{{`inside }} raw`}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "alphanumeric-custom-delimiters",
+      "template": "{{hub .Host hub}}",
+      "data": {"Host": "value"},
+      "delimiters": {"left": "{{hub", "right": "hub}}"},
+      "accepted": true
+    },
+    {
+      "id": "marker-shaped-custom-delimiters",
+      "template": "{{- .Value -}}",
+      "data": {"Value": "value"},
+      "delimiters": {"left": "{{- ", "right": " -}}"},
+      "accepted": true
+    },
+    {
+      "id": "comment-and-trim-markers",
+      "template": "left \n{{- /* note */ -}} \nright",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "numeric-and-character-forms",
+      "template": "{{printf \"%v %v %v %v\" 0x10 1.25 -2i '\\u0061'}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "binary-octal-and-hex-numbers",
+      "template": "{{printf \"%v %v %v\" 0b10_01 0o73 0X7_3}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "hex-number-underscore-after-prefix",
+      "template": "{{0x_1p4}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "decimal-exponent-underscore",
+      "template": "{{1e1_9}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "large-finite-float",
+      "template": "{{1e308}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "legacy-octal-integer",
+      "template": "{{073}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "float-overflow",
+      "template": "{{1e309}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "hexadecimal-float-overflow",
+      "template": "{{0x1p99999}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "float-underflow",
+      "template": "{{1e-4000}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "integer-above-uint64-but-float-representable",
+      "template": "{{18446744073709551616}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "maximum-uint64-integer",
+      "template": "{{18446744073709551615}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "minimum-int64-integer",
+      "template": "{{-9223372036854775808}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "integer-below-int64",
+      "template": "{{-9223372036854775809}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "complex-component-overflow",
+      "template": "{{1e309+1i}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "imaginary-component-overflow",
+      "template": "{{1e309i}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "binary-prefix-without-digits",
+      "template": "{{0b_}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "number-with-trailing-underscore",
+      "template": "{{0b1_}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "number-with-double-underscore",
+      "template": "{{1__2}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "incomplete-hexadecimal-number",
+      "template": "{{0x}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "hexadecimal-point-without-exponent",
+      "template": "{{0x1.}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "maximum-byte-octal-escape",
+      "template": "{{\"\\377\"}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "octal-escape-exceeds-byte",
+      "template": "{{\"\\400\"}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "escaped-forward-slash",
+      "template": "{{\"\\/\"}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "empty-action",
+      "template": "{{}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "unmatched-else",
+      "template": "{{else}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "unmatched-end",
+      "template": "{{end}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "multiple-else-actions",
+      "template": "{{if .}}a{{else}}b{{else}}c{{end}}",
+      "data": true,
+      "accepted": false
+    },
+    {
+      "id": "adjacent-command-arguments",
+      "template": "{{printf 3`x`}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "comma-between-command-arguments",
+      "template": "{{printf 3, 4}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "declaration-target-has-field",
+      "template": "{{with $value.Name := .}}{{end}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "literal-followed-by-field",
+      "template": "{{true.Name}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "number-as-second-pipeline-command",
+      "template": "{{. | 12 | printf}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "string-as-second-pipeline-command",
+      "template": "{{. | \"invalid\"}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "boolean-as-second-pipeline-command",
+      "template": "{{. | true}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "nil-as-second-pipeline-command",
+      "template": "{{. | nil}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "character-as-second-pipeline-command",
+      "template": "{{. | 'x'}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "empty-parenthesized-pipeline",
+      "template": "{{printf ( )}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "block-missing-pipeline",
+      "template": "{{block \"item\"}}body{{end}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "break-in-range-else",
+      "template": "{{range .}}{{else}}{{break}}{{end}}",
+      "data": [],
+      "accepted": false
+    },
+    {
+      "id": "continue-in-range-else",
+      "template": "{{range .}}{{else}}{{continue}}{{end}}",
+      "data": [],
+      "accepted": false
+    },
+    {
+      "id": "extra-end-after-else-if",
+      "template": "{{if .A}}a{{else if .B}}b{{end}}{{end}}",
+      "data": {"A": false, "B": true},
+      "accepted": false
+    },
+    {
+      "id": "unsupported-augmented-assignment",
+      "template": "{{$value := 0}}{{$value += 1}}",
+      "data": null,
+      "accepted": false
+    },
+    {
+      "id": "nested-definition",
+      "template": "{{if .}}{{define \"item\"}}item{{end}}{{end}}",
+      "data": true,
+      "accepted": false
+    },
+    {
+      "id": "nested-block",
+      "template": "{{if .}}{{block \"item\" .}}item{{end}}{{end}}",
+      "data": true,
+      "accepted": true
+    },
+    {
+      "id": "empty-definition-before-content-definition",
+      "template": "{{define \"item\"}}{{end}}{{define \"item\"}}body{{end}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "empty-definition-after-content-definition",
+      "template": "{{define \"item\"}}body{{end}}{{define \"item\"}} \n {{end}}",
+      "data": null,
+      "accepted": true
+    },
+    {
+      "id": "two-content-definitions",
+      "template": "{{define \"item\"}}first{{end}}{{define \"item\"}}second{{end}}",
+      "data": null,
+      "accepted": false
+    }
+  ]
+}

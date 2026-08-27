@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "html/range-context-failure",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestErrors range loop re-entry and early-exit failures",
+    "behavior": "A break path that exits from an unfinished tag is rejected before any branch output is written.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-range-context-failure",
+    "template": "{{range .Items}}<a{{if .X}}{{break}}{{end}}>{{end}}",
+    "data": {
+      "Items": [{"X": true}]
+    }
+  },
+  "expected": {
+    "output": "",
+    "error": {
+      "phase": "execute",
+      "message": "html/template:html-range-context-failure:1:29: at range loop break: {{range}} branches end in different contexts: {stateText delimNone urlPartNone jsCtxRegexp [] attrNone elementNone <nil>}, {stateTag delimNone urlPartNone jsCtxRegexp [] attrNone elementNone <nil>}"
+    }
+  }
+}

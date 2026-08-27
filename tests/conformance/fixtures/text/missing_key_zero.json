@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "text/missing-key-zero",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/option.go",
+    "behavior": "The zero missing-key mode renders the mapping element zero value.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "missing-zero",
+    "template": "before/{{.missing}}/after",
+    "data": {},
+    "options": ["missingkey=zero"],
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "before/<no value>/after",
+    "error": null
+  }
+}

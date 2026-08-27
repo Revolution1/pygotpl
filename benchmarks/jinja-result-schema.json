@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Revolution1/pygotpl/benchmarks/jinja-result-schema.json",
+  "title": "pygotpl and Jinja sampled comparison",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "samples",
+    "environment",
+    "configuration",
+    "fixtures",
+    "cache",
+    "async"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "samples": {"type": "integer", "minimum": 1},
+    "environment": {"type": "object", "additionalProperties": {"type": "string"}},
+    "configuration": {
+      "type": "object",
+      "required": [
+        "jinja_optimized",
+        "jinja_auto_reload",
+        "jinja_cache_size",
+        "html_policy"
+      ],
+      "additionalProperties": false
+    },
+    "fixtures": {"type": "array", "items": {"$ref": "#/$defs/fixture"}},
+    "cache": {"type": "object"},
+    "async": {"type": "object"}
+  },
+  "$defs": {
+    "distribution": {
+      "type": "object",
+      "required": [
+        "values",
+        "median",
+        "minimum",
+        "maximum",
+        "relative_standard_deviation"
+      ],
+      "additionalProperties": false
+    },
+    "pair": {
+      "type": "object",
+      "required": [
+        "pygotpl_ns_per_op",
+        "jinja_ns_per_op",
+        "pygotpl_to_jinja_ratio"
+      ],
+      "additionalProperties": false
+    },
+    "fixture": {
+      "type": "object",
+      "required": [
+        "case_id",
+        "samples",
+        "warm_iterations",
+        "cold_iterations",
+        "output_sha256",
+        "warm_render",
+        "cold_render"
+      ],
+      "properties": {
+        "case_id": {"type": "string"},
+        "samples": {"type": "integer", "minimum": 1},
+        "warm_iterations": {"type": "integer", "minimum": 1},
+        "cold_iterations": {"type": "integer", "minimum": 1},
+        "output_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "warm_render": {"$ref": "#/$defs/pair"},
+        "cold_render": {"$ref": "#/$defs/pair"},
+        "memory": {"type": "object"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "html/transition-edges",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEscapeText JavaScript, CSS, entity, and namespace transition rows",
+    "behavior": "Decoded attribute entities, SVG event attributes, JavaScript HTML-like comments, nested template literals, and quoted CSS URLs retain their precise lexical contexts.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-transition-edges",
+    "template": "<a onclick=&#39;foo{{.X}}bar&#39;>|<svg:a svg:onclick=\"x={{.X}}\">|<script>#! ignored\nbefore <!-- hidden\nmiddle\nbefore-->tail\nconst v = `${ foo({a:{b:`${ {{.X}} }`}}) }`;</script>|<a style=\"background:url(&#x22;/img?q={{.URL}}&#x22;)\">",
+    "data": {
+      "X": "<x>&",
+      "URL": "a b&c"
+    }
+  },
+  "expected": {
+    "output": "<a onclick=&#39;foo\\u003cx\\u003e\\u0026bar&#39;>|<svg:a svg:onclick=\"x=&#34;\\u003cx\\u003e\\u0026&#34;\">|<script>\nbefore \nmiddle\nbefore\nconst v = `${ foo({a:{b:`${ \"\\u003cx\\u003e\\u0026\" }`}}) }`;</script>|<a style=\"background:url(&#x22;/img?q=a%20b%26c&#x22;)\">",
+    "error": null
+  }
+}

@@ -1,0 +1,89 @@
+name: Performance History
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "benchmarks/**"
+      - "src/**"
+      - "uv.lock"
+      - ".github/workflows/performance-history.yml"
+  schedule:
+    - cron: "23 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: performance-history
+  cancel-in-progress: false
+
+jobs:
+  sampled-comparisons:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+      - uses: actions/setup-go@v7
+        with:
+          go-version: "1.27.0"
+          cache: false
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: true
+      - run: uv sync --frozen --all-groups
+      - name: Run sampled comparisons
+        run: >-
+          uv run --frozen python -m benchmarks.history
+          --samples 7
+          --output benchmark-history.json
+      - name: Run sampled parser comparison
+        run: >-
+          uv run --frozen python -m benchmarks.parser_baseline
+          --samples 7
+          --output parser-history.json
+      - name: Run sampled async runtime benchmark
+        run: >-
+          uv run --frozen python -m benchmarks.async_runtime
+          --samples 7
+          --iterations 20000
+          --warmup 1000
+          --concurrency 32
+          --output async-history.json
+      - name: Run Python memory samples
+        run: |
+          uv run --frozen python -m benchmarks.memory benchmarks/fixtures/text_render.json --samples 25 --output memory-text.json
+          uv run --frozen python -m benchmarks.memory benchmarks/fixtures/html_render.json --samples 25 --output memory-html.json
+          uv run --frozen python -m benchmarks.memory benchmarks/fixtures/named_large_render.json --samples 25 --output memory-named-large.json
+      - name: Run Python engine comparisons
+        run: |
+          uv run --frozen python -m benchmarks.jinja_compare --samples 7 --memory-samples 25 --output jinja-history.json
+          uv run --frozen python -m benchmarks.python_engine_compare --samples 7 --memory-samples 25 --output python-engines-history.json
+      - name: Capture representative profiles
+        run: >-
+          uv run --frozen python -m benchmarks.profile_suite
+          --iterations 20000
+          --sampling-seconds 1
+          --sampling-interval 0.001
+          --allocation-iterations 25
+          --top 20
+          --output profile-history.json
+      - uses: actions/upload-artifact@v6
+        with:
+          name: performance-history-${{ github.sha }}
+          path: |
+            benchmark-history.json
+            parser-history.json
+            async-history.json
+            memory-text.json
+            memory-html.json
+            memory-named-large.json
+            jinja-history.json
+            python-engines-history.json
+            profile-history.json
+          if-no-files-found: error
+          retention-days: 90

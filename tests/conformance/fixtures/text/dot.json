@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/dot",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/parse/lex_test.go and src/text/template/exec_test.go",
+    "behavior": "A dot action writes the current value.",
+    "derived": false
+  },
+  "request": {
+    "engine": "text",
+    "name": "dot",
+    "template": "Hello, {{.}}!",
+    "data": "Gopher",
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "Hello, Gopher!",
+    "error": null
+  }
+}

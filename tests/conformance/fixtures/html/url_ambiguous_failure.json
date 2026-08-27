@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "html/url-ambiguous-failure",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go context joining and ErrAmbigContext",
+    "behavior": "A following action is rejected when branch paths disagree between pre-query and query URL contexts.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-url-ambiguous",
+    "template": "<a href=\"{{if .T}}/foo/{{else}}/bar?{{end}}{{.C}}\">",
+    "data": {"T": true, "C": "<Cincinnati>"}
+  },
+  "expected": {
+    "output": "",
+    "error": {
+      "phase": "execute",
+      "message": "html/template:html-url-ambiguous:1:45: {{.C}} appears in an ambiguous context within a URL"
+    }
+  }
+}

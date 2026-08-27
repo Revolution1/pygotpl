@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/encoding-hash-path",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "strings.go and functions_test.go",
+    "behavior": "Encoding, digest, and slash-path helpers return Sprig-compatible text.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "encoding-hash-path",
+    "template": "{{b64enc \"coffee\" | b64dec}}|{{b32enc \"coffee\" | b32dec}}|{{sha1sum \"abc\"}}|{{sha256sum \"abc\"}}|{{sha512sum \"abc\"}}|{{adler32sum \"abc\"}}|{{base \"foo/bar.txt\"}}/{{base \"foo/\"}}/{{base \"\"}}/{{base \"/\"}}|{{dir \"foo/bar.txt\"}}/{{dir \"foo\"}}|{{clean \"/a/../b\"}}/{{clean \"\"}}|{{ext \"foo/bar.txt\"}}|{{isAbs \"/root\"}}/{{isAbs \"root\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "coffee|coffee|a9993e364706816aba3e25717850c26c9cd0d89d|ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad|ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f|38600999|bar.txt/foo/.//|foo/.|/b/.|.txt|true/false",
+    "error": null
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "text/function-fixed-type-error",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "A fixed function rejects an argument that cannot be assigned to its declared parameter type.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "function-fixed-type-error",
+    "template": "before/{{join 1 2}}/after",
+    "data": null,
+    "function_profile": "execution-functions"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: function-fixed-type-error:1:14: executing \"function-fixed-type-error\" at <1>: expected string; found 1"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "id": "html/url-contexts",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEscape and url_test.go",
+    "behavior": "URL attributes classify standard, data-prefixed, namespace, and URL-suffixed names; URL starts are filtered and normalized while query values are escaped.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-url-contexts",
+    "template": "<a href='{{.Rel}}'>rel</a>|<a href='{{.Abs}}'>abs</a>|<a href='{{.Danger}}'>bad</a>|<a href='/search?q={{.Term}}'>q</a>|<a href={{.Mail}}>mail</a>|<a data-action=\"{{.Danger}}\">data</a>|<a xmlns:x='{{.Danger}}'>xml</a>|<a myURL='{{.Danger}}'>custom</a>",
+    "data": {
+      "Rel": "/foo/bar?a=b&c=d",
+      "Abs": "HTTP://example.com/a b%20",
+      "Danger": "javascript:alert(1)",
+      "Term": "<'a b'>&",
+      "Mail": "mailto:Muhammed \"Ali\" <m@example.com>"
+    }
+  },
+  "expected": {
+    "output": "<a href='/foo/bar?a=b&amp;c=d'>rel</a>|<a href='HTTP://example.com/a%20b%20'>abs</a>|<a href='#ZgotmplZ'>bad</a>|<a href='/search?q=%3c%27a%20b%27%3e%26'>q</a>|<a href=mailto:Muhammed%20%22Ali%22%20%3cm@example.com%3e>mail</a>|<a data-action=\"#ZgotmplZ\">data</a>|<a xmlns:x='#ZgotmplZ'>xml</a>|<a myURL='#ZgotmplZ'>custom</a>",
+    "error": null
+  }
+}

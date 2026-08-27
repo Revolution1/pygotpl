@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/printf-diagnostics",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/fmt/print.go",
+    "behavior": "Printf reports wrong operand types and missing operands in-band.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "printf-bad",
+    "template": "{{printf \"%d/%s\" \"x\"}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "%!d(string=x)/%!s(MISSING)",
+    "error": null
+  }
+}

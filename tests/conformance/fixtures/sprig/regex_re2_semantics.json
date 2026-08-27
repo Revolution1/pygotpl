@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/regex-re2-semantics",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "regex.go and Go regexp/syntax",
+    "behavior": "RE2 Perl classes are ASCII, POSIX classes are ASCII, vertical tab is not Perl whitespace, z anchors absolute end, and dollar does not match before a final newline by default.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "regex-re2-semantics",
+    "template": "{{regexMatch \"^\\\\d+$\" \"١\"}}/{{regexMatch \"^\\\\w+$\" \"é\"}}/{{regexMatch \"^\\\\s$\" \"\\u000b\"}}|{{regexMatch \"^[[:alpha:]]+$\" \"abc\"}}/{{regexMatch \"^[[:alpha:]]+$\" \"é\"}}|{{regexMatch \"x\\\\z\" \"x\"}}/{{regexMatch \"x$\" \"x\\n\"}}|{{regexFindAll \"a*\" \"baaab\" -1 | toJson}}/{{regexSplit \"\" \"éx\" -1 | toJson}}/{{regexReplaceAll \"a*\" \"baaab\" \"-\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "false/false/false|true/false|true/false|[\"\",\"aaa\",\"\"]/[\"é\",\"x\"]/-b-b-",
+    "error": null
+  }
+}

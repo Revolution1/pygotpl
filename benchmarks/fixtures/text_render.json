@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "text/control-render",
+  "request": {
+    "engine": "text",
+    "name": "control-render",
+    "template": "{{range .Items}}{{if .Enabled}}{{.Name}}={{printf \"%04s\" .Value}};{{end}}{{end}}",
+    "data": {
+      "Items": [
+        {"Name": "alpha", "Value": "7", "Enabled": true},
+        {"Name": "beta", "Value": "13", "Enabled": false},
+        {"Name": "gamma", "Value": "42", "Enabled": true}
+      ]
+    }
+  },
+  "warmup": 1000,
+  "iterations": 20000
+}

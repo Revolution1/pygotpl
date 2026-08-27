@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/logical-pipeline",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/funcs.go",
+    "behavior": "A piped logical value is the final argument and determines the result when reached.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "logical-pipe",
+    "template": "{{false | or \"fallback\"}}/{{true | and \"last\"}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "fallback/true",
+    "error": null
+  }
+}

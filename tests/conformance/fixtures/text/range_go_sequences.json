@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/range-go-sequences",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "iter.Seq yields values, while iter.Seq2 yields key-value pairs and exposes only its key with one declaration.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "range-go-sequences",
+    "template": "{{range $v := seq}}{{$v}};{{end}}/{{range $k, $v := seq2}}{{$k}}={{$v}};{{end}}/{{range $k := seq2}}{{$k}};{{end}}",
+    "data": null,
+    "function_profile": "execution-functions"
+  },
+  "expected": {
+    "output": "0;1;/0=10;1=11;/0;1;",
+    "error": null
+  }
+}

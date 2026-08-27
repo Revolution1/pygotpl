@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/list-nil-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "list.go",
+    "behavior": "List helpers preserve the upstream nil-interface reflection panic instead of converting it into a must-function error result.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "list-nil-failure",
+    "template": "before/{{mustFirst nil}}/after",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: list-nil-failure:1:9: executing \"list-nil-failure\" at <mustFirst nil>: error calling mustFirst: runtime error: invalid memory address or nil pointer dereference"
+    }
+  }
+}

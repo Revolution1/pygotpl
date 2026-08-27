@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "id": "html/css-contexts",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEscape and css_test.go",
+    "behavior": "Stylesheet and style-attribute actions distinguish filtered CSS values, quoted CSS strings, URLs, and the enclosing HTML attribute context.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-css-contexts",
+    "template": "<style>p{{.Class}}{width:{{.Width}};color:{{.Danger}};font-family:\"{{.Font}}\"}</style>|<p style='color: {{.Color}}; width: {{.Expr}}; background: url({{.URL}})'>x</p>",
+    "data": {
+      "Class": ".item",
+      "Width": "12.5%",
+      "Danger": "expression(alert(1))",
+      "Font": "A\"B &",
+      "Color": "#8ff",
+      "Expr": "-moz-binding(evil)",
+      "URL": "javascript:alert(1)"
+    }
+  },
+  "expected": {
+    "output": "<style>p.item{width:12.5%;color:ZgotmplZ;font-family:\"A\\22 B \\26 \"}</style>|<p style='color: #8ff; width: ZgotmplZ; background: url(#ZgotmplZ)'>x</p>",
+    "error": null
+  }
+}

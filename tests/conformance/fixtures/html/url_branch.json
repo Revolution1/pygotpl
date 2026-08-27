@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "html/url-branch",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEscape/urlBranchConflictMoot",
+    "behavior": "Branches whose URL suffixes both enter query-or-fragment context join successfully and escape the following action as a query value.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-url-branch",
+    "template": "<a href=\"{{if .T}}/foo?a={{else}}/bar#{{end}}{{.C}}\">",
+    "data": {"T": true, "C": "<Cincinnati>"}
+  },
+  "expected": {
+    "output": "<a href=\"/foo?a=%3cCincinnati%3e\">",
+    "error": null
+  }
+}

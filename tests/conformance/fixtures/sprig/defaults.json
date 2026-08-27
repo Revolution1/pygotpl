@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/defaults",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "defaults.go and defaults_test.go",
+    "behavior": "Defaulting helpers share Sprig zero-value semantics and pipeline order.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "defaults",
+    "template": "{{default \"fallback\"}}/{{default \"fallback\" \"\"}}/{{default \"fallback\" 2}}|{{empty 0}}/{{empty 1}}/{{empty false}}/{{empty \"\"}}/{{empty .missing}}|{{coalesce \"\" 0 nil \"value\"}}/{{coalesce}}|{{all}}/{{all 1 \"x\"}}/{{all 1 0}}|{{any}}/{{any 0 \"x\"}}|{{true | ternary \"yes\" \"no\"}}/{{false | ternary \"yes\" \"no\"}}",
+    "data": {},
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "fallback/fallback/2|true/false/true/true/true|value/<no value>|true/true/false|false/true|yes/no",
+    "error": null
+  }
+}

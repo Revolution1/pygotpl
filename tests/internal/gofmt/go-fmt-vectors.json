@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "vectors": [
+    {"name": "plain-percent", "format": "plain/%%", "output": "plain/%"},
+    {"name": "integer-flags", "format": "%c|%.6U|%.4d|% d|%#x|%O|%-5d", "output": "A|U+000041|0007| 7|0x1f|0o10|-2   "},
+    {"name": "width", "format": "%5s|%05d", "output": "    x|00002"},
+    {"name": "float", "format": "%+.1f|% .1f|%g", "output": "+2.0| 2.0|12.193263113702178"},
+    {"name": "special-float", "format": "%v|%v|%v", "output": "NaN|+Inf|-Inf"},
+    {"name": "complex", "format": "%g|%x", "output": "(1+2i)|(0x1p+00+0x1p+01i)"},
+    {"name": "string", "format": "%s|%q|%x|%+q|%#q", "output": "Go!|\"Go!\\n\"|476f21|\"caf\\u00e9\"|`raw`"},
+    {"name": "unicode-precision", "format": "%.3s|%.3q", "output": "日本語|\"日本語\""},
+    {"name": "bytes", "format": "%s|%q|%x|%v|%#v|%T", "output": "Go!\n|\"Go!\\n\"|476f210a|[1 15]|[]byte{0x41}|[]uint8"},
+    {"name": "reordered", "format": "%[2]d/%[1]d/%d", "output": "22/11/22"},
+    {"name": "dynamic", "format": "%[3]*.[2]*[1]f", "output": "    3.14"},
+    {"name": "negative-width", "format": "%*s", "output": "go   "},
+    {"name": "missing", "format": "%s/%d", "output": "only/%!d(MISSING)"},
+    {"name": "bad-index", "format": "%[3]d", "output": "%!d(BADINDEX)"},
+    {"name": "bad-width", "format": "%*d", "output": "%!(BADWIDTH)1"},
+    {"name": "extra", "format": "plain", "output": "plain%!(EXTRA int=1)"},
+    {"name": "nil", "format": "%v|%T|%s", "output": "<nil>|<nil>|%!s(<nil>)"},
+    {"name": "slice", "format": "%v|%#v|%T", "output": "[x 1]|[]interface {}{\"x\", 1}|[]interface {}"},
+    {"name": "map", "format": "%v", "output": "map[a:1 b:2]"}
+  ]
+}

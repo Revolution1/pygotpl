@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "html/predefined-escaper-failure",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestErrors",
+    "behavior": "A predefined escaper before the final pipeline command is rejected because contextual escaping cannot safely merge it.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-predefined-failure",
+    "template": "{{. | html | print}}",
+    "data": "<&"
+  },
+  "expected": {
+    "output": "",
+    "error": {
+      "phase": "execute",
+      "message": "html/template:html-predefined-failure:1:2: predefined escaper \"html\" disallowed in template"
+    }
+  }
+}

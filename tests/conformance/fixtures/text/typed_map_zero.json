@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "text/typed-map-zero",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "Missing typed map elements use the map element zero value for index and missingkey=zero field lookup.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "typed-map-zero",
+    "template": "{{with $s := stringmap}}S[{{index $s \"missing\"}}|{{$s.missing}}]{{end}}/{{with $i := intmap}}I[{{index $i \"missing\"}}|{{$i.missing}}]{{end}}",
+    "data": null,
+    "options": ["missingkey=zero"],
+    "function_profile": "execution-functions"
+  },
+  "expected": {
+    "output": "S[|]/I[0|0]",
+    "error": null
+  }
+}

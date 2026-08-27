@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/printf-unicode-quote",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/strconv/quote.go",
+    "behavior": "Quoted formatting uses Go escapes for controls, non-ASCII ASCII-only output, raw strings, and non-printable Unicode.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "printf-unicode-quote",
+    "template": "{{printf \"%q|%+q|%#q|%#q|%q\" \"line\\ttext\" \"\u00e9\ud83d\ude00\" \"raw text\" \"has`tick\" \"\\u007f\\ufeff\"}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "\"line\\ttext\"|\"\\u00e9\\U0001f600\"|`raw text`|\"has`tick\"|\"\\x7f\\ufeff\"",
+    "error": null
+  }
+}

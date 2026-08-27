@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/template-root",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "A called template initializes root to its invocation argument.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "template-root",
+    "template": "{{define \"show\"}}{{$.Name}}/{{.Name}}{{end}}{{template \"show\" .User}}",
+    "data": {"Name": "outer", "User": {"Name": "inner"}},
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "inner/inner",
+    "error": null
+  }
+}

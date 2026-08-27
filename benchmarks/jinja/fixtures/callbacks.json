@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "id": "jinja/callbacks",
+  "engine": "text",
+  "gotpl_template": "{{identity .value}}",
+  "jinja_template": "{{ identity(value) }}",
+  "data": {"value": "value"},
+  "expected_output": "value",
+  "function_profile": "identity",
+  "warmup": 1000,
+  "iterations": 20000,
+  "cold_iterations": 1000,
+  "cache_iterations": 1000
+}

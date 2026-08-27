@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/date-zone-seconds",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "date.go and Go time layout timezone-second semantics",
+    "behavior": "Go layouts preserve historical offsets with seconds, ISO UTC forms, and the literal-underscore long-year form.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "date-zone-seconds",
+    "template": "{{dateInZone \"_2006 2006 -070000 -07:00:00 Z070000 Z07:00:00\" -5364662400 \"Europe/Paris\"}}|{{mustToDate \"2006-01-02 15:04:05 -07:00:00\" \"2024-07-09 13:04:05 +05:30:45\" | unixEpoch}}",
+    "data": null,
+    "function_profile": "sprig"
+  },
+  "expected": {
+    "output": "_1800 1800 +000921 +00:09:21 +000921 +00:09:21|1720510400",
+    "error": null
+  }
+}

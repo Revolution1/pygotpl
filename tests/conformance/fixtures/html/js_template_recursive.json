@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "html/js-template-recursive",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEscapeSet recursive contextual templates",
+    "behavior": "A recursive named template specializes and converges in JavaScript value context.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-js-template-recursive",
+    "template": "<script>const x={{template \"helper\" .}};</script>{{define \"helper\"}}{{if .Children}}[{{range .Children}}{{template \"helper\" .}},{{end}}]{{else}}{{.Value}}{{end}}{{end}}",
+    "data": {
+      "Children": [
+        {"Value": "</script>"},
+        {"Value": 7}
+      ]
+    }
+  },
+  "expected": {
+    "output": "<script>const x=[\"\\u003c/script\\u003e\", 7 ,];</script>",
+    "error": null
+  }
+}

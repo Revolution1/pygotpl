@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/regex-re2-scoped-anchors",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "regex.go and Go regexp/syntax",
+    "behavior": "Scoped multiline flags affect line anchors without leaking into absolute end anchors.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "regex-scoped-anchors",
+    "template": "{{regexMatch \"(?m:^x$)\" \"x\\ny\"}}/{{regexMatch \"(?m:^x$)$\" \"x\\n\"}}/{{regexMatch \"(?m:^x$)(?-m:$)\" \"x\\n\"}}|{{regexMatch \"(?s:^a.b$)\" \"a\\nb\"}}/{{regexMatch \"(?is-m:^a.b$)\" \"A\\nB\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "true/false/false|true/true",
+    "error": null
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "id": "sprig/function-heavy",
+  "request": {
+    "engine": "text",
+    "name": "sprig-function-heavy",
+    "template": "{{ $cfg := mergeOverwrite (dict \"labels\" (dict \"tier\" \"old\")) .Override }}{{ dig \"labels\" \"tier\" \"missing\" $cfg }}|{{ .Words | uniq | sortAlpha | join \",\" | upper }}|{{ regexReplaceAll \"[0-9]+\" .Text \"#\" }}|{{ sha256sum .Payload }}|{{ semverCompare \">=1.2.0 <2.0.0\" .Version }}|{{ add 1 2 3 4 5 }}|{{ dict \"enabled\" true \"name\" .Name | toJson }}",
+    "data": {
+      "Name": "benchmark",
+      "Override": {"labels": {"tier": "api"}},
+      "Payload": "pygotpl-sprig-benchmark",
+      "Text": "release-2026-build-42",
+      "Version": "1.9.3",
+      "Words": ["gamma", "alpha", "beta", "alpha"]
+    },
+    "function_profile": "sprig-v3.3.0"
+  },
+  "warmup": 500,
+  "iterations": 10000
+}

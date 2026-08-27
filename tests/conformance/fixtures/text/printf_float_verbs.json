@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/printf-float-verbs",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/fmt/format.go",
+    "behavior": "Printf supports binary exponent, scientific, general, and hexadecimal floating-point verbs.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "printf-float",
+    "template": "{{printf \"%b|%e|%E|%g|%G|%x|%X\" 3.5 3.5 3.5 3.5 3.5 3.5 3.5}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "7881299347898368p-51|3.500000e+00|3.500000E+00|3.5|3.5|0x1.cp+01|0X1.CP+01",
+    "error": null
+  }
+}

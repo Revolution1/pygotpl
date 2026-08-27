@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/regex-re2-unicode-properties",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "regex.go, Go regexp/syntax, and Go Unicode 17.0.0 tables",
+    "behavior": "Unicode categories, scripts, aliases, complements, character classes, and assigned-rune handling use the pinned Go tables.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "unicode-properties",
+    "template": "{{regexMatch \"\\\\pL+\" \"é中\"}}/{{regexMatch \"\\\\p{Greek}+\" \"Ωβ\"}}/{{regexMatch \"\\\\p{old_italic}\" \"𐌀\"}}/{{regexMatch \"\\\\p{Old_Italic}\" \"𐌀\"}}/{{regexMatch \"\\\\p{Cased_Letter}\" \"A\"}}/{{regexMatch \"\\\\P{ASCII}\" \"é\"}}/{{regexMatch \"[\\\\p{Greek}]+\" \"Ω\"}}/{{regexMatch \"[^\\\\p{Greek}]+\" \"A\"}}|{{regexMatch \"\\\\p{Any}\" \"x\"}}/{{regexMatch \"\\\\P{Any}\" \"x\"}}/{{regexMatch \"\\\\p{Assigned}\" \"\\u0378\"}}/{{regexMatch \"\\\\P{Assigned}\" \"\\u0378\"}}|{{regexMatch \"(?i:\\\\p{Lu}+)\" \"abc\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "true/true/true/true/true/true/true/true|true/false/false/true|true",
+    "error": null
+  }
+}

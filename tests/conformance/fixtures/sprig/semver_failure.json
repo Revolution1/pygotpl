@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/semver-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "semver.go",
+    "behavior": "Invalid semantic versions propagate execution errors after prior output.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "semver-failure",
+    "template": "before/{{semver \"not-a-version\"}}/after",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: semver-failure:1:9: executing \"semver-failure\" at <semver \"not-a-version\">: error calling semver: Invalid Semantic Version"
+    }
+  }
+}

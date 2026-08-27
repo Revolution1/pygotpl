@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/regex-nonmust-match-error",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "regex.go",
+    "behavior": "regexMatch suppresses malformed-expression errors and returns false.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "regex-nonmust-match",
+    "template": "before/{{regexMatch \"[\" \"value\"}}/after",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/false/after",
+    "error": null
+  }
+}

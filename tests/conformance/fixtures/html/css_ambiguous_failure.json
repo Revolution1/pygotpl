@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "html/css-ambiguous-failure",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go URL context joining and ErrAmbigContext",
+    "behavior": "A CSS URL action is rejected when branch paths disagree between path and query contexts.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-css-ambiguous",
+    "template": "<p style=\"background:url({{if .T}}/img/{{else}}/img?q={{end}}{{.X}})\">",
+    "data": {"T": true, "X": "<x>"}
+  },
+  "expected": {
+    "output": "",
+    "error": {
+      "phase": "execute",
+      "message": "html/template:html-css-ambiguous:1:63: {{.X}} appears in an ambiguous context within a URL"
+    }
+  }
+}

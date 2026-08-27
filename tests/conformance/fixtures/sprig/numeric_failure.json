@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/numeric-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "functions.go and numeric.go",
+    "behavior": "Integer division by zero fails during template execution after prior output.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "numeric-failure",
+    "template": "before/{{div 1 0}}/after",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: numeric-failure:1:9: executing \"numeric-failure\" at <div 1 0>: error calling div: runtime error: integer divide by zero"
+    }
+  }
+}

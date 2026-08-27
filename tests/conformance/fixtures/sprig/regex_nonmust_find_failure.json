@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/regex-nonmust-find-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "regex.go",
+    "behavior": "regexFind panics on a malformed expression and template execution reports the failure after prior output.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "regex-nonmust-find-failure",
+    "template": "before/{{regexFind \"[\" \"value\"}}/after",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: regex-nonmust-find-failure:1:9: executing \"regex-nonmust-find-failure\" at <regexFind \"[\" \"value\">: error calling regexFind: regexp: Compile(`[`): error parsing regexp: missing closing ]: `[`"
+    }
+  }
+}

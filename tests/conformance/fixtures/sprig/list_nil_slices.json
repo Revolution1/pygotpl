@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/list-nil-slices",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "list.go and Go encoding/json",
+    "behavior": "Empty list constructors return non-nil slices while rest, initial, slice, and concat preserve their upstream nil-slice results.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "list-nil-slices",
+    "template": "{{list | toJson}}/{{tuple | toJson}}|{{rest (list) | toJson}}/{{initial (list) | toJson}}/{{slice (list) | toJson}}|{{mustRest (list) | toJson}}/{{mustInitial (list) | toJson}}/{{mustSlice (list) | toJson}}|{{concat | toJson}}/{{concat (list) | toJson}}|{{reverse (list) | toJson}}/{{compact (list) | toJson}}/{{uniq (list) | toJson}}/{{without (list) | toJson}}/{{chunk 3 (list) | toJson}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "[]/[]|null/null/null|null/null/null|null/null|[]/[]/[]/[]/[]",
+    "error": null
+  }
+}

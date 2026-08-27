@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "text/comparison-type-error",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/funcs.go",
+    "behavior": "Equality rejects incompatible basic types instead of applying coercion.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "compare-types",
+    "template": "before/{{eq true 1}}/after",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: compare-types:1:9: executing \"compare-types\" at <eq true 1>: error calling eq: incompatible types for comparison: bool and int"
+    }
+  }
+}

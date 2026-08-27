@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "id": "html/contextual-render",
+  "request": {
+    "engine": "html",
+    "name": "contextual-render",
+    "template": "<!doctype html><ul>{{range .Items}}<li class=\"{{.Class}}\" data-id=\"{{.ID}}\" style=\"color: {{.Color}}\"><a href=\"/users/{{.Slug}}?from={{$.From}}\" onclick=\"show({{.Payload}})\">{{.Name}}</a><img srcset=\"{{.Image}} 1x, {{.Retina}} 2x\"></li>{{end}}</ul>",
+    "data": {
+      "From": "benchmark & suite",
+      "Items": [
+        {
+          "Class": "primary",
+          "ID": 7,
+          "Color": "navy",
+          "Slug": "alice smith",
+          "Payload": {"id": 7, "active": true},
+          "Name": "Alice <Admin>",
+          "Image": "/images/alice.png",
+          "Retina": "/images/alice@2x.png"
+        },
+        {
+          "Class": "secondary",
+          "ID": 13,
+          "Color": "#48f",
+          "Slug": "bob",
+          "Payload": {"id": 13, "active": false},
+          "Name": "Bob & Co.",
+          "Image": "/images/bob.png",
+          "Retina": "/images/bob@2x.png"
+        },
+        {
+          "Class": "guest",
+          "ID": 42,
+          "Color": "rgb(1,2,3)",
+          "Slug": "guest?q=x",
+          "Payload": {"id": 42, "active": true},
+          "Name": "Guest",
+          "Image": "/images/guest.png",
+          "Retina": "/images/guest@2x.png"
+        }
+      ]
+    }
+  },
+  "warmup": 500,
+  "iterations": 5000
+}

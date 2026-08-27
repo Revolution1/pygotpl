@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "text/missing-key-error",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/option.go",
+    "behavior": "The error missing-key mode stops execution after prior output.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "missing-error",
+    "template": "before/{{.missing}}/after",
+    "data": {},
+    "options": ["missingkey=error"],
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: missing-error:1:9: executing \"missing-error\" at <.missing>: map has no entry for key \"missing\""
+    }
+  }
+}

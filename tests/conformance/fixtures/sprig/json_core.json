@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/json-core",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "defaults.go and defaults_test.go",
+    "behavior": "JSON helpers preserve map access, stable encoding, pretty output, raw HTML characters, and non-must parse fallback.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "json-core",
+    "template": "{{(fromJson \"{\\\"value\\\":55}\").value}}/{{fromJson \"invalid\"}}|{{toJson (dict \"z\" 1 \"a\" \"<tag>\")}}|{{toRawJson (dict \"a\" \"<tag>\")}}|{{toPrettyJson (dict \"b\" 2 \"a\" 1)}}|{{(mustFromJson \"{\\\"ok\\\":true}\").ok}}|{{mustToJson (list 1 2)}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "55/<no value>|{\"a\":\"\\u003ctag\\u003e\",\"z\":1}|{\"a\":\"<tag>\"}|{\n  \"a\": 1,\n  \"b\": 2\n}|true|[1,2]",
+    "error": null
+  }
+}

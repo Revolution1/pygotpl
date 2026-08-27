@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/typed-map-format",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/fmt/print.go and internal/fmtsort/sort.go",
+    "behavior": "Typed maps use natural key order and retain key and element names in syntax and type formatting.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "typed-map-format",
+    "template": "{{printf \"%v|%#v|%T\" intkeymap intkeymap intkeymap}}",
+    "data": null,
+    "function_profile": "execution-functions"
+  },
+  "expected": {
+    "output": "map[1:one 2:two 10:ten]|map[int]string{1:\"one\", 2:\"two\", 10:\"ten\"}|map[int]string",
+    "error": null
+  }
+}

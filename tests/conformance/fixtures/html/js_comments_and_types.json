@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "html/js-comments-and-types",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEscape and js.go:isJSType",
+    "behavior": "JavaScript comments are elided without joining tokens, script-literal tag markers are neutralized, and script MIME types select JavaScript versus text behavior.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-js-comments",
+    "template": "<script>before/* block {{.X}}\ncomment */after// line {{.X}}\nvalue={{.X}};const q=\"<script><!--</script>\";const r=/<script><!--<\\/script>/;</script><script type=\"text/template\">{{.X}}</script><script type=\"application/ld+json\">{{.A}}</script>",
+    "data": {
+      "X": "<unsafe>",
+      "A": {"tag": "</script>"}
+    }
+  },
+  "expected": {
+    "output": "<script>before \nafter\nvalue=\"\\u003cunsafe\\u003e\";const q=\"\\x3Cscript>\\x3C!--\\x3C/script>\";const r=/\\x3Cscript>\\x3C!--<\\/script>/;</script><script type=\"text/template\">&lt;unsafe&gt;</script><script type=\"application/ld+json\">{\"tag\":\"\\u003c/script\\u003e\"}</script>",
+    "error": null
+  }
+}

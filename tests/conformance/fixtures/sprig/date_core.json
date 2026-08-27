@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/date-core",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "date.go and date_test.go",
+    "behavior": "Go layouts, Unix timestamps, zones, aliases, parsing, modification, HTML dates, and epochs match Sprig.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "date-core",
+    "template": "{{dateInZone \"2006-01-02 15:04:05 MST -0700\" 1560458379 \"UTC\"}}/{{date_in_zone \"02 Jan 06 15:04\" 1560458379 \"Bad/Zone\"}}|{{htmlDateInZone 1560458379 \"UTC\"}}|{{toDate \"2006-01-02\" \"2017-12-31\" | date \"02/01/2006\"}}|{{toDate \"2006-01-02 15:04\" \"2019-06-13 20:39\" | dateModify \"1h30m\" | date \"2006-01-02 15:04\"}}/{{mustToDate \"02 Jan 06 15:04:05 MST\" \"13 Jun 19 20:39:39 GMT\" | unixEpoch}}|{{$bad := toDate \"2006-01-02\" \"bad\"}}{{dateInZone \"2006-01-02\" $bad \"UTC\"}}",
+    "data": null,
+    "function_profile": "sprig"
+  },
+  "expected": {
+    "output": "2019-06-13 20:39:39 UTC +0000/13 Jun 19 20:39|2019-06-13|31/12/2017|2019-06-13 22:09/1560458379|0001-01-01",
+    "error": null
+  }
+}

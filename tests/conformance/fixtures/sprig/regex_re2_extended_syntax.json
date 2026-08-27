@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/regex-re2-extended-syntax",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "regex.go and Go regexp/syntax",
+    "behavior": "Go named groups, braced hexadecimal escapes, Unicode case folding, and octal escapes retain RE2 semantics.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "regex-re2-extended",
+    "template": "{{regexReplaceAll \"(?<word>[a-z]+)\" \"abc-12\" \"<${word}>\"}}|{{regexMatch \"\\\\x{1F600}\" \"😀\"}}|{{regexMatch \"(?i:é)\" \"É\"}}|{{regexMatch \"\\\\123\" \"S\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "<abc>-12|true|true|true",
+    "error": null
+  }
+}

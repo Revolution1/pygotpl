@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "html/malformed-unquoted-failure",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestErrors",
+    "behavior": "A static equals sign inside an unquoted attribute value is rejected instead of being interpreted with browser-dependent structure.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-malformed-unquoted",
+    "template": "<input type=button value=onclick=>",
+    "data": null
+  },
+  "expected": {
+    "output": "",
+    "error": {
+      "phase": "execute",
+      "message": "html/template:html-malformed-unquoted: \"=\" in unquoted attr: \"onclick=\""
+    }
+  }
+}

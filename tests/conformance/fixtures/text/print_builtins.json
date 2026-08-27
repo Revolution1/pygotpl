@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/print-builtins",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/funcs.go",
+    "behavior": "Print, printf, and println expose Go formatting behavior.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "print-builtins",
+    "template": "{{print \"a\" 2}}|{{printf \"%04d\" 7}}|{{println \"x\" \"y\"}}end",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "a2|0007|x y\nend",
+    "error": null
+  }
+}

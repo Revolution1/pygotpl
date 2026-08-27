@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/regex-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "regex.go",
+    "behavior": "A must regex helper propagates invalid-expression errors after prior output.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "regex-failure",
+    "template": "before/{{mustRegexFind \"[\" \"value\"}}/after",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: regex-failure:1:9: executing \"regex-failure\" at <mustRegexFind \"[\" \"value\">: error calling mustRegexFind: error parsing regexp: missing closing ]: `[`"
+    }
+  }
+}

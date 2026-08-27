@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "id": "text/writer-render",
+  "mode": "writer_render",
+  "request": {
+    "engine": "text",
+    "name": "writer-render",
+    "template": "{{range .Items}}{{.Name}}={{.Value}};{{end}}",
+    "data": {
+      "Items": [
+        {"Name": "alpha", "Value": 7},
+        {"Name": "beta", "Value": 13},
+        {"Name": "gamma", "Value": 42}
+      ]
+    }
+  },
+  "warmup": 500,
+  "iterations": 10000
+}

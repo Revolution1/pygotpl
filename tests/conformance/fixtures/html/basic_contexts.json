@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "html/basic-contexts",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEscape and html_test.go",
+    "behavior": "HTML text, RCDATA, quoted attributes, unquoted attributes, comments, branches, and ranges select distinct contextual escaping behavior.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-basic-contexts",
+    "template": "{{if .T}}Hello{{end}}, {{.C}}!|{{range .A}}{{.}}{{end}}|<textarea>{{.C}}</textarea>|<a title=\"{{.C}}\" data-x={{.C}}>x</a><!-- {{.C}} -->",
+    "data": {
+      "T": true,
+      "C": "<'\\\"&+>= `\n",
+      "A": ["<a>", "<b>"]
+    }
+  },
+  "expected": {
+    "output": "Hello, &lt;&#39;\\&#34;&amp;&#43;&gt;= `\n!|&lt;a&gt;&lt;b&gt;|<textarea>&lt;&#39;\\&#34;&amp;&#43;&gt;= `\n</textarea>|<a title=\"&lt;&#39;\\&#34;&amp;&#43;&gt;= `\n\" data-x=&lt;&#39;\\&#34;&amp;&#43;&gt;&#61;&#32;&#96;&#10;>x</a>",
+    "error": null
+  }
+}

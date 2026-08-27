@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "id": "text/named-render",
+  "mode": "named_render",
+  "request": {
+    "engine": "text",
+    "name": "named-render",
+    "execute_template": "main",
+    "template": "{{define \"main\"}}<ul>{{range .Items}}{{template \"row\" .}}{{end}}</ul>{{end}}{{define \"row\"}}<li>{{template \"label\" .}}</li>{{end}}{{define \"label\"}}{{.Name}}={{.Value}}{{end}}{{define \"unused-a\"}}a{{end}}{{define \"unused-b\"}}b{{end}}{{define \"unused-c\"}}c{{end}}{{define \"unused-d\"}}d{{end}}{{define \"unused-e\"}}e{{end}}",
+    "data": {
+      "Items": [
+        {"Name": "alpha", "Value": 7},
+        {"Name": "beta", "Value": 13},
+        {"Name": "gamma", "Value": 42}
+      ]
+    }
+  },
+  "warmup": 500,
+  "iterations": 10000
+}

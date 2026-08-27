@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/trim",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/parse/lex_test.go",
+    "behavior": "Trim markers remove adjacent ASCII whitespace.",
+    "derived": false
+  },
+  "request": {
+    "engine": "text",
+    "name": "trim",
+    "template": "hello \n{{- . -}} \nworld",
+    "data": "Gopher",
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "helloGopherworld",
+    "error": null
+  }
+}

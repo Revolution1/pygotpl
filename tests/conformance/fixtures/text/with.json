@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/with",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "A with action changes dot for its non-empty branch.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "with",
+    "template": "{{with .User}}{{.Name}}{{else}}anonymous{{end}}",
+    "data": {"User": {"Name": "Ada"}},
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "Ada",
+    "error": null
+  }
+}

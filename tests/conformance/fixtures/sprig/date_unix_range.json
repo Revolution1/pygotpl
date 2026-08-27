@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/date-unix-range",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "date.go and Go time.Unix absolute-time behavior",
+    "behavior": "Unix int64 boundaries, civil years outside 1-9999, future DST extension, and pre-transition local mean time format like Go.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "date-unix-range",
+    "template": "{{dateInZone \"2006-01-02 15:04:05 MST -07:00:00\" 9223372036854775807 \"UTC\"}}|{{dateInZone \"2006-01-02 15:04:05 MST -07:00:00\" -9223372036854775808 \"UTC\"}}|{{dateInZone \"2006-01-02 15:04:05 MST -07:00:00\" 253402300800 \"UTC\"}}|{{dateInZone \"2006-01-02 15:04:05 MST -07:00:00\" -62135596801 \"UTC\"}}|{{dateInZone \"2006-01-02 15:04:05 MST -07:00:00\" 253402300800 \"America/New_York\"}}|{{dateInZone \"2006-01-02 15:04:05 MST -07:00:00\" 253418025600 \"America/New_York\"}}|{{dateInZone \"2006-01-02 15:04:05 MST -07:00:00\" -62135596801 \"America/New_York\"}}|{{dateInZone \"2006-01-02 15:04:05 MST -07:00:00\" 9223372036854775807 \"America/New_York\"}}|{{dateInZone \"2006-01-02 15:04:05 MST -07:00:00\" -9223372036854775808 \"America/New_York\"}}",
+    "data": null,
+    "function_profile": "sprig"
+  },
+  "expected": {
+    "output": "292277026596-12-04 15:30:07 UTC +00:00:00|292277026596-12-04 15:30:08 UTC +00:00:00|10000-01-01 00:00:00 UTC +00:00:00|0000-12-31 23:59:59 UTC +00:00:00|9999-12-31 19:00:00 EST -05:00:00|10000-06-30 20:00:00 EDT -04:00:00|0000-12-31 19:03:57 LMT -04:56:02|292277026596-12-04 10:30:07 EST -05:00:00|292277026596-12-04 10:34:06 LMT -04:56:02",
+    "error": null
+  }
+}

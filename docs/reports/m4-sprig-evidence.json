@@ -1,0 +1,1097 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "reference": {
+    "project": "github.com/Masterminds/sprig/v3",
+    "revision": "v3.3.0"
+  },
+  "completed_function_count": 211,
+  "functions": {
+    "ago": {
+      "normal": ["tests/unit/test_sprig_dates.py::test_ago_and_duration_round_use_injected_time"],
+      "boundary": ["tests/conformance/fixtures/sprig/ago_unix_range.json#sprig/ago-unix-range"],
+      "failure": {"not_applicable": "Sprig coerces unsupported inputs to now and saturates out-of-range durations."}
+    },
+    "date": {
+      "normal": ["tests/conformance/fixtures/sprig/date_core.json#sprig/date-core"],
+      "boundary": ["tests/conformance/test_date_unix_matrix.py::test_unix_int64_civil_matrix_matches_go"],
+      "failure": {"not_applicable": "Sprig replaces unsupported values with the current time and invalid locations with UTC."}
+    },
+    "dateInZone": {
+      "normal": ["tests/conformance/fixtures/sprig/date_core.json#sprig/date-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/date_unix_range.json#sprig/date-unix-range"],
+      "failure": {"not_applicable": "The upstream wrapper falls back to now or UTC instead of returning an error."}
+    },
+    "dateModify": {
+      "normal": ["tests/conformance/fixtures/sprig/date_core.json#sprig/date-core"],
+      "boundary": ["tests/unit/test_sprig_dates.py::test_date_modification_has_must_and_non_must_error_paths"],
+      "failure": {"not_applicable": "The non-must variant returns its input unchanged for malformed durations."}
+    },
+    "date_in_zone": {
+      "normal": ["tests/conformance/fixtures/sprig/date_core.json#sprig/date-core"],
+      "boundary": ["tests/unit/test_sprig_dates.py::test_date_helpers_accept_timestamps_datetimes_and_fallback_values"],
+      "failure": {"not_applicable": "This alias has the same total fallback contract as dateInZone."}
+    },
+    "date_modify": {
+      "normal": ["tests/unit/test_sprig_dates.py::test_date_modification_has_must_and_non_must_error_paths"],
+      "boundary": ["tests/unit/test_sprig_dates.py::test_date_modification_has_must_and_non_must_error_paths"],
+      "failure": {"not_applicable": "This alias has the same unchanged-input failure contract as dateModify."}
+    },
+    "duration": {
+      "normal": ["tests/conformance/fixtures/sprig/duration_core.json#sprig/duration-core"],
+      "boundary": ["tests/unit/test_sprig_dates.py::test_duration_sprig_input_coercion"],
+      "failure": {"not_applicable": "Sprig maps parse failures and unsupported input types to a zero duration."}
+    },
+    "durationRound": {
+      "normal": ["tests/conformance/fixtures/sprig/duration_core.json#sprig/duration-core"],
+      "boundary": ["tests/unit/test_sprig_dates.py::test_ago_and_duration_round_use_injected_time"],
+      "failure": {"not_applicable": "Sprig maps malformed and unsupported inputs to a zero duration."}
+    },
+    "htmlDate": {
+      "normal": ["tests/conformance/fixtures/sprig/aliases_remaining.json#sprig/aliases-remaining"],
+      "boundary": ["tests/unit/test_sprig_dates.py::test_date_helpers_accept_timestamps_datetimes_and_fallback_values"],
+      "failure": {"not_applicable": "Sprig applies the same fallback input behavior as date."}
+    },
+    "htmlDateInZone": {
+      "normal": ["tests/conformance/fixtures/sprig/date_core.json#sprig/date-core"],
+      "boundary": ["tests/unit/test_sprig_dates.py::test_named_zones_use_packaged_tzdata_without_system_zoneinfo"],
+      "failure": {"not_applicable": "Invalid zones fall back to UTC."}
+    },
+    "mustDateModify": {
+      "normal": ["tests/conformance/fixtures/sprig/aliases_remaining.json#sprig/aliases-remaining"],
+      "boundary": ["tests/conformance/fixtures/sprig/date_nanoseconds.json#sprig/date-nanoseconds"],
+      "failure": ["tests/unit/test_sprig_dates.py::test_date_modification_has_must_and_non_must_error_paths"]
+    },
+    "mustToDate": {
+      "normal": ["tests/conformance/fixtures/sprig/date_layouts.json#sprig/date-layouts"],
+      "boundary": ["tests/conformance/fixtures/sprig/date_zone_seconds.json#sprig/date-zone-seconds"],
+      "failure": ["tests/conformance/fixtures/sprig/date_fraction_failure.json#sprig/date-fraction-failure"]
+    },
+    "must_date_modify": {
+      "normal": ["tests/unit/test_sprig_dates.py::test_date_modification_has_must_and_non_must_error_paths"],
+      "boundary": ["tests/unit/test_sprig_dates.py::test_nanosecond_parsing_formatting_and_naive_arithmetic"],
+      "failure": ["tests/unit/test_sprig_dates.py::test_date_modification_has_must_and_non_must_error_paths"]
+    },
+    "now": {
+      "normal": ["tests/unit/test_sprig_dates.py::test_registry_accepts_an_injected_clock_for_time_dependent_functions"],
+      "boundary": ["tests/unit/test_sprig_dates.py::test_registry_accepts_an_injected_clock_for_time_dependent_functions"],
+      "failure": {"not_applicable": "The zero-argument clock operation has no upstream error return."}
+    },
+    "toDate": {
+      "normal": ["tests/conformance/fixtures/sprig/date_core.json#sprig/date-core"],
+      "boundary": ["tests/unit/test_sprig_dates.py::test_date_parsing_zero_time_epoch_and_percent_literals"],
+      "failure": {"not_applicable": "The non-must variant returns Go's zero time for parse failures."}
+    },
+    "unixEpoch": {
+      "normal": ["tests/conformance/fixtures/sprig/date_core.json#sprig/date-core"],
+      "boundary": ["tests/unit/test_sprig_dates.py::test_date_parsing_zero_time_epoch_and_percent_literals"],
+      "failure": {"not_applicable": "A successfully typed Go time always has a Unix-second representation."}
+    },
+    "all": {
+      "normal": ["tests/conformance/fixtures/sprig/defaults.json#sprig/defaults"],
+      "boundary": ["tests/conformance/fixtures/sprig/defaults_shapes.json#sprig/defaults-shapes"],
+      "failure": {"not_applicable": "The variadic upstream helper is total and reports selection only as a boolean."}
+    },
+    "any": {
+      "normal": ["tests/conformance/fixtures/sprig/defaults.json#sprig/defaults"],
+      "boundary": ["tests/conformance/fixtures/sprig/defaults_shapes.json#sprig/defaults-shapes"],
+      "failure": {"not_applicable": "The variadic upstream helper is total and reports selection only as a boolean."}
+    },
+    "coalesce": {
+      "normal": ["tests/conformance/fixtures/sprig/defaults.json#sprig/defaults"],
+      "boundary": ["tests/conformance/fixtures/sprig/defaults_shapes.json#sprig/defaults-shapes"],
+      "failure": {"not_applicable": "The upstream helper accepts arbitrary values and returns nil when every value is empty."}
+    },
+    "default": {
+      "normal": ["tests/conformance/fixtures/sprig/defaults.json#sprig/defaults"],
+      "boundary": ["tests/conformance/fixtures/sprig/defaults_shapes.json#sprig/defaults-shapes"],
+      "failure": {"not_applicable": "The upstream helper accepts arbitrary values and always returns a selected value."}
+    },
+    "empty": {
+      "normal": ["tests/conformance/fixtures/sprig/defaults.json#sprig/defaults"],
+      "boundary": ["tests/conformance/fixtures/sprig/defaults_shapes.json#sprig/defaults-shapes"],
+      "failure": {"not_applicable": "The reflection-based upstream predicate accepts every value and returns a boolean."}
+    },
+    "ternary": {
+      "normal": ["tests/conformance/fixtures/sprig/defaults.json#sprig/defaults"],
+      "boundary": ["tests/conformance/fixtures/sprig/defaults.json#sprig/defaults"],
+      "failure": ["tests/conformance/fixtures/sprig/ternary_failure.json#sprig/ternary-failure"]
+    },
+    "fromJson": {
+      "normal": ["tests/conformance/fixtures/sprig/json_core.json#sprig/json-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/json_float64_semantics.json#sprig/json-float64-semantics"],
+      "failure": {"not_applicable": "The non-must upstream helper converts decoder failures to nil instead of returning an error."}
+    },
+    "mustFromJson": {
+      "normal": ["tests/unit/test_sprig_json.py::test_must_json_helpers_succeed_for_supported_values"],
+      "boundary": ["tests/unit/test_sprig_json.py::test_must_json_helpers_preserve_go_encoding_boundaries"],
+      "failure": ["tests/conformance/fixtures/sprig/json_failure.json#sprig/json-failure"]
+    },
+    "toJson": {
+      "normal": ["tests/conformance/fixtures/sprig/json_core.json#sprig/json-core"],
+      "boundary": ["tests/unit/test_sprig_json.py::test_go_json_collection_edges_and_cycles"],
+      "failure": {"not_applicable": "The non-must upstream helper converts encoder failures to an empty string."}
+    },
+    "mustToJson": {
+      "normal": ["tests/unit/test_sprig_json.py::test_must_json_helpers_succeed_for_supported_values"],
+      "boundary": ["tests/unit/test_sprig_json.py::test_must_json_helpers_preserve_go_encoding_boundaries"],
+      "failure": ["tests/unit/test_sprig_json.py::test_must_json_helpers_return_explicit_function_errors"]
+    },
+    "toPrettyJson": {
+      "normal": ["tests/conformance/fixtures/sprig/json_core.json#sprig/json-core"],
+      "boundary": ["tests/unit/test_sprig_json.py::test_go_json_collection_edges_and_cycles"],
+      "failure": {"not_applicable": "The non-must upstream helper converts encoder failures to an empty string."}
+    },
+    "mustToPrettyJson": {
+      "normal": ["tests/unit/test_sprig_json.py::test_must_json_helpers_succeed_for_supported_values"],
+      "boundary": ["tests/unit/test_sprig_json.py::test_must_json_helpers_preserve_go_encoding_boundaries"],
+      "failure": ["tests/unit/test_sprig_json.py::test_must_json_helpers_return_explicit_function_errors"]
+    },
+    "toRawJson": {
+      "normal": ["tests/conformance/fixtures/sprig/json_core.json#sprig/json-core"],
+      "boundary": ["tests/unit/test_sprig_json.py::test_json_escapes_line_separators_in_both_modes"],
+      "failure": ["tests/unit/test_sprig_json.py::test_raw_json_propagates_unsupported_values"]
+    },
+    "mustToRawJson": {
+      "normal": ["tests/unit/test_sprig_json.py::test_must_json_helpers_succeed_for_supported_values"],
+      "boundary": ["tests/unit/test_sprig_json.py::test_must_json_helpers_preserve_go_encoding_boundaries"],
+      "failure": ["tests/unit/test_sprig_json.py::test_must_json_helpers_return_explicit_function_errors"]
+    },
+    "regexMatch": {
+      "normal": ["tests/conformance/fixtures/sprig/regex_core.json#sprig/regex-core"],
+      "boundary": ["tests/conformance/test_regex_matrix.py::test_ordered_nfa_match_matrix_matches_go"],
+      "failure": ["tests/conformance/fixtures/sprig/regex_nonmust_match_error.json#sprig/regex-nonmust-match-error"]
+    },
+    "mustRegexMatch": {
+      "normal": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_return_successful_function_results"],
+      "boundary": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_preserve_empty_and_count_boundaries"],
+      "failure": ["tests/conformance/fixtures/sprig/regex_repeat_limit_failure.json#sprig/regex-repeat-limit-failure"]
+    },
+    "regexFind": {
+      "normal": ["tests/conformance/fixtures/sprig/regex_core.json#sprig/regex-core"],
+      "boundary": ["tests/conformance/test_regex_matrix.py::test_ordered_nfa_match_matrix_matches_go"],
+      "failure": ["tests/conformance/fixtures/sprig/regex_nonmust_find_failure.json#sprig/regex-nonmust-find-failure"]
+    },
+    "mustRegexFind": {
+      "normal": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_return_successful_function_results"],
+      "boundary": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_preserve_empty_and_count_boundaries"],
+      "failure": ["tests/conformance/fixtures/sprig/regex_failure.json#sprig/regex-failure"]
+    },
+    "regexFindAll": {
+      "normal": ["tests/conformance/fixtures/sprig/regex_core.json#sprig/regex-core"],
+      "boundary": ["tests/unit/test_sprig_regex.py::test_find_all_count_and_empty_results_match_go"],
+      "failure": ["tests/unit/test_sprig_regex.py::test_non_must_panicking_regex_variants_raise_compile_errors"]
+    },
+    "mustRegexFindAll": {
+      "normal": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_return_successful_function_results"],
+      "boundary": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_preserve_empty_and_count_boundaries"],
+      "failure": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_return_explicit_errors"]
+    },
+    "regexReplaceAll": {
+      "normal": ["tests/conformance/fixtures/sprig/regex_core.json#sprig/regex-core"],
+      "boundary": ["tests/conformance/test_regex_matrix.py::test_ordered_nfa_capture_priority_matches_go"],
+      "failure": ["tests/unit/test_sprig_regex.py::test_non_must_panicking_regex_variants_raise_compile_errors"]
+    },
+    "mustRegexReplaceAll": {
+      "normal": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_return_successful_function_results"],
+      "boundary": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_preserve_empty_and_count_boundaries"],
+      "failure": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_return_explicit_errors"]
+    },
+    "regexReplaceAllLiteral": {
+      "normal": ["tests/conformance/fixtures/sprig/regex_core.json#sprig/regex-core"],
+      "boundary": ["tests/unit/test_sprig_regex.py::test_literal_replacement_preserves_dollars_and_empty_matches"],
+      "failure": ["tests/unit/test_sprig_regex.py::test_non_must_panicking_regex_variants_raise_compile_errors"]
+    },
+    "mustRegexReplaceAllLiteral": {
+      "normal": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_return_successful_function_results"],
+      "boundary": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_preserve_empty_and_count_boundaries"],
+      "failure": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_return_explicit_errors"]
+    },
+    "regexSplit": {
+      "normal": ["tests/conformance/fixtures/sprig/regex_core.json#sprig/regex-core"],
+      "boundary": ["tests/unit/test_sprig_regex.py::test_split_ignores_capture_groups_and_honors_counts"],
+      "failure": ["tests/unit/test_sprig_regex.py::test_non_must_panicking_regex_variants_raise_compile_errors"]
+    },
+    "mustRegexSplit": {
+      "normal": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_return_successful_function_results"],
+      "boundary": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_preserve_empty_and_count_boundaries"],
+      "failure": ["tests/unit/test_sprig_regex.py::test_must_regex_variants_return_explicit_errors"]
+    },
+    "regexQuoteMeta": {
+      "normal": ["tests/conformance/fixtures/sprig/regex_core.json#sprig/regex-core"],
+      "boundary": ["tests/unit/test_sprig_regex.py::test_quote_meta_covers_empty_and_every_go_metacharacter"],
+      "failure": {"not_applicable": "The upstream helper accepts every string and performs no regular-expression compilation."}
+    },
+    "deepEqual": {
+      "normal": ["tests/conformance/fixtures/sprig/url_reflect.json#sprig/url-reflect"],
+      "boundary": [
+        "tests/unit/test_sprig_url_reflect.py::test_deep_equal_terminates_for_recursive_python_collections",
+        "tests/unit/test_sprig_url_reflect.py::test_deep_equal_treats_non_nil_python_callables_like_go_functions",
+        "tests/unit/test_sprig_url_reflect.py::test_deep_equal_does_not_expose_python_equality_exceptions"
+      ],
+      "failure": {"not_applicable": "Go reflect.DeepEqual is a total predicate, and the Python adaptation contains equality exceptions."}
+    },
+    "kindOf": {
+      "normal": ["tests/conformance/fixtures/sprig/url_reflect.json#sprig/url-reflect"],
+      "boundary": ["tests/unit/test_sprig_url_reflect.py::test_kind_of_adapts_python_values_to_go_kinds"],
+      "failure": {"not_applicable": "The reflection predicate maps every adapted Python value to a Go kind string."}
+    },
+    "kindIs": {
+      "normal": ["tests/conformance/fixtures/sprig/url_reflect.json#sprig/url-reflect"],
+      "boundary": ["tests/unit/test_sprig_url_reflect.py::test_type_and_kind_predicates_cover_pointer_like_values"],
+      "failure": {"not_applicable": "The helper compares arbitrary target text with a total kind classification."}
+    },
+    "typeOf": {
+      "normal": ["tests/conformance/fixtures/sprig/url_reflect.json#sprig/url-reflect"],
+      "boundary": ["tests/unit/test_sprig_url_reflect.py::test_type_and_kind_predicates_cover_pointer_like_values"],
+      "failure": {"not_applicable": "Go percent-T formatting produces a type string for every adapted value."}
+    },
+    "typeIs": {
+      "normal": ["tests/conformance/fixtures/sprig/url_reflect.json#sprig/url-reflect"],
+      "boundary": ["tests/unit/test_sprig_url_reflect.py::test_type_and_kind_predicates_cover_pointer_like_values"],
+      "failure": {"not_applicable": "The helper compares arbitrary target text with total percent-T formatting."}
+    },
+    "typeIsLike": {
+      "normal": ["tests/conformance/fixtures/sprig/url_reflect.json#sprig/url-reflect"],
+      "boundary": ["tests/unit/test_sprig_url_reflect.py::test_type_and_kind_predicates_cover_pointer_like_values"],
+      "failure": {"not_applicable": "The helper performs total direct and one-pointer type-name comparisons."}
+    },
+    "fail": {
+      "normal": ["tests/conformance/fixtures/sprig/fail.json#sprig/fail"],
+      "boundary": ["tests/unit/test_sprig_flow.py::test_fail_preserves_empty_and_unicode_messages"],
+      "failure": ["tests/conformance/fixtures/sprig/fail.json#sprig/fail"]
+    },
+    "urlParse": {
+      "normal": ["tests/conformance/fixtures/sprig/url_reflect.json#sprig/url-reflect"],
+      "boundary": [
+        "tests/conformance/fixtures/sprig/url_boundaries.json#sprig/url-boundaries",
+        "tests/conformance/fixtures/sprig/url_ipv6_zone.json#sprig/url-ipv6-zone"
+      ],
+      "failure": [
+        "tests/conformance/fixtures/sprig/url_host_escape_failure.json#sprig/url-host-escape-failure",
+        "tests/conformance/fixtures/sprig/url_control_failure.json#sprig/url-control-failure"
+      ]
+    },
+    "urlJoin": {
+      "normal": ["tests/conformance/fixtures/sprig/url_reflect.json#sprig/url-reflect"],
+      "boundary": ["tests/conformance/fixtures/sprig/url_opaque_userinfo.json#sprig/url-opaque-userinfo"],
+      "failure": [
+        "tests/conformance/fixtures/sprig/url_userinfo_failure.json#sprig/url-userinfo-failure",
+        "tests/conformance/fixtures/sprig/url_join_type_failure.json#sprig/url-join-type-failure"
+      ]
+    },
+    "dict": {
+      "normal": ["tests/conformance/fixtures/sprig/dict_core.json#sprig/dict-core"],
+      "boundary": ["tests/unit/test_sprig_dicts.py::test_dict_stringifies_keys_and_supplies_an_odd_value"],
+      "failure": {"not_applicable": "The variadic constructor stringifies every key and supplies an empty final value."}
+    },
+    "get": {
+      "normal": ["tests/conformance/fixtures/sprig/dict_core.json#sprig/dict-core"],
+      "boundary": ["tests/unit/test_sprig_dicts.py::test_dictionary_selection_preserves_present_nil_and_nested_aliases"],
+      "failure": {"not_applicable": "A correctly typed map lookup is total and maps a missing key to an empty string."}
+    },
+    "set": {
+      "normal": ["tests/conformance/fixtures/sprig/dict_core.json#sprig/dict-core"],
+      "boundary": ["tests/unit/test_sprig_dicts.py::test_set_and_unset_mutate_and_return_the_original_dictionary"],
+      "failure": {"not_applicable": "A correctly typed mutable dictionary accepts every string key and arbitrary value."}
+    },
+    "unset": {
+      "normal": ["tests/conformance/fixtures/sprig/dict_core.json#sprig/dict-core"],
+      "boundary": ["tests/unit/test_sprig_dicts.py::test_set_and_unset_mutate_and_return_the_original_dictionary"],
+      "failure": {"not_applicable": "Deleting a missing or present key from a correctly typed mutable dictionary is total."}
+    },
+    "hasKey": {
+      "normal": ["tests/conformance/fixtures/sprig/dict_core.json#sprig/dict-core"],
+      "boundary": ["tests/unit/test_sprig_dicts.py::test_set_and_unset_mutate_and_return_the_original_dictionary"],
+      "failure": {"not_applicable": "Membership for a correctly typed dictionary and string key is a total predicate."}
+    },
+    "pluck": {
+      "normal": ["tests/conformance/fixtures/sprig/dict_core.json#sprig/dict-core"],
+      "boundary": ["tests/unit/test_sprig_dicts.py::test_dictionary_selection_preserves_present_nil_and_nested_aliases"],
+      "failure": {"not_applicable": "The variadic helper skips missing keys and includes every present value, including nil."}
+    },
+    "keys": {
+      "normal": ["tests/unit/test_sprig_dicts.py::test_keys_and_values_accept_mutable_python_dictionaries"],
+      "boundary": ["tests/unit/test_sprig_dicts.py::test_keys_and_values_accept_mutable_python_dictionaries"],
+      "failure": {"not_applicable": "The variadic helper accepts zero or more correctly typed maps and returns a key slice."}
+    },
+    "values": {
+      "normal": ["tests/unit/test_sprig_dicts.py::test_keys_and_values_accept_mutable_python_dictionaries"],
+      "boundary": ["tests/unit/test_sprig_dicts.py::test_keys_and_values_accept_mutable_python_dictionaries"],
+      "failure": {"not_applicable": "A correctly typed map always yields a possibly empty value slice."}
+    },
+    "pick": {
+      "normal": ["tests/conformance/fixtures/sprig/dict_core.json#sprig/dict-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/dict_aliasing.json#sprig/dict-aliasing"],
+      "failure": {"not_applicable": "The helper skips absent selected keys and preserves present values without copying."}
+    },
+    "omit": {
+      "normal": ["tests/conformance/fixtures/sprig/dict_core.json#sprig/dict-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/dict_aliasing.json#sprig/dict-aliasing"],
+      "failure": {"not_applicable": "The helper ignores absent exclusions and preserves included values without copying."}
+    },
+    "deepCopy": {
+      "normal": ["tests/conformance/fixtures/sprig/aliases_remaining.json#sprig/aliases-remaining"],
+      "boundary": ["tests/conformance/fixtures/sprig/dict_aliasing.json#sprig/dict-aliasing"],
+      "failure": ["tests/unit/test_sprig_dicts.py::test_deep_copy_must_and_non_must_failure_contracts"]
+    },
+    "mustDeepCopy": {
+      "normal": ["tests/unit/test_sprig_dicts.py::test_deep_copy_does_not_share_nested_collections"],
+      "boundary": ["tests/conformance/fixtures/sprig/dict_aliasing.json#sprig/dict-aliasing"],
+      "failure": ["tests/unit/test_sprig_dicts.py::test_deep_copy_must_and_non_must_failure_contracts"]
+    },
+    "merge": {
+      "normal": ["tests/conformance/fixtures/sprig/merge_paths.json#sprig/merge-paths"],
+      "boundary": [
+        "tests/conformance/fixtures/sprig/dict_merge_zero_values.json#sprig/dict-merge-zero-values",
+        "tests/conformance/fixtures/sprig/dict_aliasing.json#sprig/dict-aliasing"
+      ],
+      "failure": ["tests/unit/test_sprig_dicts.py::test_merge_must_and_non_must_failure_contracts"]
+    },
+    "mustMerge": {
+      "normal": ["tests/unit/test_sprig_dicts.py::test_must_merge_variants_return_successful_function_results"],
+      "boundary": ["tests/conformance/fixtures/sprig/dict_aliasing.json#sprig/dict-aliasing"],
+      "failure": ["tests/unit/test_sprig_dicts.py::test_merge_must_and_non_must_failure_contracts"]
+    },
+    "mergeOverwrite": {
+      "normal": ["tests/conformance/fixtures/sprig/aliases_remaining.json#sprig/aliases-remaining"],
+      "boundary": [
+        "tests/conformance/fixtures/sprig/dict_merge_zero_values.json#sprig/dict-merge-zero-values",
+        "tests/conformance/fixtures/sprig/dict_aliasing.json#sprig/dict-aliasing"
+      ],
+      "failure": ["tests/unit/test_sprig_dicts.py::test_merge_must_and_non_must_failure_contracts"]
+    },
+    "mustMergeOverwrite": {
+      "normal": ["tests/unit/test_sprig_dicts.py::test_must_merge_variants_return_successful_function_results"],
+      "boundary": ["tests/conformance/fixtures/sprig/dict_aliasing.json#sprig/dict-aliasing"],
+      "failure": ["tests/unit/test_sprig_dicts.py::test_merge_must_and_non_must_failure_contracts"]
+    },
+    "dig": {
+      "normal": ["tests/conformance/fixtures/sprig/dict_core.json#sprig/dict-core"],
+      "boundary": ["tests/unit/test_sprig_dicts.py::test_dig_returns_an_explicit_go_style_result"],
+      "failure": ["tests/unit/test_sprig_dicts.py::test_dig_rejects_invalid_shapes"]
+    },
+    "append": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_list_transforms_do_not_mutate_inputs_or_copy_nested_values"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_non_must_list_functions_panic_for_non_sequences"]
+    },
+    "push": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_list_transforms_do_not_mutate_inputs_or_copy_nested_values"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_non_must_list_functions_panic_for_non_sequences"]
+    },
+    "prepend": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_list_transforms_do_not_mutate_inputs_or_copy_nested_values"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_non_must_list_functions_panic_for_non_sequences"]
+    },
+    "first": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/list_nil_slices.json#sprig/list-nil-slices"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_non_must_list_functions_panic_for_non_sequences"]
+    },
+    "last": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_list_helpers_cover_empty_and_nil_inputs"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_non_must_list_functions_panic_for_non_sequences"]
+    },
+    "rest": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/list_nil_slices.json#sprig/list-nil-slices"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_non_must_list_functions_panic_for_non_sequences"]
+    },
+    "initial": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/list_nil_slices.json#sprig/list-nil-slices"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_non_must_list_functions_panic_for_non_sequences"]
+    },
+    "reverse": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_list_transforms_do_not_mutate_inputs_or_copy_nested_values"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_non_must_list_functions_panic_for_non_sequences"]
+    },
+    "compact": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/list_nil_slices.json#sprig/list-nil-slices"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_non_must_list_functions_panic_for_non_sequences"]
+    },
+    "uniq": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_deep_list_operations_terminate_for_recursive_collections"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_non_must_list_functions_panic_for_non_sequences"]
+    },
+    "without": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_deep_list_operations_terminate_for_recursive_collections"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_non_must_list_functions_panic_for_non_sequences"]
+    },
+    "has": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_deep_list_operations_terminate_for_recursive_collections"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_non_must_list_functions_panic_for_non_sequences"]
+    },
+    "slice": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/list_nil_slices.json#sprig/list-nil-slices"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_list_slice_rejects_invalid_bounds"]
+    },
+    "concat": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/list_nil_slices.json#sprig/list-nil-slices"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_non_must_concat_rejects_non_sequences"]
+    },
+    "chunk": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_chunk_rejects_nonpositive_sizes"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_non_must_list_functions_panic_for_non_sequences"]
+    },
+    "list": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/list_nil_slices.json#sprig/list-nil-slices"],
+      "failure": {"not_applicable": "The variadic constructor accepts arbitrary values and always returns an allocated slice."}
+    },
+    "tuple": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/list_nil_slices.json#sprig/list-nil-slices"],
+      "failure": {"not_applicable": "This alias has the same total variadic constructor contract as list."}
+    },
+    "mustAppend": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_must_variants_are_explicit_go_style_result_functions"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_must_list_helpers_return_errors_for_non_sequences"]
+    },
+    "mustPush": {
+      "normal": ["tests/unit/test_sprig_lists.py::test_must_variants_are_explicit_go_style_result_functions"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_list_transforms_do_not_mutate_inputs_or_copy_nested_values"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_must_list_helpers_return_errors_for_non_sequences"]
+    },
+    "mustPrepend": {
+      "normal": ["tests/unit/test_sprig_lists.py::test_must_variants_are_explicit_go_style_result_functions"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_list_transforms_do_not_mutate_inputs_or_copy_nested_values"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_must_list_helpers_return_errors_for_non_sequences"]
+    },
+    "mustFirst": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/list_nil_slices.json#sprig/list-nil-slices"],
+      "failure": [
+        "tests/conformance/fixtures/sprig/list_failure.json#sprig/list-failure",
+        "tests/conformance/fixtures/sprig/list_nil_failure.json#sprig/list-nil-failure"
+      ]
+    },
+    "mustLast": {
+      "normal": ["tests/unit/test_sprig_lists.py::test_must_variants_are_explicit_go_style_result_functions"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_list_helpers_cover_empty_and_nil_inputs"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_must_list_helpers_return_errors_for_non_sequences"]
+    },
+    "mustRest": {
+      "normal": ["tests/unit/test_sprig_lists.py::test_must_variants_are_explicit_go_style_result_functions"],
+      "boundary": ["tests/conformance/fixtures/sprig/list_nil_slices.json#sprig/list-nil-slices"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_must_list_helpers_preserve_upstream_nil_reflection_panics"]
+    },
+    "mustInitial": {
+      "normal": ["tests/unit/test_sprig_lists.py::test_must_variants_are_explicit_go_style_result_functions"],
+      "boundary": ["tests/conformance/fixtures/sprig/list_nil_slices.json#sprig/list-nil-slices"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_must_list_helpers_return_errors_for_non_sequences"]
+    },
+    "mustReverse": {
+      "normal": ["tests/unit/test_sprig_lists.py::test_must_variants_are_explicit_go_style_result_functions"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_list_transforms_do_not_mutate_inputs_or_copy_nested_values"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_must_list_helpers_return_errors_for_non_sequences"]
+    },
+    "mustCompact": {
+      "normal": ["tests/unit/test_sprig_lists.py::test_must_variants_are_explicit_go_style_result_functions"],
+      "boundary": ["tests/conformance/fixtures/sprig/list_nil_slices.json#sprig/list-nil-slices"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_must_list_helpers_return_errors_for_non_sequences"]
+    },
+    "mustUniq": {
+      "normal": ["tests/unit/test_sprig_lists.py::test_must_variants_are_explicit_go_style_result_functions"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_deep_list_operations_terminate_for_recursive_collections"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_must_list_helpers_return_errors_for_non_sequences"]
+    },
+    "mustWithout": {
+      "normal": ["tests/unit/test_sprig_lists.py::test_must_variants_are_explicit_go_style_result_functions"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_deep_list_operations_terminate_for_recursive_collections"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_must_list_helpers_return_errors_for_non_sequences"]
+    },
+    "mustHas": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_must_has_treats_nil_as_an_explicit_success"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_must_list_helpers_return_errors_for_non_sequences"]
+    },
+    "mustSlice": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/list_nil_slices.json#sprig/list-nil-slices"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_list_slice_rejects_invalid_bounds"]
+    },
+    "mustChunk": {
+      "normal": ["tests/unit/test_sprig_lists.py::test_must_variants_are_explicit_go_style_result_functions"],
+      "boundary": ["tests/unit/test_sprig_lists.py::test_chunk_rejects_nonpositive_sizes"],
+      "failure": ["tests/unit/test_sprig_lists.py::test_must_list_helpers_return_errors_for_non_sequences"]
+    },
+    "int": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_core.json#sprig/numeric-core"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_numeric_conversion_arithmetic_and_sequence_matrix_matches_go"],
+      "failure": {"not_applicable": "The cast helper converts unsupported or malformed values to the integer zero value."}
+    },
+    "int64": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_int64_boundaries.json#sprig/numeric-int64-boundaries"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_numeric_conversion_arithmetic_and_sequence_matrix_matches_go"],
+      "failure": {"not_applicable": "The cast helper converts unsupported, malformed, and out-of-range values to zero."}
+    },
+    "float64": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_float.json#sprig/numeric-float"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_numeric_conversion_arithmetic_and_sequence_matrix_matches_go"],
+      "failure": {"not_applicable": "The cast helper maps unsupported and range-error inputs to zero while retaining explicit non-finite spellings."}
+    },
+    "atoi": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_float.json#sprig/numeric-float"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_numeric_conversion_arithmetic_and_sequence_matrix_matches_go"],
+      "failure": {"not_applicable": "Sprig discards the strconv error and returns zero for invalid decimal strings."}
+    },
+    "toDecimal": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_core.json#sprig/numeric-core"],
+      "boundary": ["tests/unit/test_sprig_numeric.py::test_octal_conversion_uses_go_default_value_formatting"],
+      "failure": {"not_applicable": "Sprig discards octal parsing errors and returns the signed integer zero value."}
+    },
+    "add1": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_core.json#sprig/numeric-core"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_seeded_integer_arithmetic_matrix_matches_go"],
+      "failure": {"not_applicable": "Input casting is total and signed arithmetic intentionally wraps without an error result."}
+    },
+    "add": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_core.json#sprig/numeric-core"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_seeded_integer_arithmetic_matrix_matches_go"],
+      "failure": {"not_applicable": "The variadic helper accepts zero inputs, casts every value, and wraps signed overflow."}
+    },
+    "sub": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_core.json#sprig/numeric-core"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_seeded_integer_arithmetic_matrix_matches_go"],
+      "failure": {"not_applicable": "Both inputs are converted through Sprig's total cast and signed subtraction wraps."}
+    },
+    "mul": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_core.json#sprig/numeric-core"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_seeded_integer_arithmetic_matrix_matches_go"],
+      "failure": {"not_applicable": "The helper casts all operands and intentionally preserves signed overflow wrapping."}
+    },
+    "div": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_core.json#sprig/numeric-core"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_seeded_integer_arithmetic_matrix_matches_go"],
+      "failure": [
+        "tests/conformance/fixtures/sprig/numeric_failure.json#sprig/numeric-failure",
+        "tests/unit/test_sprig_numeric.py::test_integer_division_and_remainder_truncate_toward_zero"
+      ]
+    },
+    "mod": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_core.json#sprig/numeric-core"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_seeded_integer_arithmetic_matrix_matches_go"],
+      "failure": ["tests/unit/test_sprig_numeric.py::test_integer_division_and_remainder_truncate_toward_zero"]
+    },
+    "max": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_core.json#sprig/numeric-core"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_seeded_integer_arithmetic_matrix_matches_go"],
+      "failure": {"not_applicable": "At least one typed operand is required and every supplied value is converted through a total cast."}
+    },
+    "biggest": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_core.json#sprig/numeric-core"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_numeric_conversion_arithmetic_and_sequence_matrix_matches_go"],
+      "failure": {"not_applicable": "This alias has the same total cast and comparison contract as max."}
+    },
+    "min": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_core.json#sprig/numeric-core"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_seeded_integer_arithmetic_matrix_matches_go"],
+      "failure": {"not_applicable": "At least one typed operand is required and comparisons do not expose an error result."}
+    },
+    "add1f": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_float.json#sprig/numeric-float"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_seeded_float_arithmetic_and_rounding_matrix_matches_go"],
+      "failure": ["tests/unit/test_sprig_numeric.py::test_decimal_arithmetic_preserves_nonfinite_panics"]
+    },
+    "addf": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_float.json#sprig/numeric-float"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_seeded_float_arithmetic_and_rounding_matrix_matches_go"],
+      "failure": [
+        "tests/conformance/fixtures/sprig/numeric_special_decimal_failure.json#sprig/numeric-special-decimal-failure",
+        "tests/unit/test_sprig_numeric.py::test_decimal_arithmetic_preserves_nonfinite_panics"
+      ]
+    },
+    "subf": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_float.json#sprig/numeric-float"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_seeded_float_arithmetic_and_rounding_matrix_matches_go"],
+      "failure": ["tests/unit/test_sprig_numeric.py::test_decimal_arithmetic_preserves_nonfinite_panics"]
+    },
+    "mulf": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_float.json#sprig/numeric-float"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_seeded_float_arithmetic_and_rounding_matrix_matches_go"],
+      "failure": ["tests/unit/test_sprig_numeric.py::test_decimal_arithmetic_preserves_nonfinite_panics"]
+    },
+    "divf": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_float.json#sprig/numeric-float"],
+      "boundary": ["tests/unit/test_sprig_numeric.py::test_decimal_division_uses_sprigs_sixteen_fractional_places"],
+      "failure": ["tests/unit/test_sprig_numeric.py::test_decimal_division_uses_sprigs_sixteen_fractional_places"]
+    },
+    "maxf": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_float.json#sprig/numeric-float"],
+      "boundary": ["tests/unit/test_sprig_numeric.py::test_go_float_math_preserves_signed_zero"],
+      "failure": {"not_applicable": "Go math.Max is total for float64 operands and explicitly propagates NaN."}
+    },
+    "minf": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_float.json#sprig/numeric-float"],
+      "boundary": ["tests/unit/test_sprig_numeric.py::test_go_float_math_preserves_signed_zero"],
+      "failure": {"not_applicable": "Go math.Min is total for float64 operands and explicitly propagates NaN."}
+    },
+    "ceil": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_float.json#sprig/numeric-float"],
+      "boundary": ["tests/unit/test_sprig_numeric.py::test_go_float_math_preserves_signed_zero"],
+      "failure": {"not_applicable": "Go math.Ceil is total across finite values, signed zero, infinities, and NaN."}
+    },
+    "floor": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_float.json#sprig/numeric-float"],
+      "boundary": ["tests/unit/test_sprig_numeric.py::test_go_float_math_preserves_signed_zero"],
+      "failure": {"not_applicable": "Go math.Floor is total across finite values, signed zero, infinities, and NaN."}
+    },
+    "round": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_float.json#sprig/numeric-float"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_seeded_float_arithmetic_and_rounding_matrix_matches_go"],
+      "failure": {"not_applicable": "The helper returns IEEE-754 results, including NaN for power overflow and underflow boundaries."}
+    },
+    "until": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_core.json#sprig/numeric-core"],
+      "boundary": ["tests/conformance/test_numeric_matrix.py::test_numeric_conversion_arithmetic_and_sequence_matrix_matches_go"],
+      "failure": {"not_applicable": "For a typed integer count the helper returns an ascending, descending, or empty slice."}
+    },
+    "untilStep": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_core.json#sprig/numeric-core"],
+      "boundary": ["tests/unit/test_sprig_numeric.py::test_until_step_handles_direction_and_zero_steps"],
+      "failure": {"not_applicable": "Zero and wrong-direction steps return an empty slice rather than an error."}
+    },
+    "seq": {
+      "normal": ["tests/conformance/fixtures/sprig/numeric_core.json#sprig/numeric-core"],
+      "boundary": ["tests/unit/test_sprig_numeric.py::test_seq_rejects_unsupported_arity_and_direction"],
+      "failure": {"not_applicable": "Unsupported arities and directions return an empty string for typed integer arguments."}
+    },
+    "hello": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "failure": {"not_applicable": "The zero-argument compatibility helper always returns its constant greeting."}
+    },
+    "trim": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "Go strings.TrimSpace is total for every correctly typed string."}
+    },
+    "upper": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/unicode_strings.json#sprig/unicode-strings"],
+      "failure": {"not_applicable": "Go simple Unicode uppercase mapping is total for every string."}
+    },
+    "lower": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/unicode_strings.json#sprig/unicode-strings"],
+      "failure": {"not_applicable": "Go simple Unicode lowercase mapping is total for every string."}
+    },
+    "repeat": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": ["tests/unit/test_sprig_strings_advanced.py::test_string_helpers_preserve_upstream_bounds_panics"]
+    },
+    "trimAll": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "The cutset-based Go strings.Trim operation is total for typed strings."}
+    },
+    "trimall": {
+      "normal": ["tests/conformance/fixtures/sprig/aliases_remaining.json#sprig/aliases-remaining"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "This deprecated alias has the same total contract as trimAll."}
+    },
+    "trimPrefix": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "Go strings.TrimPrefix returns either the unchanged string or its suffix."}
+    },
+    "trimSuffix": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "Go strings.TrimSuffix returns either the unchanged string or its prefix."}
+    },
+    "contains": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "Go strings.Contains is a total predicate for two typed strings."}
+    },
+    "hasPrefix": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "Go strings.HasPrefix is a total predicate for two typed strings."}
+    },
+    "hasSuffix": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "Go strings.HasSuffix is a total predicate for two typed strings."}
+    },
+    "indent": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": ["tests/unit/test_sprig_strings_advanced.py::test_string_helpers_preserve_upstream_bounds_panics"]
+    },
+    "nindent": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": ["tests/unit/test_sprig_strings_advanced.py::test_string_helpers_preserve_upstream_bounds_panics"]
+    },
+    "replace": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "Go strings.Replace with an unlimited count is total for typed strings."}
+    },
+    "plural": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_core.json#sprig/strings-core"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "The selector accepts every integer count and returns one supplied string."}
+    },
+    "toString": {
+      "normal": ["tests/unit/test_sprig_strings_advanced.py::test_quote_helpers_skip_all_nil_adapters"],
+      "boundary": ["tests/unit/test_sprig_strings_advanced.py::test_python_byte_slices_expand_for_to_strings_and_sort_alpha"],
+      "failure": {"not_applicable": "Sprig converts arbitrary interface values through byte, stringer, error, or fmt fallback paths."}
+    },
+    "toStrings": {
+      "normal": ["tests/unit/test_sprig_lists.py::test_string_conversion_handles_bytes_nil_and_scalars"],
+      "boundary": ["tests/unit/test_sprig_strings_advanced.py::test_python_byte_slices_expand_for_to_strings_and_sort_alpha"],
+      "failure": {"not_applicable": "The reflection adapter accepts nil, scalar, array, and slice inputs and returns strings."}
+    },
+    "join": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "The helper converts its correctly supplied interface value to a string slice before joining."}
+    },
+    "sortAlpha": {
+      "normal": ["tests/conformance/fixtures/sprig/list_core.json#sprig/list-core"],
+      "boundary": ["tests/unit/test_sprig_strings_advanced.py::test_python_byte_slices_expand_for_to_strings_and_sort_alpha"],
+      "failure": {"not_applicable": "The helper adapts nil, scalar, array, and slice inputs before applying a total lexical sort."}
+    },
+    "substr": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_wrapping_abbreviation_and_byte_slicing_matrix_matches_go"],
+      "failure": ["tests/unit/test_sprig_strings_advanced.py::test_string_helpers_preserve_upstream_bounds_panics"]
+    },
+    "trunc": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_wrapping_abbreviation_and_byte_slicing_matrix_matches_go"],
+      "failure": {"not_applicable": "Out-of-range positive and negative counts return the original byte string without slicing."}
+    },
+    "quote": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/unit/test_sprig_strings_advanced.py::test_quote_helpers_skip_all_nil_adapters"],
+      "failure": {"not_applicable": "Nil values are skipped and every remaining interface value has a Go quoted representation."}
+    },
+    "squote": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/unit/test_sprig_strings_advanced.py::test_quote_helpers_skip_all_nil_adapters"],
+      "failure": {"not_applicable": "Nil values are skipped and fmt default formatting is total for the adapted value set."}
+    },
+    "cat": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/unit/test_sprig_strings_advanced.py::test_cat_uses_go_trim_space_boundaries"],
+      "failure": {"not_applicable": "The variadic helper removes nils and formats all remaining adapted values."}
+    },
+    "split": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "Go strings.Split is total and the wrapper always builds a string map."}
+    },
+    "splitn": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/unit/test_sprig_strings_advanced.py::test_split_handles_zero_counts_and_empty_separators"],
+      "failure": {"not_applicable": "All count values are defined by Go strings.SplitN, including zero and negative counts."}
+    },
+    "splitList": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/unit/test_sprig_strings_advanced.py::test_split_handles_zero_counts_and_empty_separators"],
+      "failure": {"not_applicable": "Go strings.Split is total for empty and non-empty separators."}
+    },
+    "nospace": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/conformance/fixtures/sprig/unicode_strings.json#sprig/unicode-strings"],
+      "failure": {"not_applicable": "The legacy goutils byte iteration accepts every string and returns a string."}
+    },
+    "initials": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/conformance/fixtures/sprig/unicode_strings.json#sprig/unicode-strings"],
+      "failure": {"not_applicable": "The legacy goutils byte iteration accepts every string and returns initials."}
+    },
+    "title": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/conformance/fixtures/sprig/unicode_strings.json#sprig/unicode-strings"],
+      "failure": {"not_applicable": "Go strings.Title applies total simple Unicode title mappings."}
+    },
+    "untitle": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/conformance/fixtures/sprig/unicode_strings.json#sprig/unicode-strings"],
+      "failure": {"not_applicable": "The goutils uncapitalize operation is total for every string."}
+    },
+    "swapcase": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/conformance/fixtures/sprig/unicode_strings.json#sprig/unicode-strings"],
+      "failure": {"not_applicable": "The goutils rune case transformation is total for every string."}
+    },
+    "snakecase": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_xstrings_case_conversion_matrix_matches_go"],
+      "failure": {"not_applicable": "The xstrings word scanner and conversion are total for every UTF-8 string."}
+    },
+    "kebabcase": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_xstrings_case_conversion_matrix_matches_go"],
+      "failure": {"not_applicable": "The xstrings word scanner and conversion are total for every UTF-8 string."}
+    },
+    "camelcase": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_xstrings_case_conversion_matrix_matches_go"],
+      "failure": {"not_applicable": "The xstrings Pascal-case conversion is total for every UTF-8 string."}
+    },
+    "abbrev": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_wrapping_abbreviation_and_byte_slicing_matrix_matches_go"],
+      "failure": {"not_applicable": "Sprig returns the original string when the underlying abbreviation width would be invalid."}
+    },
+    "abbrevboth": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/unit/test_sprig_strings_advanced.py::test_abbreviation_covers_width_and_tail_boundaries"],
+      "failure": {"not_applicable": "Sprig prevalidates unsupported widths and otherwise discards the underlying error value."}
+    },
+    "wrap": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_wrapping_abbreviation_and_byte_slicing_matrix_matches_go"],
+      "failure": {"not_applicable": "Goutils clamps non-positive widths and wraps every byte string without an error result."}
+    },
+    "wrapWith": {
+      "normal": ["tests/conformance/fixtures/sprig/strings_advanced.json#sprig/strings-advanced"],
+      "boundary": ["tests/unit/test_sprig_strings_advanced.py::test_wrap_handles_empty_values_and_nonpositive_widths"],
+      "failure": {"not_applicable": "Goutils defines empty separators and non-positive widths without returning errors."}
+    },
+    "b64enc": {
+      "normal": ["tests/conformance/fixtures/sprig/encoding_hash_path.json#sprig/encoding-hash-path"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_encoding_decoder_boundary_matrix_matches_go"],
+      "failure": {"not_applicable": "Base64 encoding is total for every UTF-8 string."}
+    },
+    "b64dec": {
+      "normal": ["tests/conformance/fixtures/sprig/encoding_hash_path.json#sprig/encoding-hash-path"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_encoding_decoder_boundary_matrix_matches_go"],
+      "failure": {"not_applicable": "The non-must helper returns the Go decoder error text as its value."}
+    },
+    "b32enc": {
+      "normal": ["tests/conformance/fixtures/sprig/encoding_hash_path.json#sprig/encoding-hash-path"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_encoding_decoder_boundary_matrix_matches_go"],
+      "failure": {"not_applicable": "Base32 encoding is total for every UTF-8 string."}
+    },
+    "b32dec": {
+      "normal": ["tests/conformance/fixtures/sprig/encoding_hash_path.json#sprig/encoding-hash-path"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_encoding_decoder_boundary_matrix_matches_go"],
+      "failure": ["tests/conformance/fixtures/sprig/base32_error.json#sprig/base32-error"]
+    },
+    "sha1sum": {
+      "normal": ["tests/conformance/fixtures/sprig/encoding_hash_path.json#sprig/encoding-hash-path"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "SHA-1 hashing is total for every UTF-8 string."}
+    },
+    "sha256sum": {
+      "normal": ["tests/conformance/fixtures/sprig/encoding_hash_path.json#sprig/encoding-hash-path"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "SHA-256 hashing is total for every UTF-8 string."}
+    },
+    "sha512sum": {
+      "normal": ["tests/conformance/fixtures/sprig/encoding_hash_path.json#sprig/encoding-hash-path"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "SHA-512 hashing is total for every UTF-8 string."}
+    },
+    "adler32sum": {
+      "normal": ["tests/conformance/fixtures/sprig/encoding_hash_path.json#sprig/encoding-hash-path"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_basic_string_conversion_and_digest_matrix_matches_go"],
+      "failure": {"not_applicable": "Adler-32 hashing is total for every UTF-8 string."}
+    },
+    "base": {
+      "normal": ["tests/conformance/fixtures/sprig/encoding_hash_path.json#sprig/encoding-hash-path"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_slash_and_host_path_matrix_matches_go"],
+      "failure": {"not_applicable": "Go path.Base is total for every string."}
+    },
+    "dir": {
+      "normal": ["tests/conformance/fixtures/sprig/encoding_hash_path.json#sprig/encoding-hash-path"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_slash_and_host_path_matrix_matches_go"],
+      "failure": {"not_applicable": "Go path.Dir is total for every string."}
+    },
+    "clean": {
+      "normal": ["tests/conformance/fixtures/sprig/encoding_hash_path.json#sprig/encoding-hash-path"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_slash_and_host_path_matrix_matches_go"],
+      "failure": {"not_applicable": "Go path.Clean is total for every string."}
+    },
+    "ext": {
+      "normal": ["tests/conformance/fixtures/sprig/encoding_hash_path.json#sprig/encoding-hash-path"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_slash_and_host_path_matrix_matches_go"],
+      "failure": {"not_applicable": "Go path.Ext is total for every string."}
+    },
+    "isAbs": {
+      "normal": ["tests/conformance/fixtures/sprig/encoding_hash_path.json#sprig/encoding-hash-path"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_slash_and_host_path_matrix_matches_go"],
+      "failure": {"not_applicable": "Go path.IsAbs is total for every string."}
+    },
+    "osBase": {
+      "normal": ["tests/conformance/fixtures/sprig/merge_paths.json#sprig/merge-paths"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_slash_and_host_path_matrix_matches_go"],
+      "failure": {"not_applicable": "Go filepath.Base is total for typed string inputs."}
+    },
+    "osDir": {
+      "normal": ["tests/conformance/fixtures/sprig/merge_paths.json#sprig/merge-paths"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_slash_and_host_path_matrix_matches_go"],
+      "failure": {"not_applicable": "Go filepath.Dir is total for typed string inputs."}
+    },
+    "osClean": {
+      "normal": ["tests/conformance/fixtures/sprig/merge_paths.json#sprig/merge-paths"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_slash_and_host_path_matrix_matches_go"],
+      "failure": {"not_applicable": "Go filepath.Clean is total for typed string inputs."}
+    },
+    "osExt": {
+      "normal": ["tests/conformance/fixtures/sprig/merge_paths.json#sprig/merge-paths"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_slash_and_host_path_matrix_matches_go"],
+      "failure": {"not_applicable": "Go filepath.Ext is total for typed string inputs."}
+    },
+    "osIsAbs": {
+      "normal": ["tests/conformance/fixtures/sprig/merge_paths.json#sprig/merge-paths"],
+      "boundary": ["tests/conformance/test_string_matrix.py::test_slash_and_host_path_matrix_matches_go"],
+      "failure": {"not_applicable": "Go filepath.IsAbs is total for typed string inputs."}
+    },
+    "semver": {
+      "normal": ["tests/conformance/fixtures/sprig/semver_core.json#sprig/semver-core"],
+      "boundary": ["tests/conformance/fixtures/sprig/semver_relaxed_uint64.json#sprig/semver-relaxed-uint64"],
+      "failure": [
+        "tests/conformance/fixtures/sprig/semver_failure.json#sprig/semver-failure",
+        "tests/conformance/fixtures/sprig/semver_uint64_overflow_failure.json#sprig/semver-uint64-overflow-failure"
+      ]
+    },
+    "semverCompare": {
+      "normal": ["tests/conformance/fixtures/sprig/semver_constraints.json#sprig/semver-constraints"],
+      "boundary": ["tests/conformance/test_semver_matrix.py::test_masterminds_constraint_matrix_matches_go"],
+      "failure": ["tests/unit/test_sprig_semver.py::test_registered_semver_functions_expose_go_style_results"]
+    },
+    "randAlpha": {
+      "normal": ["tests/unit/test_sprig_external.py::test_default_random_outputs_have_the_required_shapes"],
+      "boundary": ["tests/conformance/fixtures/sprig/random_boundaries.json#sprig/random-boundaries"],
+      "failure": {"not_applicable": "Sprig discards goutils parameter errors and returns an empty string for negative lengths."}
+    },
+    "randAlphaNum": {
+      "normal": ["tests/unit/test_sprig_external.py::test_default_random_outputs_have_the_required_shapes"],
+      "boundary": ["tests/conformance/fixtures/sprig/random_boundaries.json#sprig/random-boundaries"],
+      "failure": {"not_applicable": "Sprig discards goutils parameter errors and returns an empty string for negative lengths."}
+    },
+    "randAscii": {
+      "normal": ["tests/unit/test_sprig_external.py::test_default_random_outputs_have_the_required_shapes"],
+      "boundary": ["tests/conformance/fixtures/sprig/random_boundaries.json#sprig/random-boundaries"],
+      "failure": {"not_applicable": "Sprig discards goutils parameter errors and returns an empty string for negative lengths."}
+    },
+    "randNumeric": {
+      "normal": ["tests/unit/test_sprig_external.py::test_default_random_outputs_have_the_required_shapes"],
+      "boundary": ["tests/conformance/fixtures/sprig/random_boundaries.json#sprig/random-boundaries"],
+      "failure": {"not_applicable": "Sprig discards goutils parameter errors and returns an empty string for negative lengths."}
+    },
+    "randBytes": {
+      "normal": ["tests/unit/test_sprig_external.py::test_random_bytes_and_uuid_use_injected_entropy"],
+      "boundary": ["tests/conformance/fixtures/sprig/random_boundaries.json#sprig/random-boundaries"],
+      "failure": ["tests/unit/test_sprig_external.py::test_registered_random_bytes_preserves_go_value_error_contract"]
+    },
+    "randInt": {
+      "normal": ["tests/unit/test_sprig_external.py::test_registry_injects_external_state_without_changing_hermetic_membership"],
+      "boundary": ["tests/conformance/fixtures/sprig/random_boundaries.json#sprig/random-boundaries"],
+      "failure": ["tests/unit/test_sprig_external.py::test_pseudo_random_helpers_accept_an_injected_index_source"]
+    },
+    "shuffle": {
+      "normal": ["tests/unit/test_sprig_external.py::test_pseudo_random_helpers_accept_an_injected_index_source"],
+      "boundary": ["tests/unit/test_sprig_external.py::test_shuffle_operates_on_unicode_code_points_like_go_runes"],
+      "failure": {"not_applicable": "The xstrings rune shuffle is total for every string, including the empty string."}
+    },
+    "uuidv4": {
+      "normal": ["tests/unit/test_sprig_external.py::test_default_random_outputs_have_the_required_shapes", "tests/unit/test_sprig_registry.py::test_sprig_function_maps_are_independent_mutable_copies"],
+      "boundary": ["tests/unit/test_sprig_external.py::test_random_bytes_and_uuid_use_injected_entropy"],
+      "failure": ["tests/unit/test_sprig_external.py::test_random_bytes_and_uuid_use_injected_entropy"]
+    },
+    "bcrypt": {
+      "normal": ["tests/unit/test_sprig_crypto.py::test_bcrypt_and_htpasswd_use_the_optional_backend"],
+      "boundary": ["tests/unit/test_sprig_crypto.py::test_all_sprig_crypto_names_are_registered"],
+      "failure": ["tests/unit/test_sprig_crypto.py::test_bcrypt_and_htpasswd_use_the_optional_backend"]
+    },
+    "htpasswd": {
+      "normal": ["tests/unit/test_sprig_crypto.py::test_bcrypt_and_htpasswd_use_the_optional_backend"],
+      "boundary": ["tests/unit/test_sprig_crypto.py::test_all_sprig_crypto_names_are_registered"],
+      "failure": ["tests/unit/test_sprig_crypto.py::test_bcrypt_and_htpasswd_use_the_optional_backend"]
+    },
+    "derivePassword": {
+      "normal": ["tests/conformance/fixtures/sprig/crypto_core.json#sprig/crypto-core"],
+      "boundary": ["tests/unit/test_sprig_crypto.py::test_derive_password_matches_sprig_vectors"],
+      "failure": ["tests/unit/test_sprig_crypto.py::test_derive_password_registry_rejects_values_outside_go_uint32"]
+    },
+    "encryptAES": {
+      "normal": ["tests/conformance/fixtures/sprig/crypto_core.json#sprig/crypto-core"],
+      "boundary": ["tests/unit/test_sprig_crypto.py::test_aes_decoder_accepts_go_base64_newlines_and_loose_padding"],
+      "failure": ["tests/unit/test_sprig_crypto.py::test_registered_crypto_error_functions_preserve_go_result_contract"]
+    },
+    "decryptAES": {
+      "normal": ["tests/conformance/fixtures/sprig/crypto_core.json#sprig/crypto-core"],
+      "boundary": ["tests/unit/test_sprig_crypto.py::test_aes_decoder_accepts_go_base64_newlines_and_loose_padding"],
+      "failure": ["tests/unit/test_sprig_crypto.py::test_aes_rejects_malformed_ciphertext"]
+    },
+    "genPrivateKey": {
+      "normal": ["tests/unit/test_sprig_crypto.py::test_private_key_algorithms_use_go_compatible_pem_labels"],
+      "boundary": ["tests/conformance/fixtures/sprig/crypto_core.json#sprig/crypto-core"],
+      "failure": {"not_applicable": "Sprig converts key-generation failures and unknown algorithms into returned strings."}
+    },
+    "buildCustomCert": {
+      "normal": ["tests/unit/test_sprig_crypto.py::test_certificate_authority_and_custom_certificate_round_trip", "tests/unit/test_sprig_crypto.py::test_all_sprig_crypto_names_are_registered"],
+      "boundary": ["tests/unit/test_sprig_crypto.py::test_registered_crypto_error_functions_preserve_go_result_contract"],
+      "failure": ["tests/unit/test_sprig_crypto.py::test_certificate_inputs_are_validated"]
+    },
+    "genCA": {
+      "normal": ["tests/unit/test_sprig_crypto.py::test_registered_certificate_entry_points_return_go_results"],
+      "boundary": ["tests/unit/test_sprig_crypto.py::test_all_sprig_crypto_names_are_registered"],
+      "failure": {"not_applicable": "Valid typed inputs leave only operating-system or cryptographic backend failures."}
+    },
+    "genCAWithKey": {
+      "normal": ["tests/unit/test_sprig_crypto.py::test_certificate_objects_and_with_key_pipeline_work_in_templates"],
+      "boundary": ["tests/unit/test_sprig_crypto.py::test_ed25519_certificate_uses_algorithm_free_signing"],
+      "failure": ["tests/unit/test_sprig_crypto.py::test_certificate_inputs_are_validated"]
+    },
+    "genSelfSignedCert": {
+      "normal": ["tests/unit/test_sprig_crypto.py::test_registered_certificate_entry_points_return_go_results"],
+      "boundary": ["tests/unit/test_sprig_crypto.py::test_all_sprig_crypto_names_are_registered"],
+      "failure": ["tests/unit/test_sprig_crypto.py::test_certificate_inputs_are_validated"]
+    },
+    "genSelfSignedCertWithKey": {
+      "normal": ["tests/unit/test_sprig_crypto.py::test_registered_certificate_entry_points_return_go_results"],
+      "boundary": ["tests/unit/test_sprig_crypto.py::test_self_signed_and_ca_signed_certificates_preserve_names"],
+      "failure": ["tests/unit/test_sprig_crypto.py::test_registered_crypto_error_functions_preserve_go_result_contract"]
+    },
+    "genSignedCert": {
+      "normal": ["tests/unit/test_sprig_crypto.py::test_registered_certificate_entry_points_return_go_results"],
+      "boundary": ["tests/unit/test_sprig_crypto.py::test_all_sprig_crypto_names_are_registered"],
+      "failure": ["tests/unit/test_sprig_crypto.py::test_certificate_inputs_are_validated"]
+    },
+    "genSignedCertWithKey": {
+      "normal": ["tests/unit/test_sprig_crypto.py::test_registered_certificate_entry_points_return_go_results"],
+      "boundary": ["tests/unit/test_sprig_crypto.py::test_self_signed_and_ca_signed_certificates_preserve_names"],
+      "failure": ["tests/unit/test_sprig_crypto.py::test_certificate_inputs_are_validated"]
+    },
+    "env": {
+      "normal": ["tests/unit/test_sprig_external.py::test_environment_expansion_matches_go_shell_name_rules"],
+      "boundary": ["tests/unit/test_sprig_external.py::test_registry_injects_external_state_without_changing_hermetic_membership"],
+      "failure": {"not_applicable": "Go os.Getenv maps both missing and explicitly empty environment entries to an empty string."}
+    },
+    "expandenv": {
+      "normal": ["tests/unit/test_sprig_external.py::test_environment_expansion_matches_go_shell_name_rules"],
+      "boundary": ["tests/conformance/fixtures/sprig/random_boundaries.json#sprig/random-boundaries"],
+      "failure": {"not_applicable": "Go os.ExpandEnv consumes malformed brace syntax and substitutes missing names without errors."}
+    },
+    "getHostByName": {
+      "normal": ["tests/unit/test_sprig_external.py::test_dns_selection_is_injectable_and_empty_results_fail"],
+      "boundary": ["tests/unit/test_sprig_external.py::test_registry_injects_external_state_without_changing_hermetic_membership"],
+      "failure": ["tests/unit/test_sprig_external.py::test_dns_selection_is_injectable_and_empty_results_fail"]
+    }
+  }
+}

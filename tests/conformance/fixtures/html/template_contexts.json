@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "html/template-contexts",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEscapeSet",
+    "behavior": "One helper is specialized for text and URL contexts, and a URL helper propagates its query output context to the following caller action.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-template-contexts",
+    "template": "<a href='{{template \"helper\" .URL}}'>{{template \"helper\" .Text}}</a>|<a href='/search{{template \"query\" .Prefix}}{{.Term}}'>q</a>{{define \"helper\"}}{{.}}{{end}}{{define \"query\"}}?q={{.}}&next={{end}}",
+    "data": {
+      "URL": "javascript:bad()",
+      "Text": "<strong>text</strong>",
+      "Prefix": "a b",
+      "Term": "<term>"
+    }
+  },
+  "expected": {
+    "output": "<a href='#ZgotmplZ'>&lt;strong&gt;text&lt;/strong&gt;</a>|<a href='/search?q=a%20b&next=%3cterm%3e'>q</a>",
+    "error": null
+  }
+}

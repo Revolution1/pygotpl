@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/url-reflect",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "url.go, reflect.go, and their tests",
+    "behavior": "URL decomposition and joining preserve encoded components while reflection reports Go-compatible dynamic types and kinds.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "url-reflect",
+    "template": "{{$u := urlParse \"proto://user:passwor%20d@host:80/pa%20th?key=val%20ue#fragment\"}}{{get $u \"scheme\"}}/{{get $u \"host\"}}/{{get $u \"hostname\"}}/{{get $u \"path\"}}/{{get $u \"query\"}}/{{get $u \"userinfo\"}}/{{get $u \"fragment\"}}|{{urlJoin $u}}|{{typeOf \"x\"}}/{{kindOf \"x\"}}/{{typeIs \"string\" \"x\"}}/{{typeIsLike \"string\" \"x\"}}|{{typeOf (list 1)}}/{{kindOf (list 1)}}/{{kindIs \"map\" (dict)}}|{{deepEqual (list 1 (dict \"x\" 2)) (list 1 (dict \"x\" 2))}}/{{deepEqual 1 true}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "proto/host:80/host//pa th/key=val%20ue/user:passwor%20d/fragment|proto://user:passwor%20d@host:80/pa%20th?key=val%20ue#fragment|string/string/true/true|[]interface {}/slice/true|true/false",
+    "error": null
+  }
+}

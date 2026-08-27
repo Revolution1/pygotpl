@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/printf-width-precision",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/fmt/format.go",
+    "behavior": "Printf applies signs, zero padding, alignment, width, precision, and literal percent handling.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "printf-width",
+    "template": "{{printf \"%+d|%08x|%-5s|%.3s|%05.1f|%%\" 7 31 \"go\" \"gopher\" 3.14}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "+7|0000001f|go   |gop|003.1|%",
+    "error": null
+  }
+}

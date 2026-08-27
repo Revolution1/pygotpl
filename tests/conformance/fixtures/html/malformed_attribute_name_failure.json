@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "html/malformed-attribute-name-failure",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/transition.go:eatAttrName and escape_test.go:TestErrors",
+    "behavior": "Quotes and less-than signs in a static attribute name are rejected as structurally ambiguous HTML.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-malformed-name",
+    "template": "<a foo\"bar=x>",
+    "data": null
+  },
+  "expected": {
+    "output": "",
+    "error": {
+      "phase": "execute",
+      "message": "html/template:html-malformed-name: \"\\\"\" in attribute name: \" foo\\\"bar=x>\""
+    }
+  }
+}

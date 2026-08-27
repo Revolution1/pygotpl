@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Revolution1/pygotpl/benchmarks/python-engine-schema.json",
+  "title": "pygotpl, Mako, and Chameleon equivalent-work fixture",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "id",
+    "engine",
+    "gotpl_template",
+    "mako_template",
+    "chameleon_template",
+    "data",
+    "expected_output",
+    "warmup",
+    "iterations",
+    "cold_iterations"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "id": {"type": "string", "minLength": 1},
+    "engine": {"enum": ["text", "html"]},
+    "gotpl_template": {"type": "string"},
+    "mako_template": {"type": "string"},
+    "chameleon_template": {"type": "string"},
+    "data": {"type": "object"},
+    "expected_output": {
+      "type": "object",
+      "required": ["gotpl", "mako", "chameleon"],
+      "properties": {
+        "gotpl": {"type": "string"},
+        "mako": {"type": "string"},
+        "chameleon": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "warmup": {"type": "integer", "minimum": 0},
+    "iterations": {"type": "integer", "minimum": 1},
+    "cold_iterations": {"type": "integer", "minimum": 1}
+  },
+  "additionalProperties": false
+}

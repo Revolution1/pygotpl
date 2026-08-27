@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/url-opaque-userinfo",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "url.go and Go net/url",
+    "behavior": "Opaque URLs preserve queries and escaped fragments while userinfo is reparsed through a temporary hierarchical URL.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "url-opaque-userinfo",
+    "template": "{{urlJoin (dict \"scheme\" \"mailto\" \"opaque\" \"user@example.com\" \"query\" \"subject=a%20b\" \"fragment\" \"part é\")}}|{{urlJoin (dict \"scheme\" \"https\" \"host\" \"example.test\" \"userinfo\" \"user:pass@word\")}}|{{urlJoin (dict \"scheme\" \"https\" \"host\" \"example.test\" \"userinfo\" \"user/a:b\")}}|{{urlJoin (dict \"opaque\" \"value\" \"query\" \"x=1\" \"fragment\" \"f\")}}|{{urlJoin (dict \"scheme\" \"http\" \"host\" \"exa%6Dple.com\" \"path\" \"/\")}}/{{urlJoin (dict \"scheme\" \"http\" \"host\" \"[fe80::1%zone%two]\" \"path\" \"/\")}}|{{urlJoin (dict \"scheme\" \"http\" \"host\" \"é.test\" \"path\" \"/\")}}/{{urlJoin (dict \"path\" \"a:b\")}}/{{urlJoin (dict \"scheme\" \"http\" \"host\" \"a@b\" \"path\" \"/a b\")}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "mailto:user@example.com?subject=a%20b#part%20%C3%A9|https://user:pass%40word@example.test|https://example.test|value?x=1#f|http://exa%256Dple.com//http://[fe80::1%25zone%25two]/|http://%C3%A9.test//./a:b/http://a%40b/a%20b",
+    "error": null
+  }
+}

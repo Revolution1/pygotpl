@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/pipeline",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go and src/text/template/funcs.go",
+    "behavior": "A pipeline passes its result as the final argument to the next command.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "pipeline",
+    "template": "{{.Name | printf \"Hello, %s\"}}!",
+    "data": {"Name": "Ada"},
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "Hello, Ada!",
+    "error": null
+  }
+}

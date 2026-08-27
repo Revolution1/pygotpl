@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/unicode-whitespace",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "functions.go, Go unicode.IsSpace, and goutils v1.1.1",
+    "behavior": "Go and Python classify ASCII information separators differently, while legacy goutils helpers iterate UTF-8 bytes.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "unicode-whitespace",
+    "template": "{{printf \"%q\" (trim \"\\u001c x \\u001c\")}}|{{printf \"%q\" (nospace \"a\\u001cb\\u0085c\")}}|{{printf \"%q\" (initials \"a\\u001cb\\u0085c\")}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "\"\\x1c x \\x1c\"|\"a\\x1cbÂc\"|\"ac\"",
+    "error": null
+  }
+}

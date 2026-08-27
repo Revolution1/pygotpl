@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/escaping-builtins",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/funcs.go",
+    "behavior": "Text-template HTML and URL query escapers match Go helpers.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "escaping-builtins",
+    "template": "{{html \"<b>&\"}}/{{urlquery \"a b&c\"}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "&lt;b&gt;&amp;/a+b%26c",
+    "error": null
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "html/text-less-than",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestEscapeText",
+    "behavior": "A less-than sign that does not start an ASCII tag name is emitted as text, while valid custom-element names retain tag context.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-text-less-than",
+    "template": "I <3 Ponies!|Unicode <é> stays text|<x-y>{{.}}</x-y>",
+    "data": "<unsafe>"
+  },
+  "expected": {
+    "output": "I &lt;3 Ponies!|Unicode &lt;é> stays text|<x-y>&lt;unsafe&gt;</x-y>",
+    "error": null
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "id": "sprig/duration-heavy",
+  "request": {
+    "engine": "text",
+    "name": "sprig-duration-heavy",
+    "template": "{{duration \"61\"}}/{{duration \"3600\"}}/{{duration \"93784\"}}/{{duration 61}}/{{duration \"bad\"}}/{{duration \"20211507185753197\"}}/{{duration \"21971086762712130\"}}/{{duration \"18446744074\"}}|{{durationRound \"2h5s\"}}/{{durationRound \"24h5s\"}}/{{durationRound \"2400h5s\"}}/{{durationRound \"1h\"}}/{{durationRound \"1m\"}}/{{durationRound \"1s\"}}/{{durationRound \"-25h\"}}/{{durationRound \"bad\"}}",
+    "data": null,
+    "function_profile": "sprig-v3.3.0"
+  },
+  "warmup": 500,
+  "iterations": 10000
+}

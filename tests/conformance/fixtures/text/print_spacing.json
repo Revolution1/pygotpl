@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/print-spacing",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/funcs.go",
+    "behavior": "Print follows fmt.Sprint spacing between adjacent non-string operands.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "print-spacing",
+    "template": "{{print 1 2}}|{{print 1 \"x\" 2}}|{{println 1 2}}end",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "1 2|1x2|1 2\nend",
+    "error": null
+  }
+}

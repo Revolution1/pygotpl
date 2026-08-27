@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/comparison-builtins",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/funcs.go",
+    "behavior": "Comparison built-ins compare compatible scalar values.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "comparison-builtins",
+    "template": "{{eq 2 2}}/{{ne \"a\" \"b\"}}/{{lt 1 2}}/{{le 2 2}}/{{gt 3 2}}/{{ge 3 3}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "true/true/true/true/true/true",
+    "error": null
+  }
+}

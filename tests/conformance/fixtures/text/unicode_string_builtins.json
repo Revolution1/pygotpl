@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/unicode-string-builtins",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/funcs.go",
+    "behavior": "String len, index, and slice operate on UTF-8 bytes rather than Unicode code points.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "unicode-string-builtins",
+    "template": "{{len \"\u00e9\ud83d\ude00x\"}}|{{index \"\u00e9\ud83d\ude00x\" 0}}|{{index \"\u00e9\ud83d\ude00x\" 1}}|{{slice \"\u00e9\ud83d\ude00x\" 0 2}}|{{slice \"\u00e9\ud83d\ude00x\" 2 6}}|{{slice \"\u00e9\ud83d\ude00x\" 1 3}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "7|195|169|\u00e9|\ud83d\ude00|\ufffd\ufffd",
+    "error": null
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/dict-merge-zero-values",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "dict.go and mergo v0.3.16",
+    "behavior": "Merge fills zero-valued destinations, while mergeOverwrite accepts zero-valued sources.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "dict-merge-zero-values",
+    "template": "{{merge (dict \"n\" 0 \"s\" \"\" \"b\" false \"l\" (list)) (dict \"n\" 1 \"s\" \"x\" \"b\" true \"l\" (list 2)) | toJson}}|{{mergeOverwrite (dict \"n\" 1 \"s\" \"x\" \"b\" true \"l\" (list 2)) (dict \"n\" 0 \"s\" \"\" \"b\" false \"l\" (list)) | toJson}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "{\"b\":true,\"l\":[2],\"n\":1,\"s\":\"x\"}|{\"b\":false,\"l\":[],\"n\":0,\"s\":\"\"}",
+    "error": null
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/builtins",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/funcs.go",
+    "behavior": "Built-in len and eq functions can feed a control pipeline.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "builtins",
+    "template": "{{if eq (len .Items) 2}}pair{{else}}other{{end}}",
+    "data": {"Items": ["a", "b"]},
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "pair",
+    "error": null
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/nil-builtins",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/funcs.go",
+    "behavior": "Formatting and escaping built-ins preserve their distinct handling of untyped nil.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "nil-print",
+    "template": "{{print nil}}|{{printf \"%v\" nil}}|{{html nil}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "<nil>|<nil>|&lt;no value&gt;",
+    "error": null
+  }
+}

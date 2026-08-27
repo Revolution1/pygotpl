@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/dict-core",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "dict.go and dict_test.go",
+    "behavior": "Dictionary constructors, mutation, selection, plucking, and nested lookup match Sprig.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "dict-core",
+    "template": "{{$d := dict \"a\" 1 \"empty\"}}{{get $d \"a\"}}/{{get $d \"missing\"}}/{{get $d \"empty\"}}|{{hasKey $d \"a\"}}/{{hasKey $d \"x\"}}|{{$ignored := set $d \"b\" 2}}{{get $d \"b\"}}|{{$ignored = unset $d \"a\"}}{{hasKey $d \"a\"}}|{{pluck \"x\" (dict \"x\" 1) (dict \"y\" 2) (dict \"x\" 3)}}|{{pick (dict \"a\" 1 \"b\" 2) \"b\"}}|{{omit (dict \"a\" 1 \"b\" 2) \"a\"}}|{{dig \"user\" \"name\" \"fallback\" (dict \"user\" (dict \"name\" \"Ada\"))}}/{{dig \"user\" \"missing\" \"fallback\" (dict \"user\" (dict))}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "1//|true/false|2|false|[1 3]|map[b:2]|map[b:2]|Ada/fallback",
+    "error": null
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "text/range-integer-two-variables-error",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "Integer ranges cannot bind two range variables.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "range-integer-two-variables",
+    "template": "before/{{range $k, $v := 2}}{{$k}}={{$v}}{{end}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: range-integer-two-variables:1:25: executing \"range-integer-two-variables\" at <2>: can't use 2 to iterate over more than one variable"
+    }
+  }
+}

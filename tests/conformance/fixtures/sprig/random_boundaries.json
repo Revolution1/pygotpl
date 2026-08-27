@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/random-boundaries",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "strings.go, crypto.go, numeric_test.go, and functions_test.go",
+    "behavior": "Zero-length random helpers, a unit-width random range, empty shuffle, and expansion-free environment text have deterministic Sprig results.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "random-boundaries",
+    "template": "{{randAlphaNum 0}}/{{randAlpha 0}}/{{randAscii 0}}/{{randNumeric 0}}/{{randBytes 0}}|{{randInt 10 11}}|{{shuffle \"\"}}|{{expandenv \"plain text\"}}",
+    "data": null,
+    "function_profile": "sprig"
+  },
+  "expected": {
+    "output": "////|10||plain text",
+    "error": null
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "text/function-result-error",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "A non-nil function result error stops execution after prior writer output.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "function-error",
+    "template": "before/{{fail}}/after",
+    "data": null,
+    "function_profile": "execution-functions"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: function-error:1:9: executing \"function-error\" at <fail>: error calling fail: oracle failure"
+    }
+  }
+}

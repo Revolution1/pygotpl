@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/url-userinfo-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "url.go and Go net/url",
+    "behavior": "urlJoin rejects malformed percent escapes while reparsing non-empty userinfo.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "url-userinfo-failure",
+    "template": "before/{{urlJoin (dict \"scheme\" \"https\" \"host\" \"example.test\" \"userinfo\" \"%zz\")}}/after",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: url-userinfo-failure:1:9: executing \"url-userinfo-failure\" at <urlJoin (dict \"scheme\" \"https\" \"host\" \"example.test\" \"userinfo\" \"%zz\")>: error calling urlJoin: unable to parse userinfo in dict: parse \"proto://%zz@host\": invalid URL escape \"%zz\""
+    }
+  }
+}

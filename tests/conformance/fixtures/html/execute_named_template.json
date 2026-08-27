@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "html/execute-named-template",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/multi_test.go:TestMultiExecute",
+    "behavior": "ExecuteTemplate renders an associated named template from HTML text context with contextual escaping.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-named-execute",
+    "template": "{{define \"card\"}}<p>{{.}}</p>{{end}}",
+    "data": "<&",
+    "execute_template": "card"
+  },
+  "expected": {
+    "output": "<p>&lt;&amp;</p>",
+    "error": null
+  }
+}

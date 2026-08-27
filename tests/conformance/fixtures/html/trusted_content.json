@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "html/trusted-content",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/content_test.go:TestTypedContent",
+    "behavior": "Each trusted content type bypasses only its matching contextual escaper while unrelated contexts continue to escape or reject it.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-trusted-content",
+    "template": "{{trustedHTML}}|<textarea>{{trustedHTML}}</textarea>|<a title='{{trustedHTML}}'>x</a>|<style>{{trustedCSS}}</style>|<script>{{trustedJS}}</script>|<script>\"{{trustedJSStr}}\"</script>|<a href='{{trustedURL}}'>x</a>|<img srcset='{{trustedSrcset}}'>|<a{{trustedAttr}}>x</a>|<script>{{trustedHTML}}</script>|<style>{{trustedJS}}</style>",
+    "data": null,
+    "function_profile": "trusted-content"
+  },
+  "expected": {
+    "output": "Hello, <b>World</b> &amp;!|<textarea>Hello, &lt;b&gt;World&lt;/b&gt; &amp;!</textarea>|<a title='Hello, World &amp;!'>x</a>|<style>a[href=\"//x\"]{color:red}</style>|<script>x && alert(\"ok\")</script>|<script>\"line\\u0021\"</script>|<a href='javascript:trusted%28%29'>x</a>|<img srcset='javascript:trusted() 2x, /safe 1x'>|<a dir=\"ltr\">x</a>|<script>\"Hello, \\u003cb\\u003eWorld\\u003c/b\\u003e \\u0026amp;!\"</script>|<style>ZgotmplZ</style>",
+    "error": null
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/function-results",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "Functions support value/error returns, fixed arguments, variadic arguments, and piped final arguments.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "function-results",
+    "template": "{{ok}}/{{join \"a\" \"b\"}}/{{\"c\" | join \"d\"}}/{{variadic \"p\" \"x\" \"y\"}}",
+    "data": null,
+    "function_profile": "execution-functions"
+  },
+  "expected": {
+    "output": "ok/a+b/d+c/p:x,y",
+    "error": null
+  }
+}

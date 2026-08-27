@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "reference": {
+    "project": "github.com/go-task/slim-sprig/v3",
+    "revision": "v3.0.0",
+    "commit": "b05cce61fffa5c6dea6ac8b9a1f12b6e3fb7c894",
+    "source": "functions.go"
+  },
+  "function_count": 164,
+  "function_names": [
+    "add", "add1", "adler32sum", "ago", "all", "any", "append", "atoi",
+    "b32dec", "b32enc", "b64dec", "b64enc", "base", "biggest", "cat",
+    "ceil", "chunk", "clean", "coalesce", "compact", "concat", "contains",
+    "date", "dateInZone", "dateModify", "date_in_zone", "date_modify",
+    "deepEqual", "default", "dict", "dig", "dir", "div", "duration",
+    "durationRound", "empty", "env", "expandenv", "ext", "fail", "first",
+    "float64", "floor", "fromJson", "get", "getHostByName", "has", "hasKey",
+    "hasPrefix", "hasSuffix", "hello", "htmlDate", "htmlDateInZone", "indent",
+    "initial", "int", "int64", "isAbs", "join", "keys", "kindIs", "kindOf",
+    "last", "list", "lower", "max", "maxf", "min", "minf", "mod", "mul",
+    "mustAppend", "mustChunk", "mustCompact", "mustDateModify", "mustFirst",
+    "mustFromJson", "mustHas", "mustInitial", "mustLast", "mustPrepend",
+    "mustRegexFind", "mustRegexFindAll", "mustRegexMatch",
+    "mustRegexReplaceAll", "mustRegexReplaceAllLiteral", "mustRegexSplit",
+    "mustRest", "mustReverse", "mustSlice", "mustToDate", "mustToJson",
+    "mustToPrettyJson", "mustToRawJson", "mustUniq", "mustWithout",
+    "must_date_modify", "nindent", "now", "omit", "osBase", "osClean",
+    "osDir", "osExt", "osIsAbs", "pick", "pluck", "plural", "prepend",
+    "quote", "randInt", "regexFind", "regexFindAll", "regexMatch",
+    "regexQuoteMeta", "regexReplaceAll", "regexReplaceAllLiteral", "regexSplit",
+    "repeat", "replace", "rest", "reverse", "round", "seq", "set",
+    "sha1sum", "sha256sum", "slice", "sortAlpha", "split", "splitList",
+    "splitn", "squote", "sub", "substr", "ternary", "title", "toDate",
+    "toDecimal", "toJson", "toPrettyJson", "toRawJson", "toString",
+    "toStrings", "trim", "trimAll", "trimPrefix", "trimSuffix", "trimall",
+    "trunc", "tuple", "typeIs", "typeIsLike", "typeOf", "uniq", "unixEpoch",
+    "unset", "until", "untilStep", "upper", "urlJoin", "urlParse", "values",
+    "without"
+  ],
+  "nonhermetic_function_count": 11,
+  "nonhermetic_function_names": [
+    "date", "dateInZone", "dateModify", "date_in_zone", "date_modify", "env",
+    "expandenv", "getHostByName", "htmlDate", "htmlDateInZone", "now"
+  ]
+}

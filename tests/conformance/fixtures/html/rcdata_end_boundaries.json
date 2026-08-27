@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "html/rcdata-end-boundaries",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/transition.go:indexTagEnd and escape_test.go:TestEscape",
+    "behavior": "Textarea and title end tags require a separator after the element name; false prefixes remain RCDATA, have their literal less-than escaped, and cannot enable trusted HTML.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-rcdata-end-boundaries",
+    "template": "<textarea>before</textareaevil>{{trustedHTML}}</textarea>|<title>before</titlex>{{trustedHTML}}</title>",
+    "data": null,
+    "function_profile": "trusted-content"
+  },
+  "expected": {
+    "output": "<textarea>before&lt;/textareaevil>Hello, &lt;b&gt;World&lt;/b&gt; &amp;!</textarea>|<title>before&lt;/titlex>Hello, &lt;b&gt;World&lt;/b&gt; &amp;!</title>",
+    "error": null
+  }
+}

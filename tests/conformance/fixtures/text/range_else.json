@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/range-else",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "Range executes its else list only for an empty value.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "range-else",
+    "template": "{{range .Items}}{{.}}{{else}}empty{{end}}",
+    "data": {"Items": []},
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "empty",
+    "error": null
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Revolution1/pygotpl/benchmarks/schema.json",
+  "title": "pygotpl shared benchmark fixture",
+  "type": "object",
+  "required": ["schema_version", "id", "request", "warmup", "iterations"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "id": {"type": "string", "minLength": 1},
+    "request": {
+      "type": "object",
+      "required": ["engine", "name", "template", "data"],
+      "properties": {
+        "engine": {"enum": ["text", "html"]},
+        "name": {"type": "string"},
+        "template": {"type": "string"},
+        "data": {},
+        "function_profile": {"enum": ["sprig-v3.3.0"]},
+        "execute_template": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "mode": {
+      "enum": ["warm_render", "cold_render", "writer_render", "named_render"]
+    },
+    "warmup": {"type": "integer", "minimum": 0},
+    "iterations": {"type": "integer", "minimum": 1}
+  },
+  "additionalProperties": false
+}

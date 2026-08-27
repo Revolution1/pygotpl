@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/encoding-error",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "strings.go",
+    "behavior": "Non-must base64 decoding returns the decoder error as ordinary text.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "encoding-error",
+    "template": "{{b64dec \"%%%\"}}",
+    "data": null,
+    "function_profile": "sprig"
+  },
+  "expected": {
+    "output": "illegal base64 data at input byte 0",
+    "error": null
+  }
+}

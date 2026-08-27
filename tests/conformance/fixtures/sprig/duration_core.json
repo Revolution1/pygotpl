@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/duration-core",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "date.go and date_test.go",
+    "behavior": "Duration formatting and Sprig's strict durationRound boundaries match Go.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "duration-core",
+    "template": "{{duration \"61\"}}/{{duration \"3600\"}}/{{duration \"93784\"}}/{{duration 61}}/{{duration \"bad\"}}/{{duration \"20211507185753197\"}}/{{duration \"21971086762712130\"}}/{{duration \"18446744074\"}}|{{durationRound \"2h5s\"}}/{{durationRound \"24h5s\"}}/{{durationRound \"2400h5s\"}}/{{durationRound \"1h\"}}/{{durationRound \"1m\"}}/{{durationRound \"1s\"}}/{{durationRound \"-25h\"}}/{{durationRound \"bad\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "1m1s/1h0m0s/26h3m4s/0s/0s/512ns/5.12µs/290.448384ms|2h/1d/3mo/60m/60s/0s/1d/0s",
+    "error": null
+  }
+}

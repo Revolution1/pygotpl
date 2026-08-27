@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/json-float64-semantics",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "defaults.go and Go encoding/json",
+    "behavior": "Untyped JSON numbers decode as float64 and encode with Go JSON number thresholds and shortest representations.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "json-float64-semantics",
+    "template": "{{fromJson \"9007199254740993\" | toJson}}/{{fromJson \"1.0\" | toJson}}/{{fromJson \"1e20\" | toJson}}/{{fromJson \"1e21\" | toJson}}/{{fromJson \"1e-6\" | toJson}}/{{fromJson \"1e-7\" | toJson}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "9007199254740992/1/100000000000000000000/1e+21/0.000001/1e-7",
+    "error": null
+  }
+}

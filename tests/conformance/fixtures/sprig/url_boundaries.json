@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/url-boundaries",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "url.go and Go net/url",
+    "behavior": "URL parsing preserves host case and decoded fragments while joining applies Go fragment and path escaping.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "url-boundaries",
+    "template": "{{$u := urlParse \"HTTP://User@EXAMPLE.COM:80/a#frag ment/é\"}}{{get $u \"scheme\"}}/{{get $u \"host\"}}/{{get $u \"hostname\"}}/{{get $u \"fragment\"}}|{{urlJoin $u}}|{{urlJoin (dict \"scheme\" \"https\" \"host\" \"example.test\" \"path\" \"/a b\" \"fragment\" \"x y/é\")}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "http/EXAMPLE.COM:80/EXAMPLE.COM/frag ment/é|http://User@EXAMPLE.COM:80/a#frag%20ment/%C3%A9|https://example.test/a%20b#x%20y/%C3%A9",
+    "error": null
+  }
+}

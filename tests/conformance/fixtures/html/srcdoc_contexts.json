@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "html/srcdoc-contexts",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/attr.go:attrTypeMap and html_test.go:TestHTMLNospaceEscaper",
+    "behavior": "Static srcdoc attributes use ordinary quoted or unquoted attribute escaping, including trusted HTML tag stripping; dynamically generated srcdoc attribute names remain filtered separately.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-srcdoc-contexts",
+    "template": "<iframe srcdoc=\"{{.Plain}}\"></iframe>|<iframe srcdoc={{.Plain}}></iframe>|<iframe srcdoc=\"{{trustedHTML}}\"></iframe>",
+    "data": {
+      "Plain": "<script>evil()</script><p title='\"'>x & y</p>"
+    },
+    "function_profile": "trusted-content"
+  },
+  "expected": {
+    "output": "<iframe srcdoc=\"&lt;script&gt;evil()&lt;/script&gt;&lt;p title=&#39;&#34;&#39;&gt;x &amp; y&lt;/p&gt;\"></iframe>|<iframe srcdoc=&lt;script&gt;evil()&lt;/script&gt;&lt;p&#32;title&#61;&#39;&#34;&#39;&gt;x&#32;&amp;&#32;y&lt;/p&gt;></iframe>|<iframe srcdoc=\"Hello, World &amp;!\"></iframe>",
+    "error": null
+  }
+}

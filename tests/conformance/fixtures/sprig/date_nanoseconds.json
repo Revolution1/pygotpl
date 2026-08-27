@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/date-nanoseconds",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "date.go and Go time nanosecond semantics",
+    "behavior": "Date parsing, formatting, and modification preserve all nine fractional-second digits across second boundaries.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "date-nanoseconds",
+    "template": "{{$t := mustToDate \"2006-01-02 15:04:05.000000000 -0700\" \"2024-07-09 13:04:05.123456789 +0000\"}}{{dateInZone \"2006-01-02 15:04:05.000000000/.999999999\" $t \"UTC\"}}|{{dateInZone \"2006-01-02 15:04:05.000000000\" (mustDateModify \"1ns\" $t) \"UTC\"}}|{{dateInZone \"2006-01-02 15:04:05.000000000\" (mustDateModify \"-123456790ns\" $t) \"UTC\"}}",
+    "data": null,
+    "function_profile": "sprig"
+  },
+  "expected": {
+    "output": "2024-07-09 13:04:05.123456789/.123456789|2024-07-09 13:04:05.123456790|2024-07-09 13:04:04.999999999",
+    "error": null
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/defaults-shapes",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "defaults.go and defaults_test.go",
+    "behavior": "Empty and defaulting functions distinguish zero and populated collection, floating-point, and complex value shapes.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "defaults-shapes",
+    "template": "{{empty (list)}}/{{empty (list 0)}}/{{empty (dict)}}/{{empty (dict \"a\" 0)}}/{{empty 0.0}}/{{empty 0i}}/{{empty 1i}}|{{default \"fallback\" (list)}}/{{default \"fallback\" (list 0)}}|{{coalesce (dict) (list) (dict \"a\" 0)}}|{{all (dict \"a\" 0) (list 0)}}/{{any (dict) (list 0)}}",
+    "data": null,
+    "function_profile": "sprig"
+  },
+  "expected": {
+    "output": "true/false/true/false/true/true/false|fallback/[0]|map[a:0]|true/true",
+    "error": null
+  }
+}

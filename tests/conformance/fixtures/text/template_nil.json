@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/template-nil",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "A template invocation without a pipeline receives nil dot.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "template-nil",
+    "template": "{{define \"show\"}}{{if .}}value{{else}}nil{{end}}{{end}}{{template \"show\"}}",
+    "data": {"unused": true},
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "nil",
+    "error": null
+  }
+}

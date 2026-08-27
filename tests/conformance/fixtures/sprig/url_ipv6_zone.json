@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/url-ipv6-zone",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "url.go and Go net/url",
+    "behavior": "IPv6 zone identifiers are decoded in parsed host fields and escaped again when joined.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "url-ipv6",
+    "template": "{{$u := urlParse \"http://[fe80::1%25zone]:8080/a\"}}{{get $u \"host\"}}/{{get $u \"hostname\"}}|{{urlJoin $u}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "[fe80::1%zone]:8080/fe80::1%zone|http://[fe80::1%25zone]:8080/a",
+    "error": null
+  }
+}

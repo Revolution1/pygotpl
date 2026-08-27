@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/ago-unix-range",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "date.go and Go time.Time.Sub/Duration.Round saturation semantics",
+    "behavior": "ago saturates out-of-range durations, including Go's maximum-int64 Unix time behavior.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "ago-unix-range",
+    "template": "{{ago 253402300800}}|{{ago -62135596801}}|{{ago 9223372036854775807}}|{{ago -9223372036854775808}}",
+    "data": null,
+    "function_profile": "sprig"
+  },
+  "expected": {
+    "output": "-2562047h47m16.854775808s|2562047h47m16.854775807s|2562047h47m16.854775807s|2562047h47m16.854775807s",
+    "error": null
+  }
+}

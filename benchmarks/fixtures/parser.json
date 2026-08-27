@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "id": "parser/control-flow",
+  "request": {
+    "engine": "text",
+    "name": "parser-control-flow",
+    "template": "header\n{{if .Ready}}{{with .User}}{{.Name}}{{end}}{{else}}{{range .Items}}{{.}}{{else}}empty{{end}}{{end}}\n{{define \"footer\"}}footer{{end}}{{template \"footer\" .}}",
+    "data": null
+  },
+  "warmup": 200,
+  "iterations": 5000
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/printf-bytes",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/fmt/print.go",
+    "behavior": "Byte slices support string, quoted, hexadecimal, default, syntax, and type formatting.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "printf-bytes",
+    "template": "{{printf \"%s|%q|%x|%X|%v|%#v|%T\" bytes bytes bytes bytes bytes bytes bytes}}",
+    "data": null,
+    "function_profile": "execution-functions"
+  },
+  "expected": {
+    "output": "Go!\n|\"Go!\\n\"|476f210a|476F210A|[71 111 33 10]|[]byte{0x47, 0x6f, 0x21, 0xa}|[]uint8",
+    "error": null
+  }
+}

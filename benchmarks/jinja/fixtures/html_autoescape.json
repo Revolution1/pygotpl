@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "jinja/html-autoescape",
+  "engine": "html",
+  "gotpl_template": "<p class=\"{{.class}}\">{{.message}}</p>",
+  "jinja_template": "<p class=\"{{ class }}\">{{ message }}</p>",
+  "data": {
+    "class": "primary & featured",
+    "message": "<b>\"A&B\"</b>"
+  },
+  "expected_output": "<p class=\"primary &amp; featured\">&lt;b&gt;&#34;A&amp;B&#34;&lt;/b&gt;</p>",
+  "warmup": 1000,
+  "iterations": 10000,
+  "cold_iterations": 500,
+  "cache_iterations": 500
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/fail",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "functions.go and flow_control_test.go",
+    "behavior": "The fail helper stops execution with its caller-provided message.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "fail",
+    "template": "before/{{fail \"requested failure\"}}/after",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: fail:1:9: executing \"fail\" at <fail \"requested failure\">: error calling fail: requested failure"
+    }
+  }
+}

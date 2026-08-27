@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/comment",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/parse/lex_test.go",
+    "behavior": "A template comment emits no output.",
+    "derived": false
+  },
+  "request": {
+    "engine": "text",
+    "name": "comment",
+    "template": "hello-{{/* note */}}-world",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "hello--world",
+    "error": null
+  }
+}

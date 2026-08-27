@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/range-complex-keys",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "internal/fmtsort/sort.go",
+    "behavior": "Maps with complex keys are ordered by real component and then imaginary component.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "range-complex-keys",
+    "template": "{{range $key, $value := complexmap}}{{$key}}={{$value}};{{end}}",
+    "data": null,
+    "function_profile": "execution-functions"
+  },
+  "expected": {
+    "output": "(-1+3i)=minus-one-three;(0+4i)=zero-four;(2-2i)=two-minus-two;(2-1i)=two-minus-one;",
+    "error": null
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/json-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "defaults.go",
+    "behavior": "mustFromJson propagates decoder failures after prior output.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "json-failure",
+    "template": "before/{{mustFromJson \"invalid\"}}/after",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: json-failure:1:9: executing \"json-failure\" at <mustFromJson \"invalid\">: error calling mustFromJson: invalid character 'i' looking for beginning of value"
+    }
+  }
+}

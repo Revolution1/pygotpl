@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/date-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "date.go",
+    "behavior": "Must date parsing propagates invalid-input errors after prior output.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "date-failure",
+    "template": "before/{{mustToDate \"2006-01-02\" \"bad\"}}/after",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: date-failure:1:9: executing \"date-failure\" at <mustToDate \"2006-01-02\" \"bad\">: error calling mustToDate: parsing time \"bad\" as \"2006-01-02\": cannot parse \"bad\" as \"2006\""
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/ternary-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "defaults.go ternary signature",
+    "behavior": "ternary rejects a non-boolean condition before invocation and preserves prior output.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "ternary-failure",
+    "template": "before/{{ternary \"yes\" \"no\" \"true\"}}/after",
+    "data": null,
+    "function_profile": "sprig"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: ternary-failure:1:28: executing \"ternary-failure\" at <\"true\">: expected bool; found \"true\""
+    }
+  }
+}

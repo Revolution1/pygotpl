@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/date-layouts",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "date.go and Go time layout semantics",
+    "behavior": "Named, numeric, zone, day-of-year, meridiem, and fractional Go layout tokens round-trip through Sprig.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "date-layouts",
+    "template": "{{$t := mustToDate \"2006-01-02 15:04:05.999999999 -0700\" \"2024-07-09 13:04:05.123400000 +0530\"}}{{dateInZone \"Monday January Jan Mon 2006 06 01 1 02 _2 002 15 03 3 04 4 05 5 PM pm MST -0700 -07:00 Z0700 Z07:00 .000000000 .999999999\" $t \"Asia/Kolkata\"}}",
+    "data": null,
+    "function_profile": "sprig"
+  },
+  "expected": {
+    "output": "Tuesday July Jul Tue 2024 24 07 7 09  9 191 13 01 1 04 4 05 5 PM pm IST +0530 +05:30 +0530 +05:30 .123400000 .1234",
+    "error": null
+  }
+}

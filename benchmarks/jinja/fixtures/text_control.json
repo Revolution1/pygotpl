@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "id": "jinja/text-control",
+  "engine": "text",
+  "gotpl_template": "{{range .items}}{{if .enabled}}{{.name}}={{.value}};{{end}}{{end}}",
+  "jinja_template": "{% for item in items %}{% if item.enabled %}{{ item.name }}={{ item.value }};{% endif %}{% endfor %}",
+  "data": {
+    "items": [
+      {"name": "alpha", "value": 7, "enabled": true},
+      {"name": "beta", "value": 13, "enabled": false},
+      {"name": "gamma", "value": 42, "enabled": true}
+    ]
+  },
+  "expected_output": "alpha=7;gamma=42;",
+  "warmup": 1000,
+  "iterations": 20000,
+  "cold_iterations": 1000,
+  "cache_iterations": 1000
+}

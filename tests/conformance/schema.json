@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Revolution1/pygotpl/tests/conformance/schema.json",
+  "title": "pygotpl conformance fixture",
+  "type": "object",
+  "required": ["schema_version", "id", "reference", "request", "expected"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "id": {"type": "string", "minLength": 1},
+    "reference": {
+      "type": "object",
+      "required": ["project", "revision", "source", "behavior", "derived"],
+      "properties": {
+        "project": {"enum": ["go", "sprig", "python"]},
+        "revision": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "behavior": {"type": "string", "minLength": 1},
+        "derived": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "request": {
+      "type": "object",
+      "required": ["engine", "name", "template", "data"],
+      "properties": {
+        "engine": {"enum": ["text", "html"]},
+        "name": {"type": "string"},
+        "template": {"type": "string"},
+        "data": {},
+        "delimiters": {
+          "type": "object",
+          "required": ["left", "right"],
+          "properties": {
+            "left": {"type": "string"},
+            "right": {"type": "string"}
+          },
+          "additionalProperties": false
+        },
+        "options": {"type": "array", "items": {"type": "string"}},
+        "function_profile": {
+          "enum": ["none", "sprig", "sprig-hermetic"]
+        },
+        "execute_template": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "expected": {
+      "type": "object",
+      "required": ["output", "error"],
+      "properties": {
+        "output": {"type": "string"},
+        "error": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "required": ["phase"],
+              "properties": {
+                "phase": {"enum": ["input", "parse", "execute"]},
+                "message_contains": {"type": "string"}
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

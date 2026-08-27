@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/slice-three-index",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/funcs.go",
+    "behavior": "Slice accepts a capacity bound for a three-index sequence slice.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "slice-three",
+    "template": "{{slice . 1 4 5}}",
+    "data": [0, 1, 2, 3, 4],
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "[1 2 3]",
+    "error": null
+  }
+}

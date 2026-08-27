@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "text/execute-named-template",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go and src/text/template/multi_test.go",
+    "behavior": "ExecuteTemplate selects an associated definition, which can invoke a sibling definition with the supplied root value.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "root",
+    "template": "ROOT{{define \"leaf\"}}{{.Value}}{{end}}{{define \"middle\"}}[{{template \"leaf\" .}}]{{end}}",
+    "data": {"Value": "x"},
+    "function_profile": "none",
+    "execute_template": "middle"
+  },
+  "expected": {
+    "output": "[x]",
+    "error": null
+  }
+}

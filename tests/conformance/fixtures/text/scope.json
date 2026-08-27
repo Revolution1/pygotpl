@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/scope",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "A control-local declaration shadows without replacing an outer variable.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "scope",
+    "template": "{{$value := \"outer\"}}{{if .Ready}}{{$value := \"inner\"}}{{$value}}{{end}}{{$value}}",
+    "data": {"Ready": true},
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "innerouter",
+    "error": null
+  }
+}

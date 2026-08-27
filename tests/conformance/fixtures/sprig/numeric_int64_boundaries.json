@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/numeric-int64-boundaries",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "numeric.go, strconv, and spf13/cast v1.7.0",
+    "behavior": "String conversion uses Go base-zero parsing and integer arithmetic wraps at signed 64-bit boundaries on the target platforms.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "numeric-int64-boundaries",
+    "template": "{{int \"1.2\"}}/{{int \"1.0\"}}/{{int \"0x10\"}}/{{int \"010\"}}/{{int \"08\"}}|{{atoi \"010\"}}/{{atoi \"1.0\"}}|{{add 9223372036854775807 1}}/{{sub -9223372036854775808 1}}/{{mul 4611686018427387904 2}}|{{int64 \"9223372036854775808\"}}|{{float64 \"0x1p+2\"}}/{{float64 \"-0x1.8p+1\"}}/{{float64 \"1e400\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "0/1/16/8/0|10/0|-9223372036854775808/9223372036854775807/-9223372036854775808|0|4/-3/0",
+    "error": null
+  }
+}

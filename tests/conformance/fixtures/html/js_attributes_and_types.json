@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "html/js-attributes-and-types",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/js_test.go:isJSType and escape_test.go:TestEscape",
+    "behavior": "Quoted and unquoted script MIME types determine the body context, while case-insensitive event attributes apply JavaScript and unquoted-attribute escaping.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-js-attributes-and-types",
+    "template": "<script type=text/template>{{.X}}</script>|<script TYPE=MODULE>{{.X}}</script>|<script type=' application/javascript;version=1.8 '>{{.X}}</script>|<button ONCLICK=alert({{.X}})>x</button>",
+    "data": {"X": "<x>"}
+  },
+  "expected": {
+    "output": "<script type=text/template>&lt;x&gt;</script>|<script TYPE=MODULE>\"\\u003cx\\u003e\"</script>|<script type=' application/javascript;version=1.8 '>\"\\u003cx\\u003e\"</script>|<button ONCLICK=alert(&#34;\\u003cx\\u003e&#34;)>x</button>",
+    "error": null
+  }
+}

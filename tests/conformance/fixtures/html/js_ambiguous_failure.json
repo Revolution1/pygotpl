@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "html/js-ambiguous-failure",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go ambiguous jsCtx and ErrSlashAmbig",
+    "behavior": "A slash is rejected when control-flow joining cannot determine whether it begins division or a regular expression.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-js-branch-ambiguous",
+    "template": "<script>{{if .T}}x={{else}}x{{end}}/{{.V}}/</script>",
+    "data": {"T": false, "V": "a+b"}
+  },
+  "expected": {
+    "output": "",
+    "error": {
+      "phase": "execute",
+      "message": "html/template:html-js-branch-ambiguous: '/' could start a division or regexp: \"/\""
+    }
+  }
+}

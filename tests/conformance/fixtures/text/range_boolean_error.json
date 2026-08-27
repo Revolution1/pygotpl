@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "text/range-boolean-error",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "Range rejects a Boolean even though Python bool is an int subclass.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "range-bool",
+    "template": "before/{{range true}}x{{end}}",
+    "data": null,
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: range-bool:1:15: executing \"range-bool\" at <true>: range can't iterate over true"
+    }
+  }
+}

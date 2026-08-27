@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "text/if",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "An if action selects the branch using Go template truthiness.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "if",
+    "template": "{{if .Ready}}ready{{else}}waiting{{end}}",
+    "data": {"Ready": false},
+    "function_profile": "none"
+  },
+  "expected": {
+    "output": "waiting",
+    "error": null
+  }
+}

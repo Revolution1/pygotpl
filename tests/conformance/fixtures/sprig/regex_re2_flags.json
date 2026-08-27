@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/regex-re2-flags",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "regex.go and Go regexp/syntax",
+    "behavior": "RE2 ungreedy, mid-expression, scoped, and removed flags retain their containing-group scope.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "regex-flags",
+    "template": "{{regexFind \"a.+b\" \"a1b2b\"}}|{{regexFind \"(?U)a.+b\" \"a1b2b\"}}|{{regexFind \"(?U)a.+?b\" \"a1b2b\"}}|{{regexFind \"a(?U).+b\" \"a1b2b\"}}|{{regexFind \"(?U:a.+b)c\" \"a1b2bc3bc\"}}|{{regexMatch \"a(?i)b\" \"aB\"}}|{{regexMatch \"(?i:a(?-i:b)c)\" \"AbC\"}}/{{regexMatch \"(?i:a(?-i:b)c)\" \"ABC\"}}|{{regexMatch \"a(?i)b|c\" \"C\"}}/{{regexMatch \"a(?i)b|c\" \"aB\"}}/{{regexMatch \"(?i:a(?-i)b|c)\" \"C\"}}/{{regexMatch \"(?i:a(?-i)b|c)\" \"c\"}}|{{regexFind \"(?U)a.{1,3}b\" \"a1b2b\"}}/{{regexFind \"(?U)a.{1,3}?b\" \"a1b2b\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "a1b2b|a1b|a1b2b|a1b|a1b2bc|true|true/false|true/true/false/true|a1b/a1b2b",
+    "error": null
+  }
+}

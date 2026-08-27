@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "html/range-context-control",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestErrors non-error range, break, and continue cases",
+    "behavior": "HTML context propagation accepts loop bodies and early exits that return to a compatible tag context.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-range-context-control",
+    "template": "{{range .All}}<a{{if .X}}{{end}}>{{end}}|{{range .Continue}}<b{{if .X}}{{end}}>{{continue}}{{end}}|{{range .Break}}<i{{if .X}}{{end}}>{{if .X}}{{break}}{{end}}{{end}}",
+    "data": {
+      "All": [{"X": true}, {"X": false}],
+      "Continue": [{"X": true}, {"X": false}],
+      "Break": [{"X": true}, {"X": false}]
+    }
+  },
+  "expected": {
+    "output": "<a><a>|<b><b>|<i>",
+    "error": null
+  }
+}

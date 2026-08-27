@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "python-engines/text-interpolation",
+  "engine": "text",
+  "gotpl_template": "Hello, {{.name}}!",
+  "mako_template": "Hello, ${name}!",
+  "chameleon_template": "Hello, ${name}!",
+  "data": {"name": "world"},
+  "expected_output": {
+    "gotpl": "Hello, world!",
+    "mako": "Hello, world!",
+    "chameleon": "Hello, world!"
+  },
+  "warmup": 1000,
+  "iterations": 20000,
+  "cold_iterations": 1000
+}

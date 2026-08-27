@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "text/execute-template-root-association",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/multi_test.go",
+    "behavior": "The named root remains in the association and can be invoked by a definition selected through ExecuteTemplate.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "root",
+    "template": "R{{define \"calls-root\"}}[{{template \"root\" .}}]{{end}}",
+    "data": null,
+    "function_profile": "none",
+    "execute_template": "calls-root"
+  },
+  "expected": {
+    "output": "[R]",
+    "error": null
+  }
+}

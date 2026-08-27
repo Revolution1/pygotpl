@@ -1,0 +1,127 @@
+[build-system]
+requires = ["hatchling>=1.32.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gotpl"
+version = "0.0.0"
+description = "A pure Python implementation of Go templates"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+requires-python = ">=3.11"
+authors = [{ name = "Revolution1" }]
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Typing :: Typed",
+]
+dependencies = [
+  "goduration>=0.0.0",
+  "gotime>=0.0.0",
+  "tzdata>=2026.3",
+  "tzlocal>=5.4.4",
+]
+
+[project.optional-dependencies]
+crypto = ["bcrypt>=5.0.0", "cryptography>=50.0.1"]
+yaml = ["PyYAML>=6.0.3"]
+helm = ["PyYAML>=6.0.3", "tomli-w>=1.2.0"]
+all = [
+  "bcrypt>=5.0.0",
+  "cryptography>=50.0.1",
+  "PyYAML>=6.0.3",
+  "tomli-w>=1.2.0",
+]
+
+[dependency-groups]
+test = [
+  "coverage[toml]>=7.15.4",
+  "hypothesis>=6.165.10",
+  "pytest>=9.1.1",
+  "pytest-asyncio>=1.4.0",
+]
+quality = ["pyright>=1.1.411", "ruff>=0.16.4"]
+benchmark = [
+  "Chameleon>=4.6.0",
+  "Cython>=3.3.0",
+  "Jinja2>=3.1.6",
+  "Mako>=1.4.1",
+  "pyperf>=2.10.0",
+  "setuptools>=84.0.0",
+]
+dev = [
+  { include-group = "test" },
+  { include-group = "quality" },
+  { include-group = "benchmark" },
+]
+docs = [
+  "mkdocs>=1.6.1",
+  "mkdocs-material>=9.7.7",
+  "mkdocstrings[python]>=1.0.6",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gotpl"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "src/gotpl",
+  "CHANGELOG.md",
+  "LICENSE",
+  "README.md",
+  "THIRD_PARTY_NOTICES.md",
+  "pyproject.toml",
+]
+exclude = ["docs", "packages"]
+
+[tool.uv]
+required-version = ">=0.12.5"
+
+[tool.uv.sources]
+goduration = { workspace = true }
+gotime = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+  "packages/goduration",
+  "packages/gotime",
+]
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers --import-mode=importlib"
+pythonpath = ["."]
+testpaths = ["tests", "packages"]
+
+[tool.coverage.run]
+branch = true
+source = [
+  "examples",
+  "goduration",
+  "gotime",
+  "gotpl",
+]
+
+[tool.coverage.report]
+fail_under = 95
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.pyright]
+include = ["examples", "packages", "src", "tests"]
+pythonVersion = "3.11"
+typeCheckingMode = "strict"
+venv = ".venv"
+venvPath = "."

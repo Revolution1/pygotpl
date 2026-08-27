@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "sprig/regex-repeat-limit-failure",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "regex.go and Go regexp/syntax",
+    "behavior": "RE2 rejects counted repetitions whose minimum or maximum exceeds one thousand.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "regex-repeat-limit",
+    "template": "before/{{mustRegexMatch \"a{1001}\" \"a\"}}/after",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: regex-repeat-limit:1:9: executing \"regex-repeat-limit\" at <mustRegexMatch \"a{1001}\" \"a\">: error calling mustRegexMatch: error parsing regexp: invalid repeat count: `{1001}`"
+    }
+  }
+}

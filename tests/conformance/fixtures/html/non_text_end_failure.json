@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "html/non-text-end-failure",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/escape_test.go:TestErrors",
+    "behavior": "Execution is rejected when the root template ends inside a JavaScript element instead of returning to HTML text context.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-non-text-end",
+    "template": "<script>foo();",
+    "data": null
+  },
+  "expected": {
+    "output": "",
+    "error": {
+      "phase": "execute",
+      "message": "html/template:html-non-text-end: ends in a non-text context: {stateJS delimNone urlPartNone jsCtxRegexp [] attrNone elementScript <nil>}"
+    }
+  }
+}

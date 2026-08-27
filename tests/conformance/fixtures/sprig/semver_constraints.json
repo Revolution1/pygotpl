@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "sprig/semver-constraints",
+  "reference": {
+    "project": "sprig",
+    "revision": "v3.3.0",
+    "source": "semver.go and Masterminds semver constraint behavior",
+    "behavior": "Wildcards, partial versions, caret and tilde ranges, hyphen ranges, inequality, and OR constraints match Sprig.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "semver-constraints",
+    "template": "{{semverCompare \"*\" \"9.1.2\"}}/{{semverCompare \"1.x\" \"1.9.0\"}}/{{semverCompare \"1.2\" \"1.2.9\"}}|{{semverCompare \"^0.2.3\" \"0.2.9\"}}/{{semverCompare \"^0.0.3\" \"0.0.4\"}}/{{semverCompare \"~1\" \"1.9.0\"}}|{{semverCompare \"1.2 - 2.3\" \"2.3.9\"}}/{{semverCompare \"!=1.2.3\" \"1.2.4\"}}/{{semverCompare \"<1.0.0 || >=2.0.0\" \"2.4.0\"}}",
+    "data": null,
+    "function_profile": "sprig-hermetic"
+  },
+  "expected": {
+    "output": "true/true/true|true/false/true|true/true/true",
+    "error": null
+  }
+}

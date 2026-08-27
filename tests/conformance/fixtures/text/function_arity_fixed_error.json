@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "text/function-arity-fixed-error",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/text/template/exec.go",
+    "behavior": "A fixed-arity function rejects an incorrect positional argument count.",
+    "derived": true
+  },
+  "request": {
+    "engine": "text",
+    "name": "function-arity-fixed",
+    "template": "before/{{join \"a\"}}/after",
+    "data": null,
+    "function_profile": "execution-functions"
+  },
+  "expected": {
+    "output": "before/",
+    "error": {
+      "phase": "execute",
+      "message": "template: function-arity-fixed:1:9: executing \"function-arity-fixed\" at <join>: wrong number of args for join: want 2 got 1"
+    }
+  }
+}

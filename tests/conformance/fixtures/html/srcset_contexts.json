@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "html/srcset-contexts",
+  "reference": {
+    "project": "go",
+    "revision": "go1.27.0",
+    "source": "src/html/template/url_test.go:TestSrcsetFilter and content_test.go",
+    "behavior": "Dynamic srcset values filter each comma-separated candidate, validate descriptors, normalize URLs, preserve valid spacing, and receive quoted or unquoted HTML attribute escaping.",
+    "derived": true
+  },
+  "request": {
+    "engine": "html",
+    "name": "html-srcset-contexts",
+    "template": "<img srcset=\"{{.Mixed}}\">|<img srcset={{.Mixed}}>|<img srcset=\"{{.Good}} 2x, https://golang.org/ 500.5w\">|<img srcset=\"/base 1x, {{.Bad}} 2x\">|<img srcset=\"{{.Empty}}\">",
+    "data": {
+      "Mixed": " /img one.png 200w, javascript:alert(1) 2x, /ok(1).png 3x",
+      "Good": "/good image.png",
+      "Bad": "vbscript:evil(), /safe.png 2x",
+      "Empty": ",,,,,"
+    }
+  },
+  "expected": {
+    "output": "<img srcset=\"#ZgotmplZ,#ZgotmplZ, /ok%281%29.png 3x\">|<img srcset=#ZgotmplZ,#ZgotmplZ,&#32;/ok%281%29.png&#32;3x>|<img srcset=\"#ZgotmplZ 2x, https://golang.org/ 500.5w\">|<img srcset=\"/base 1x, #ZgotmplZ, /safe.png 2x 2x\">|<img srcset=\",,,,,\">",
+    "error": null
+  }
+}
