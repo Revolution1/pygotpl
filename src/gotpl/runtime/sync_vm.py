@@ -31,6 +31,18 @@ from .callables import (
     invoke_template_function,
 )
 from .gofmt import FormatMode, sprintf
+from .linked import (
+    LinkedConstantOperand,
+    LinkedDotOperand,
+    LinkedFieldOperand,
+    LinkedFieldPipeline,
+    LinkedFunctionCommand,
+    LinkedPipeline,
+    LinkedProgram,
+    LinkedValueCommand,
+    LinkedVariableOperand,
+    LinkedVariablePipeline,
+)
 from .policy import ExecutionBudget, ExecutionBudgetState, SandboxPolicy
 from .results import unwrap_function_result
 from .values import (
@@ -44,6 +56,7 @@ from .values import (
     ValueAdapter,
     is_bound_method,
 )
+from .values import number_value as _number_value
 
 _UNPREPARED_CALL = object()
 _MAX_TEMPLATE_DEPTH = 100_000
@@ -135,16 +148,26 @@ class _RangeState:
 
 @dataclass(slots=True)
 class _ExecutionLocation:
-    source: str = ""
-    source_name: str = "template"
-    template_name: str = "template"
+    program: Program | None = None
     position: int = 0
 
-    def enter_program(self, program: Program) -> None:
-        self.source = program.source
-        self.source_name = program.source_name or program.name or "template"
-        self.template_name = program.name or self.source_name
-        self.position = 0
+    @property
+    def source(self) -> str:
+        return "" if self.program is None else self.program.source
+
+    @property
+    def source_name(self) -> str:
+        program = self.program
+        if program is None:
+            return "template"
+        return program.source_name or program.name or "template"
+
+    @property
+    def template_name(self) -> str:
+        program = self.program
+        if program is None:
+            return "template"
+        return program.name or self.source_name
 
 
 def render_program(
@@ -159,6 +182,9 @@ def render_program(
     _logical_builtins: frozenset[str] | None = None,
     budget: ExecutionBudget | None = None,
     sandbox: SandboxPolicy | None = None,
+    _linked_program: LinkedProgram | None = None,
+    _linked_namespace: Mapping[str, LinkedProgram] | None = None,
+    _linked_root: LinkedProgram | None = None,
 ) -> str:
     """Execute a compiled program synchronously."""
 
@@ -175,8 +201,98 @@ def render_program(
         _logical_builtins=_logical_builtins,
         budget=budget,
         sandbox=sandbox,
+        _linked_program=_linked_program,
+        _linked_namespace=_linked_namespace,
+        _linked_root=_linked_root,
     )
     return output.getvalue()
+
+
+def render_linked_program(
+    linked: LinkedProgram,
+    data: object = None,
+    *,
+    template_name: str | None = None,
+    functions: Mapping[str, Callable[..., object]] | None = None,
+    missing_key: MissingKeyMode = "default",
+    format_mode: FormatMode = "go",
+    budget: ExecutionBudget | None = None,
+    sandbox: SandboxPolicy | None = None,
+) -> str:
+    """Execute an opt-in linked sidecar through the reference control loop."""
+
+    linked_namespace = linked.namespace
+    namespace = linked.program_namespace
+    selected = linked
+    if template_name is not None:
+        selected = (
+            linked
+            if template_name == linked.program.name
+            else linked_namespace.get(template_name)
+        )
+        if selected is None:
+            raise TemplateExecutionError(f"template {template_name!r} is not defined")
+    use_sidecar = (
+        linked.linked_write_count + linked.linked_control_count
+        > linked.template_call_count
+    )
+    return render_program(
+        selected.program,
+        data,
+        functions=functions,
+        missing_key=missing_key,
+        format_mode=format_mode,
+        _namespace=namespace,
+        budget=budget,
+        sandbox=sandbox,
+        _linked_program=selected if use_sidecar else None,
+        _linked_namespace=linked_namespace if use_sidecar else None,
+        _linked_root=linked if use_sidecar else None,
+    )
+
+
+def render_linked_program_to(
+    linked: LinkedProgram,
+    writer: TextIO,
+    data: object = None,
+    *,
+    template_name: str | None = None,
+    functions: Mapping[str, Callable[..., object]] | None = None,
+    missing_key: MissingKeyMode = "default",
+    format_mode: FormatMode = "go",
+    budget: ExecutionBudget | None = None,
+    sandbox: SandboxPolicy | None = None,
+) -> None:
+    """Stream an opt-in linked sidecar through the reference control loop."""
+
+    linked_namespace = linked.namespace
+    selected = linked
+    if template_name is not None:
+        selected = (
+            linked
+            if template_name == linked.program.name
+            else linked_namespace.get(template_name)
+        )
+        if selected is None:
+            raise TemplateExecutionError(f"template {template_name!r} is not defined")
+    use_sidecar = (
+        linked.linked_write_count + linked.linked_control_count
+        > linked.template_call_count
+    )
+    render_program_to(
+        selected.program,
+        writer,
+        data,
+        functions=functions,
+        missing_key=missing_key,
+        format_mode=format_mode,
+        _namespace=linked.program_namespace,
+        budget=budget,
+        sandbox=sandbox,
+        _linked_program=selected if use_sidecar else None,
+        _linked_namespace=linked_namespace if use_sidecar else None,
+        _linked_root=linked if use_sidecar else None,
+    )
 
 
 def render_program_to(
@@ -194,6 +310,9 @@ def render_program_to(
     budget: ExecutionBudget | None = None,
     sandbox: SandboxPolicy | None = None,
     _budget_state: ExecutionBudgetState | None = None,
+    _linked_program: LinkedProgram | None = None,
+    _linked_namespace: Mapping[str, LinkedProgram] | None = None,
+    _linked_root: LinkedProgram | None = None,
 ) -> None:
     """Execute a compiled program and stream text to a file-like object."""
 
@@ -220,6 +339,9 @@ def render_program_to(
             _location=location,
             sandbox=sandbox,
             _budget_state=budget_state,
+            _linked_program=_linked_program,
+            _linked_namespace=_linked_namespace,
+            _linked_root=_linked_root,
         )
     except TemplateExecutionError as error:
         error.attach_location(
@@ -245,10 +367,14 @@ def _render_program_to(
     _location: _ExecutionLocation,
     sandbox: SandboxPolicy | None,
     _budget_state: ExecutionBudgetState | None,
+    _linked_program: LinkedProgram | None,
+    _linked_namespace: Mapping[str, LinkedProgram] | None,
+    _linked_root: LinkedProgram | None,
 ) -> None:
     """Execute without translating the current source location."""
 
-    _location.enter_program(program)
+    _location.program = program
+    _location.position = 0
 
     if _depth >= _MAX_TEMPLATE_DEPTH:
         raise TemplateExecutionError(
@@ -283,16 +409,37 @@ def _render_program_to(
         sandbox,
     )
     current_program = program
+    instructions = current_program.instructions
+    current_linked = _linked_program
+    linked_pipelines = (
+        None if current_linked is None else current_linked.write_pipelines
+    )
+    linked_controls = (
+        None if current_linked is None else current_linked.control_pipelines
+    )
     pc = 0
     frames: list[tuple[Program, _ExecutionContext, int]] | None = None
+    linked_frames: list[LinkedProgram | None] | None = (
+        [] if current_linked is not None else None
+    )
     while True:
-        if pc >= len(current_program.instructions):
+        if pc >= len(instructions):
             if not frames:
                 break
             current_program, context, pc = frames.pop()
+            instructions = current_program.instructions
+            if linked_frames is not None:
+                current_linked = linked_frames.pop()
+                linked_pipelines = (
+                    None if current_linked is None else current_linked.write_pipelines
+                )
+                linked_controls = (
+                    None if current_linked is None else current_linked.control_pipelines
+                )
+            _location.program = current_program
+            _location.position = 0
             continue
-        instruction = current_program.instructions[pc]
-        _location.enter_program(current_program)
+        instruction = instructions[pc]
         _location.position = instruction.source_start
         opcode = instruction.opcode
         if opcode is OpCode.WRITE_TEXT:
@@ -304,11 +451,18 @@ def _render_program_to(
             pc += 1
         elif opcode is OpCode.WRITE_PIPELINE:
             pipeline = _require_pipeline(instruction)
+            linked_pipeline = None if linked_pipelines is None else linked_pipelines[pc]
+            if linked_pipeline is None:
+                value = _evaluate_pipeline(pipeline, context)
+            elif isinstance(linked_pipeline, LinkedFieldPipeline):
+                value = _evaluate_linked_field_pipeline(linked_pipeline, context)
+            elif isinstance(linked_pipeline, LinkedVariablePipeline):
+                value = _evaluate_linked_variable_pipeline(linked_pipeline, context)
+            else:
+                value = _evaluate_linked_pipeline(linked_pipeline, context)
             _write_text(
                 writer,
-                format_value(
-                    _evaluate_pipeline(pipeline, context), context.format_mode
-                ),
+                format_value(value, context.format_mode),
             )
             pc += 1
         elif opcode is OpCode.EVAL_PIPELINE:
@@ -322,11 +476,25 @@ def _render_program_to(
             pc += 1
         elif opcode is OpCode.JUMP_IF_FALSE:
             target = _require_branch(instruction)
-            value = _evaluate_pipeline(target.pipeline, context)
+            linked_control = None if linked_controls is None else linked_controls[pc]
+            value = (
+                _evaluate_pipeline(target.pipeline, context)
+                if linked_control is None
+                else _evaluate_linked_field_pipeline(linked_control, context)
+                if isinstance(linked_control, LinkedFieldPipeline)
+                else _evaluate_linked_variable_pipeline(linked_control, context)
+            )
             pc = pc + 1 if context.adapter.is_true(value) else target.target
         elif opcode is OpCode.ENTER_WITH:
             target = _require_branch(instruction)
-            value = _evaluate_pipeline(target.pipeline, context)
+            linked_control = None if linked_controls is None else linked_controls[pc]
+            value = (
+                _evaluate_pipeline(target.pipeline, context)
+                if linked_control is None
+                else _evaluate_linked_field_pipeline(linked_control, context)
+                if isinstance(linked_control, LinkedFieldPipeline)
+                else _evaluate_linked_variable_pipeline(linked_control, context)
+            )
             if context.adapter.is_true(value):
                 if context.dot_stack is None:
                     context.dot_stack = []
@@ -344,7 +512,22 @@ def _render_program_to(
             pc += 1
         elif opcode is OpCode.ITERATE:
             target = _require_range(instruction)
-            value = _evaluate_pipeline(target.pipeline, context, bind=False)
+            linked_control = None if linked_controls is None else linked_controls[pc]
+            value = (
+                _evaluate_pipeline(target.pipeline, context, bind=False)
+                if linked_control is None
+                else _evaluate_linked_field_pipeline(
+                    linked_control,
+                    context,
+                    bind=False,
+                )
+                if isinstance(linked_control, LinkedFieldPipeline)
+                else _evaluate_linked_variable_pipeline(
+                    linked_control,
+                    context,
+                    bind=False,
+                )
+            )
             iterator = iter(_range_entries(value, len(target.pipeline.bindings)))
             try:
                 key, item = _next_range_item(iterator)
@@ -412,7 +595,27 @@ def _render_program_to(
             if frames is None:
                 frames = []
             frames.append((current_program, context, pc + 1))
+            if linked_frames is not None:
+                linked_frames.append(current_linked)
             current_program = callee
+            instructions = current_program.instructions
+            if linked_frames is not None:
+                current_linked = (
+                    _linked_root
+                    if _linked_root is not None
+                    and target.name == _linked_root.program.name
+                    else None
+                    if _linked_namespace is None
+                    else _linked_namespace.get(target.name)
+                )
+                linked_pipelines = (
+                    None if current_linked is None else current_linked.write_pipelines
+                )
+                linked_controls = (
+                    None if current_linked is None else current_linked.control_pipelines
+                )
+            _location.program = current_program
+            _location.position = 0
             context = _ExecutionContext(
                 call_dot,
                 call_dot,
@@ -441,16 +644,205 @@ def _evaluate_pipeline(
     if context.location is not None:
         context.location.position = pipeline.source_start
     value: object = INVALID
-    for index, command in enumerate(pipeline.commands):
-        value = _evaluate_command(
-            command,
-            context,
-            piped=value if index else INVALID,
+    commands = pipeline.commands
+    if len(commands) == 1:
+        value = _evaluate_command(commands[0], context, piped=INVALID)
+    else:
+        for index, command in enumerate(commands):
+            value = _evaluate_command(
+                command,
+                context,
+                piped=value if index else INVALID,
+            )
+    if bind:
+        for binding in pipeline.bindings:
+            context.set_variable(binding, value, assignment=pipeline.is_assignment)
+    return value
+
+
+def _evaluate_linked_pipeline(
+    pipeline: LinkedPipeline,
+    context: _ExecutionContext,
+    *,
+    bind: bool = True,
+) -> object:
+    if context.location is not None:
+        context.location.position = pipeline.source_start
+    value: object = INVALID
+    for command in pipeline.commands:
+        if isinstance(command, LinkedFunctionCommand):
+            arguments = [
+                _evaluate_linked_operand(item, context) for item in command.operands
+            ]
+            if value is not INVALID:
+                arguments.append(value)
+            value = (
+                _invoke_linked_direct_function(
+                    command.name,
+                    command.function,
+                    arguments,
+                    context.budget_state,
+                )
+                if command.direct
+                else _invoke_registered_function(
+                    command.name,
+                    command.function,
+                    arguments,
+                    command.spec,
+                    context.budget_state,
+                )
+            )
+            continue
+        assert isinstance(command, LinkedValueCommand)
+        arguments = [
+            _evaluate_linked_operand(item, context) for item in command.operands
+        ]
+        if value is not INVALID:
+            arguments.append(value)
+        first_value = arguments[0]
+        if is_bound_method(first_value):
+            method_name = getattr(first_value, "__name__", "method")
+            value = _invoke_registered_function(
+                method_name if isinstance(method_name, str) else "method",
+                first_value,
+                arguments[1:],
+                _UNPREPARED_CALL,
+                context.budget_state,
+            )
+        elif len(arguments) != 1:
+            raise TemplateExecutionError("non-callable command has arguments")
+        else:
+            value = first_value
+    if bind:
+        for binding in pipeline.bindings:
+            context.set_variable(binding, value, assignment=pipeline.is_assignment)
+    return value
+
+
+def _evaluate_linked_operand(
+    operand: (
+        Operand
+        | LinkedConstantOperand
+        | LinkedDotOperand
+        | LinkedFieldOperand
+        | LinkedVariableOperand
+    ),
+    context: _ExecutionContext,
+) -> object:
+    if isinstance(operand, LinkedConstantOperand):
+        return operand.value
+    if isinstance(operand, LinkedDotOperand):
+        return context.dot
+    if isinstance(operand, LinkedFieldOperand):
+        return (
+            context.adapter.lookup(context.dot, operand.fields[0])
+            if len(operand.fields) == 1
+            else _lookup_chain(context.dot, operand.fields, context)
+        )
+    if isinstance(operand, LinkedVariableOperand):
+        value = context.lookup_variable(operand.name)
+        if not operand.fields:
+            return value
+        return (
+            context.adapter.lookup(value, operand.fields[0])
+            if len(operand.fields) == 1
+            else _lookup_chain(value, operand.fields, context)
+        )
+    return _evaluate_operand(operand, context)
+
+
+def _evaluate_linked_field_pipeline(
+    pipeline: LinkedFieldPipeline,
+    context: _ExecutionContext,
+    *,
+    bind: bool = True,
+) -> object:
+    if context.location is not None:
+        context.location.position = pipeline.source_start
+    value = (
+        context.adapter.lookup(context.dot, pipeline.fields[0])
+        if len(pipeline.fields) == 1
+        else _lookup_chain(context.dot, pipeline.fields, context)
+    )
+    return _finish_linked_lookup_pipeline(pipeline, value, context, bind=bind)
+
+
+def _evaluate_linked_variable_pipeline(
+    pipeline: LinkedVariablePipeline,
+    context: _ExecutionContext,
+    *,
+    bind: bool = True,
+) -> object:
+    if context.location is not None:
+        context.location.position = pipeline.source_start
+    value = context.lookup_variable(pipeline.name)
+    value = (
+        context.adapter.lookup(value, pipeline.fields[0])
+        if len(pipeline.fields) == 1
+        else _lookup_chain(value, pipeline.fields, context)
+    )
+    return _finish_linked_lookup_pipeline(pipeline, value, context, bind=bind)
+
+
+def _finish_linked_lookup_pipeline(
+    pipeline: LinkedFieldPipeline | LinkedVariablePipeline,
+    value: object,
+    context: _ExecutionContext,
+    *,
+    bind: bool,
+) -> object:
+    if is_bound_method(value):
+        method_name = getattr(value, "__name__", "method")
+        value = _invoke_registered_function(
+            method_name if isinstance(method_name, str) else "method",
+            value,
+            [],
+            _UNPREPARED_CALL,
+            context.budget_state,
+        )
+    for function in pipeline.functions:
+        value = _invoke_linked_unary_function(
+            function.name,
+            function.function,
+            value,
+            context.budget_state,
         )
     if bind:
         for binding in pipeline.bindings:
             context.set_variable(binding, value, assignment=pipeline.is_assignment)
     return value
+
+
+def _invoke_linked_unary_function(
+    name: str,
+    function: Callable[..., object],
+    value: object,
+    budget_state: ExecutionBudgetState | None,
+) -> object:
+    if budget_state is not None:
+        budget_state.consume_function_call()
+    try:
+        return unwrap_function_result(reject_awaitable(function(value)))
+    except TemplateExecutionError:
+        raise
+    except Exception as error:
+        raise TemplateExecutionError(f"function {name!r} failed: {error}") from error
+
+
+def _invoke_linked_direct_function(
+    name: str,
+    function: Callable[..., object],
+    arguments: list[object],
+    budget_state: ExecutionBudgetState | None,
+) -> object:
+    if budget_state is not None:
+        budget_state.consume_function_call()
+    try:
+        return unwrap_function_result(reject_awaitable(function(*arguments)))
+    except TemplateExecutionError:
+        raise
+    except Exception as error:
+        raise TemplateExecutionError(f"function {name!r} failed: {error}") from error
 
 
 def _write_text(writer: _TextWriter, value: str) -> None:
@@ -1114,24 +1506,3 @@ def _js(*values: object, format_mode: FormatMode) -> str:
         else:
             output.append(character)
     return "".join(output)
-
-
-def _number_value(value: str | bool | None, *, is_complex: bool) -> object:
-    if not isinstance(value, str):
-        return INVALID
-    text = value.replace("_", "")
-    if text.endswith("i"):
-        return complex(text[:-1] + "j")
-    if is_complex:
-        return complex(text.replace("i", "j"))
-    if any(marker in text for marker in ".eEpP"):
-        return float.fromhex(text) if "0x" in text.lower() else float(text)
-    sign = -1 if text.startswith("-") else 1
-    unsigned = text.lstrip("+-")
-    if unsigned.lower().startswith(("0b", "0o", "0x")):
-        number = int(unsigned, 0)
-    elif len(unsigned) > 1 and unsigned.startswith("0"):
-        number = int(unsigned, 8)
-    else:
-        number = int(unsigned, 10)
-    return sign * number

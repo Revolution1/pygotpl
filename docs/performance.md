@@ -91,6 +91,16 @@ The contextual HTML comparison can be sampled independently with:
 uv run --frozen python -m benchmarks.compare benchmarks/fixtures/html_render.json --samples 7
 ```
 
+The contextual URL hot path has a separate branching-versus-table comparison:
+
+```console
+uv run --frozen python -m benchmarks.url_processor \
+  --samples 7 --iterations 100000
+```
+
+It verifies normalization and escaping output before timing representative
+plain, query, path, percent-escape, and UTF-8 inputs.
+
 Both runners hash a reference render before timing, and the comparison aborts
 if Python and Go produce different output. Multi-sample output preserves raw
 measurements and reports the median, range, and relative standard deviation.
@@ -175,6 +185,22 @@ This is an Amdahl-style feasibility diagnostic, not a generated-backend
 benchmark. The M6 production decision and reconsideration gates are recorded in
 [`reports/m6-ast-backend-decision.md`](reports/m6-ast-backend-decision.md).
 
+The retained linked-IR sync optimization can be compared directly with the
+generic reference VM on paired, alternating samples:
+
+```console
+uv run --frozen python -m benchmarks.linked_ir \
+  --samples 21 --iterations 3000 --warmup 500 --link-samples 51
+```
+
+The runner verifies output equality, reports generic and linked warm latency,
+and measures link latency plus traced retained and peak bytes separately. Its
+default fixtures cover text control flow, contextual HTML, Sprig-heavy calls,
+and a 33-template named association. Explicit `writer_render` fixtures execute
+the real caller-owned writer path. Cold construction is measured by the
+canonical comparison runner because the linked A/B runner intentionally starts
+from an already compiled generic program.
+
 ## Tooling
 
 - Python timing: `pyperf`.
@@ -195,6 +221,12 @@ Do not draw conclusions from a single run on a noisy shared CI worker.
 6. Consider a Python-AST code-generation backend only after VM parity is strong.
 7. Prototype a native accelerator only for a measured, self-contained hot path
    after ordinary Python and backend opportunities are exhausted.
+
+The M10 linked-IR and contextual URL follow-up is closed. Further attempts to
+reduce Python-level control-flow interpretation belong to the planned
+[`M12 generated synchronous backend`](milestones/m12-generated-sync-backend.md)
+and must meet that milestone's feasibility and retention gates before changing
+the production executor.
 
 The sync path must not pay unconditional coroutine or event-loop costs. The
 async path should inspect awaitability only at boundaries that can produce

@@ -7,7 +7,12 @@ from .async_vm import AsyncTextWriter, render_program_async, render_program_asyn
 from .gofmt import FormatMode, GoFormatSpec, GoFormatter
 from .policy import ExecutionBudget, SandboxPolicy
 from .results import FunctionResult
-from .sync_vm import render_program, render_program_to
+from .sync_vm import (
+    render_linked_program,
+    render_linked_program_to,
+    render_program,
+    render_program_to,
+)
 from .values import (
     INVALID,
     UNTYPED_NIL,

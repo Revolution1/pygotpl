@@ -102,6 +102,29 @@ class _UntypedNil:
 UNTYPED_NIL = _UntypedNil()
 
 
+def number_value(value: str | bool | None, *, is_complex: bool) -> object:
+    """Decode one compiled Go numeric literal."""
+
+    if not isinstance(value, str):
+        return INVALID
+    text = value.replace("_", "")
+    if text.endswith("i"):
+        return complex(text[:-1] + "j")
+    if is_complex:
+        return complex(text.replace("i", "j"))
+    if any(marker in text for marker in ".eEpP"):
+        return float.fromhex(text) if "0x" in text.lower() else float(text)
+    sign = -1 if text.startswith("-") else 1
+    unsigned = text.lstrip("+-")
+    if unsigned.lower().startswith(("0b", "0o", "0x")):
+        number = int(unsigned, 0)
+    elif len(unsigned) > 1 and unsigned.startswith("0"):
+        number = int(unsigned, 8)
+    else:
+        number = int(unsigned, 10)
+    return sign * number
+
+
 @dataclass(frozen=True, slots=True)
 class ValueAdapter:
     """Resolve fields and truth values through one auditable boundary."""
@@ -116,6 +139,12 @@ class ValueAdapter:
             return self._missing(field)
         if self.sandbox is not None and not isinstance(value, Mapping):
             return self._sandboxed_lookup(value, field)
+        if type(cast(object, value)) is dict:
+            mapping = cast(dict[object, object], value)
+            try:
+                return mapping[field]
+            except KeyError:
+                return self._missing(field, mapping)
         template_lookup = _get_template_lookup(cast(object, value))
         if callable(template_lookup):
             try:

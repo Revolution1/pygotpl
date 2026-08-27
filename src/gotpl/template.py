@@ -1,7 +1,7 @@
 """Public text-template API."""
 
 from collections.abc import Callable, Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from types import MappingProxyType
 from typing import Self, TextIO
 from unicodedata import category
@@ -16,6 +16,8 @@ from gotpl.runtime import (
     FormatMode,
     MissingKeyMode,
     SandboxPolicy,
+    render_linked_program,
+    render_linked_program_to,
     render_program,
     render_program_async,
     render_program_async_to,
@@ -26,6 +28,7 @@ from gotpl.runtime.callables import (
     PreparedFunctionRegistry,
     prepare_template_function,
 )
+from gotpl.runtime.linked import LinkedProgram, link_program
 from gotpl.runtime.sync_vm import (
     _execution_function_registry,  # pyright: ignore[reportPrivateUsage]
 )
@@ -50,6 +53,8 @@ class Template:
     _program: Program
     _namespace: Mapping[str, Program]
     _runtime_functions: PreparedFunctionRegistry
+    _linked_program: LinkedProgram
+    _use_linked: bool
 
     def __init__(
         self,
@@ -113,6 +118,14 @@ class Template:
         namespace[program.name] = program
         object.__setattr__(self, "_program", program)
         object.__setattr__(self, "_namespace", MappingProxyType(namespace))
+        object.__setattr__(
+            self,
+            "_linked_program",
+            _link_association(program, namespace, self._runtime_functions),
+        )
+        object.__setattr__(
+            self, "_use_linked", _should_use_linked(self._linked_program)
+        )
 
     @classmethod
     def from_sources(
@@ -167,18 +180,40 @@ class Template:
                 if definition.instructions or current is None:
                     namespace[definition.name] = definition
         object.__setattr__(template, "_namespace", MappingProxyType(namespace))
+        object.__setattr__(
+            template,
+            "_linked_program",
+            _link_association(
+                template._program,
+                namespace,
+                template._runtime_functions,
+            ),
+        )
+        object.__setattr__(
+            template, "_use_linked", _should_use_linked(template._linked_program)
+        )
         return template
 
     def render(self, data: object = None) -> str:
         """Render the template synchronously."""
 
-        return render_program(
-            self._program,
+        if not self._use_linked:
+            return render_program(
+                self._program,
+                data,
+                functions=self._runtime_functions,
+                missing_key=self.missing_key,
+                format_mode=self.format_mode,
+                _namespace=self._namespace,
+                budget=self.budget,
+                sandbox=self.sandbox,
+            )
+        return render_linked_program(
+            self._linked_program,
             data,
             functions=self._runtime_functions,
             missing_key=self.missing_key,
             format_mode=self.format_mode,
-            _namespace=self._namespace,
             budget=self.budget,
             sandbox=self.sandbox,
         )
@@ -186,14 +221,26 @@ class Template:
     def render_to(self, writer: TextIO, data: object = None) -> None:
         """Render the template and write its text to a file-like object."""
 
-        render_program_to(
-            self._program,
+        if not self._use_linked:
+            render_program_to(
+                self._program,
+                writer,
+                data,
+                functions=self._runtime_functions,
+                missing_key=self.missing_key,
+                format_mode=self.format_mode,
+                _namespace=self._namespace,
+                budget=self.budget,
+                sandbox=self.sandbox,
+            )
+            return
+        render_linked_program_to(
+            self._linked_program,
             writer,
             data,
             functions=self._runtime_functions,
             missing_key=self.missing_key,
             format_mode=self.format_mode,
-            _namespace=self._namespace,
             budget=self.budget,
             sandbox=self.sandbox,
         )
@@ -235,13 +282,24 @@ class Template:
         """Render one associated named template synchronously."""
 
         program = self._associated_program(name)
-        return render_program(
-            program,
+        if not self._use_linked:
+            return render_program(
+                program,
+                data,
+                functions=self._runtime_functions,
+                missing_key=self.missing_key,
+                format_mode=self.format_mode,
+                _namespace=self._namespace,
+                budget=self.budget,
+                sandbox=self.sandbox,
+            )
+        return render_linked_program(
+            self._linked_program,
             data,
+            template_name=name,
             functions=self._runtime_functions,
             missing_key=self.missing_key,
             format_mode=self.format_mode,
-            _namespace=self._namespace,
             budget=self.budget,
             sandbox=self.sandbox,
         )
@@ -286,6 +344,18 @@ class Template:
                 sandbox=self.sandbox,
             ),
         )
+        object.__setattr__(
+            template,
+            "_linked_program",
+            _link_association(
+                self._program,
+                self._namespace,
+                template._runtime_functions,
+            ),
+        )
+        object.__setattr__(
+            template, "_use_linked", _should_use_linked(template._linked_program)
+        )
         return template
 
     def with_source(self, source: str, *, name: str = "template") -> Self:
@@ -326,6 +396,14 @@ class Template:
         object.__setattr__(template, "_program", program)
         object.__setattr__(template, "_namespace", MappingProxyType(namespace))
         object.__setattr__(template, "_runtime_functions", self._runtime_functions)
+        object.__setattr__(
+            template,
+            "_linked_program",
+            _link_association(program, namespace, self._runtime_functions),
+        )
+        object.__setattr__(
+            template, "_use_linked", _should_use_linked(template._linked_program)
+        )
         return template
 
     def render_source(
@@ -348,14 +426,27 @@ class Template:
         """Render one associated named template to a text writer."""
 
         program = self._associated_program(name)
-        render_program_to(
-            program,
+        if not self._use_linked:
+            render_program_to(
+                program,
+                writer,
+                data,
+                functions=self._runtime_functions,
+                missing_key=self.missing_key,
+                format_mode=self.format_mode,
+                _namespace=self._namespace,
+                budget=self.budget,
+                sandbox=self.sandbox,
+            )
+            return
+        render_linked_program_to(
+            self._linked_program,
             writer,
             data,
+            template_name=name,
             functions=self._runtime_functions,
             missing_key=self.missing_key,
             format_mode=self.format_mode,
-            _namespace=self._namespace,
             budget=self.budget,
             sandbox=self.sandbox,
         )
@@ -551,6 +642,27 @@ def _validated_functions(
             raise TypeError(f"template function {name!r} must be callable")
         call_specs[name] = prepare_template_function(name, function)
     return PreparedFunctionRegistry(registry, call_specs)
+
+
+def _link_association(
+    program: Program,
+    namespace: Mapping[str, Program],
+    functions: PreparedFunctionRegistry,
+) -> LinkedProgram:
+    association = replace(
+        program,
+        definitions=tuple(
+            item for name, item in namespace.items() if name != program.name
+        ),
+    )
+    return link_program(association, functions)
+
+
+def _should_use_linked(linked: LinkedProgram) -> bool:
+    return (
+        linked.linked_write_count + linked.linked_control_count
+        > linked.template_call_count
+    )
 
 
 def _valid_function_name(name: str) -> bool:

@@ -52,7 +52,9 @@ real contextual HTML escaper.
 `python -m benchmarks.html_replacements` compares the former per-character
 generator with the ordered C-level replacement path. `python -m
 benchmarks.printf_cache` compares repeated Go directive parsing with a hot
-lookup in the bounded directive cache. Both refuse to time unequal results.
+lookup in the bounded directive cache. `python -m benchmarks.url_processor`
+compares the former branching contextual URL loop with its immutable byte-table
+replacement. All three refuse to time unequal results.
 
 ## Initial Runnable Baselines
 

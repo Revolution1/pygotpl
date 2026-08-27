@@ -152,7 +152,8 @@ async def _render_program_async_to(
     sandbox: SandboxPolicy | None,
     _budget_state: ExecutionBudgetState | None,
 ) -> None:
-    _location.enter_program(program)
+    _location.program = program
+    _location.position = 0
     if _depth >= _MAX_TEMPLATE_DEPTH:
         raise TemplateExecutionError(
             f"exceeded maximum template depth ({_MAX_TEMPLATE_DEPTH})"
@@ -186,16 +187,19 @@ async def _render_program_async_to(
         sandbox,
     )
     current_program = program
+    instructions = current_program.instructions
     pc = 0
     frames: list[tuple[Program, _ExecutionContext, int]] | None = None
     while True:
-        if pc >= len(current_program.instructions):
+        if pc >= len(instructions):
             if not frames:
                 break
             current_program, context, pc = frames.pop()
+            instructions = current_program.instructions
+            _location.program = current_program
+            _location.position = 0
             continue
-        instruction = current_program.instructions[pc]
-        _location.enter_program(current_program)
+        instruction = instructions[pc]
         _location.position = instruction.source_start
         opcode = instruction.opcode
         if opcode is OpCode.WRITE_TEXT:
@@ -311,6 +315,9 @@ async def _render_program_async_to(
                 frames = []
             frames.append((current_program, context, pc + 1))
             current_program = callee
+            instructions = current_program.instructions
+            _location.program = current_program
+            _location.position = 0
             context = _ExecutionContext(
                 call_dot,
                 call_dot,
@@ -359,12 +366,16 @@ async def _evaluate_pipeline(
     if context.location is not None:
         context.location.position = pipeline.source_start
     value: object = INVALID
-    for index, command in enumerate(pipeline.commands):
-        value = await _evaluate_command(
-            command,
-            context,
-            piped=value if index else INVALID,
-        )
+    commands = pipeline.commands
+    if len(commands) == 1:
+        value = await _evaluate_command(commands[0], context, piped=INVALID)
+    else:
+        for index, command in enumerate(commands):
+            value = await _evaluate_command(
+                command,
+                context,
+                piped=value if index else INVALID,
+            )
     if bind:
         for binding in pipeline.bindings:
             context.set_variable(binding, value, assignment=pipeline.is_assignment)

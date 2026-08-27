@@ -21,6 +21,8 @@ milestone pages remain historical scope and evidence ledgers.
 | [M8](m8-ecosystem.md) | Sprout and Helm ecosystem integrations | 4-7 weeks | complete |
 | [M9](m9-python-platform.md) | Sandbox and bounded Python extensions | 4-7 weeks | implementation complete; awaiting hosted matrix |
 | [M10](m10-v1.md) | Stable API and evidence-backed 1.0 release | 3-4 weeks | active; awaiting hosted CI and external release gates |
+| [M11](m11-diagnostics-debugging.md) | Rich diagnostics, execution tracing, and source-level debugging | 4-6 weeks | planned after M10 |
+| [M12](m12-generated-sync-backend.md) | Evidence-gated generated synchronous backend | 4-6 weeks | planned after M11; current performance pass closed |
 
 ## Tracking Rules
 

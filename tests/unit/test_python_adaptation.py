@@ -48,6 +48,14 @@ def test_mapping_keys_beginning_with_underscore_are_visible() -> None:
     assert gotpl.render("{{._secret}}", {"_secret": "mapped"}) == "mapped"
 
 
+def test_mapping_subclass_custom_lookup_precedes_its_keys() -> None:
+    class CustomMapping(dict[str, str]):
+        def __gotemplate_lookup__(self, field: str) -> str:
+            return f"custom:{field}"
+
+    assert gotpl.render("{{.name}}", CustomMapping(name="mapped")) == "custom:name"
+
+
 def test_private_python_attributes_are_not_visible() -> None:
     class Secret:
         _secret = "hidden"

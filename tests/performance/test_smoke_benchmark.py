@@ -4,6 +4,7 @@ import pytest
 
 import benchmarks.compare as benchmark_compare
 import benchmarks.history as benchmark_history
+import benchmarks.linked_ir as linked_ir_benchmark
 import benchmarks.memory as benchmark_memory
 from benchmarks.async_runtime import (
     measure_async_runtime,
@@ -26,6 +27,7 @@ from benchmarks.parser_baseline import (
 )
 from benchmarks.printf_cache import measure_printf_cache
 from benchmarks.sync_guard import measure_sync_guard
+from benchmarks.url_processor import measure_url_processor
 
 PROJECT_ROOT = Path(__file__).parents[2]
 FIXTURE = PROJECT_ROOT / "benchmarks" / "fixtures" / "literal.json"
@@ -95,6 +97,23 @@ def test_html_smoke_benchmark_uses_contextual_engine() -> None:
     assert result["case_id"] == "html/contextual-render"
     assert result["iterations"] == 1
     assert result["ns_per_op"] > 0
+
+
+def test_linked_ir_benchmark_checks_paired_execution(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    fixture = PROJECT_ROOT / "benchmarks" / "fixtures" / "text_render.json"
+
+    assert (
+        linked_ir_benchmark.main(
+            [str(fixture), "--samples", "1", "--iterations", "1", "--warmup", "0"]
+        )
+        == 0
+    )
+    output = capsys.readouterr().out
+    assert "text/control-render" in output
+    assert "generic=" in output
+    assert "linked=" in output
 
 
 @pytest.mark.parametrize(
@@ -324,6 +343,17 @@ def test_printf_cache_benchmark_checks_equivalent_parses() -> None:
     assert result["uncached_median_ns_per_op"] > 0
     assert result["cached_median_ns_per_op"] > 0
     assert result["uncached_to_cached_ratio"] > 0
+
+
+def test_url_processor_benchmark_checks_equivalent_outputs() -> None:
+    result = measure_url_processor(samples=1, iterations=2)
+
+    assert result["schema_version"] == 1
+    assert result["samples"] == 1
+    assert result["iterations_per_sample"] == 2
+    assert result["branching_median_ns_per_op"] > 0
+    assert result["table_median_ns_per_op"] > 0
+    assert result["branching_to_table_ratio"] > 0
 
 
 @pytest.mark.skipif(

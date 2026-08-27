@@ -338,45 +338,53 @@ def _replace(value: str, replacements: dict[str, str]) -> str:
     return result
 
 
+_URL_PERCENT_BYTES = tuple(f"%{byte:02x}" for byte in range(256))
+_URL_UNRESERVED = b"-._~"
+_URL_NORMALIZED_SAFE = b"!#$&*+,-./:;=?@[]"
+_URL_ESCAPE_TABLE = tuple(
+    chr(byte)
+    if (
+        48 <= byte <= 57
+        or 65 <= byte <= 90
+        or 97 <= byte <= 122
+        or byte in _URL_UNRESERVED
+    )
+    else _URL_PERCENT_BYTES[byte]
+    for byte in range(256)
+)
+_URL_NORMALIZE_TABLE = tuple(
+    chr(byte)
+    if _URL_ESCAPE_TABLE[byte][0] != "%" or byte in _URL_NORMALIZED_SAFE
+    else _URL_PERCENT_BYTES[byte]
+    for byte in range(256)
+)
+_URL_HEX_BYTES = bytes(
+    1
+    if 48 <= byte <= 57 or 65 <= byte <= 70 or 97 <= byte <= 102
+    else 0
+    for byte in range(256)
+)
+
+
 def _url_processor(value: str, *, normalize: bool) -> str:
     data = value.encode("utf-8")
+    table = _URL_NORMALIZE_TABLE if normalize else _URL_ESCAPE_TABLE
     output: list[str] = []
-    normalized_safe = b"!#$&*+,-./:;=?@[]"
-    unreserved = b"-._~"
     index = 0
     while index < len(data):
         byte = data[index]
-        is_alphanumeric = (
-            ord("a") <= byte <= ord("z")
-            or ord("A") <= byte <= ord("Z")
-            or ord("0") <= byte <= ord("9")
-        )
         if (
-            is_alphanumeric
-            or byte in unreserved
-            or (normalize and byte in normalized_safe)
-        ):
-            output.append(chr(byte))
-        elif (
             normalize
-            and byte == ord("%")
+            and byte == 37
             and index + 2 < len(data)
-            and _is_hex(data[index + 1])
-            and _is_hex(data[index + 2])
+            and _URL_HEX_BYTES[data[index + 1]]
+            and _URL_HEX_BYTES[data[index + 2]]
         ):
             output.append("%")
         else:
-            output.append(f"%{byte:02x}")
+            output.append(table[byte])
         index += 1
     return "".join(output)
-
-
-def _is_hex(byte: int) -> bool:
-    return (
-        ord("0") <= byte <= ord("9")
-        or ord("a") <= byte <= ord("f")
-        or ord("A") <= byte <= ord("F")
-    )
 
 
 def _js_replace(value: str, replacements: dict[str, str]) -> str:

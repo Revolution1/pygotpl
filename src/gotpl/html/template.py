@@ -19,6 +19,8 @@ from gotpl.runtime import (
     FormatMode,
     MissingKeyMode,
     SandboxPolicy,
+    render_linked_program,
+    render_linked_program_to,
     render_program,
     render_program_async,
     render_program_async_to,
@@ -26,6 +28,7 @@ from gotpl.runtime import (
 )
 from gotpl.runtime.callables import PreparedFunctionRegistry
 from gotpl.runtime.gofmt import sprintf
+from gotpl.runtime.linked import LinkedProgram, link_program
 from gotpl.runtime.sync_vm import (
     _execution_function_registry,  # pyright: ignore[reportPrivateUsage]
 )
@@ -58,11 +61,13 @@ class HTMLTemplate:
     functions: PreparedFunctionRegistry
 
     __slots__ = (
+        "_linked_program",
         "_namespace",
         "_program",
         "_runtime_functions",
         "_text",
         "_text_roots",
+        "_use_linked",
         "functions",
     )
 
@@ -154,6 +159,15 @@ class HTMLTemplate:
             self.functions,
             sandbox=text.sandbox,
         )
+        self._linked_program: LinkedProgram = link_program(
+            self._program,
+            self._runtime_functions,
+        )
+        self._use_linked = (
+            self._linked_program.linked_write_count
+            + self._linked_program.linked_control_count
+            > self._linked_program.template_call_count
+        )
 
     def with_source(self, source: str, *, name: str = "template") -> Self:
         """Return a reanalyzed association with one added or replaced source."""
@@ -193,13 +207,23 @@ class HTMLTemplate:
     def render(self, data: object = None) -> str:
         """Render the HTML template synchronously."""
 
-        return render_program(
-            self._program,
+        if not self._use_linked:
+            return render_program(
+                self._program,
+                data,
+                functions=self._runtime_functions,
+                missing_key=self._text.missing_key,
+                format_mode=self._text.format_mode,
+                _namespace=self._namespace,
+                budget=self._text.budget,
+                sandbox=self._text.sandbox,
+            )
+        return render_linked_program(
+            self._linked_program,
             data,
             functions=self._runtime_functions,
             missing_key=self._text.missing_key,
             format_mode=self._text.format_mode,
-            _namespace=self._namespace,
             budget=self._text.budget,
             sandbox=self._text.sandbox,
         )
@@ -207,14 +231,26 @@ class HTMLTemplate:
     def render_to(self, writer: TextIO, data: object = None) -> None:
         """Render synchronously to a text writer."""
 
-        render_program_to(
-            self._program,
+        if not self._use_linked:
+            render_program_to(
+                self._program,
+                writer,
+                data,
+                functions=self._runtime_functions,
+                missing_key=self._text.missing_key,
+                format_mode=self._text.format_mode,
+                _namespace=self._namespace,
+                budget=self._text.budget,
+                sandbox=self._text.sandbox,
+            )
+            return
+        render_linked_program_to(
+            self._linked_program,
             writer,
             data,
             functions=self._runtime_functions,
             missing_key=self._text.missing_key,
             format_mode=self._text.format_mode,
-            _namespace=self._namespace,
             budget=self._text.budget,
             sandbox=self._text.sandbox,
         )
@@ -254,13 +290,24 @@ class HTMLTemplate:
         """Render one associated named HTML template synchronously."""
 
         program = self._associated_program(name)
-        return render_program(
-            program,
+        if not self._use_linked:
+            return render_program(
+                program,
+                data,
+                functions=self._runtime_functions,
+                missing_key=self._text.missing_key,
+                format_mode=self._text.format_mode,
+                _namespace=self._namespace,
+                budget=self._text.budget,
+                sandbox=self._text.sandbox,
+            )
+        return render_linked_program(
+            self._linked_program,
             data,
+            template_name=name,
             functions=self._runtime_functions,
             missing_key=self._text.missing_key,
             format_mode=self._text.format_mode,
-            _namespace=self._namespace,
             budget=self._text.budget,
             sandbox=self._text.sandbox,
         )
@@ -274,14 +321,27 @@ class HTMLTemplate:
         """Render one associated named HTML template to a text writer."""
 
         program = self._associated_program(name)
-        render_program_to(
-            program,
+        if not self._use_linked:
+            render_program_to(
+                program,
+                writer,
+                data,
+                functions=self._runtime_functions,
+                missing_key=self._text.missing_key,
+                format_mode=self._text.format_mode,
+                _namespace=self._namespace,
+                budget=self._text.budget,
+                sandbox=self._text.sandbox,
+            )
+            return
+        render_linked_program_to(
+            self._linked_program,
             writer,
             data,
+            template_name=name,
             functions=self._runtime_functions,
             missing_key=self._text.missing_key,
             format_mode=self._text.format_mode,
-            _namespace=self._namespace,
             budget=self._text.budget,
             sandbox=self._text.sandbox,
         )

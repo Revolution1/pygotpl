@@ -114,6 +114,21 @@ def test_execution_contexts_reuse_immutable_value_adapters() -> None:
     assert first.ranges is None
 
 
+def test_execution_location_derives_diagnostics_from_the_current_program() -> None:
+    location = sync_vm._ExecutionLocation()
+    assert location.source == ""
+    assert location.source_name == "template"
+    assert location.template_name == "template"
+
+    location = sync_vm._ExecutionLocation(
+        Program((), name="block", source="template source", source_name="file.tpl")
+    )
+
+    assert location.source == "template source"
+    assert location.source_name == "file.tpl"
+    assert location.template_name == "block"
+
+
 def test_runtime_rejects_an_undefined_template() -> None:
     instruction = Instruction(
         OpCode.CALL_TEMPLATE,

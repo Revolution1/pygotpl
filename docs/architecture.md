@@ -15,13 +15,21 @@ template source
     -> immutable AST
     -> compiler
     -> immutable instruction stream
-    -> sync VM or async VM
+    -> link immutable sync sidecar from fixed registry and policy
+    -> linked sync VM or generic async/reference VM
     -> output buffer or writer
 ```
 
-The AST preserves source positions and language meaning. The instruction stream
-is the compact execution representation. Execution must not repeatedly parse
-field paths, resolve function names, or reinterpret control-flow structure.
+The AST preserves source positions and language meaning. The generic instruction
+stream is the compact compatibility representation shared by both executors.
+After the callable registry and HTML context are fixed, templates also derive an
+immutable PC-aligned linked sidecar for synchronous writes and lookup-based
+control pipelines. It fuses proven-safe field or variable lookup plus unary-call
+shapes, decodes static function operands once, and links common dot, field, and
+variable arguments, while retaining the generic instruction at the same program
+counter for diagnostics and fallback. Execution must not repeatedly parse field
+paths, decode literal operands, resolve function names, or reinterpret
+control-flow structure.
 
 ## Package Boundaries
 
@@ -83,8 +91,11 @@ must update this document and the executable policy in the same change.
 ## Template Model
 
 A compiled template owns an immutable template namespace, function slots,
-options, source metadata, and instructions. Rendering creates an execution
-context containing dot, root, variables, call frames, and output state.
+options, source metadata, generic instructions, and a linked sync sidecar.
+Rendering creates an execution context containing dot, root, variables, call
+frames, and output state. The sidecar namespace contains definitions without a
+self-reference; the executor carries the association root separately for root
+recursion.
 
 `Template.from_sources()` is the core boundary for assembling named files into
 one namespace. The package-root `gotpl.TemplateEngine` adds ordered batch
@@ -101,8 +112,16 @@ template must be safe to share between threads and asyncio tasks.
 
 ## Sync and Async Execution
 
-The sync and async VMs consume the same instructions and use the same semantic
-helpers where those helpers do not add coroutine overhead.
+The sync and async VMs retain the same generic instructions and semantic helpers
+where those helpers do not add coroutine overhead. The sync VM may consume a
+PC-aligned linked write or lookup-control shape when linking proved its static
+arity and runtime type-check requirements equivalent. Linked `ITERATE` preserves
+the generic range binder by evaluating with `bind=False`; linked conditional and
+`with` pipelines retain declaration binding. Logical short circuiting, dynamic
+methods, unsupported shapes, and sparse named-template associations fall back
+to the generic evaluator. Programs without a linkable control shape store no
+control sidecar tuple. The async VM remains generic so awaiting semantics stay
+at explicit async boundaries.
 
 The sync VM never starts or manages an event loop. If a registered function
 returns an awaitable, rendering fails with `AsyncRequiredError`.
@@ -174,12 +193,20 @@ does not require extras.
 
 ## Performance Evolution
 
-The instruction VM is the first optimized backend and the compatibility
-reference inside Python. M6 did not retain a Python-AST or native backend under
-the measured opportunity and end-to-end gates. Either decision may be reopened
-only with new representative evidence. Generated code must be derived from
-validated internal nodes, retain template source mapping, and pass full backend
-parity tests.
+The generic instruction VM is the compatibility reference inside Python. The
+sync linked sidecar is a derived optimization, not another semantic backend: it
+preserves each generic `Program`, source position, value adapter, error
+translation, budget accounting, and generic fallback. An association-level cost
+model disables sidecar frame tracking when linked writes do not outnumber named
+template calls.
+
+M6 did not retain a Python-AST or native backend under the measured opportunity
+and end-to-end gates. The later linked-IR pass is closed after retaining only
+the measured sidecar and contextual URL table changes. M12 may reconsider a
+generated synchronous backend as a separately acceptance-gated milestone; it
+must derive code from validated internal nodes, retain template source mapping,
+and pass full backend parity tests. No M12 implementation is active in the M10
+release scope.
 
 ## Potential Library Extraction
 

@@ -29,6 +29,15 @@ class CallSpec:
     variadic_annotation: object
     requires_validation: bool
 
+    @property
+    def requires_type_validation(self) -> bool:
+        """Whether invocation must check runtime argument types."""
+
+        return any(
+            _annotation_is_enforceable(item)
+            for item in (*self.positional_annotations, self.variadic_annotation)
+        )
+
     def arity_error(self, name: str, count: int) -> str | None:
         """Return a Go-style error when *count* cannot satisfy this signature."""
 
