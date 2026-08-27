@@ -22,8 +22,8 @@ remaining gates require external GitHub and PyPI state.
   published 10% blocking threshold.
 - Public APIs, exception classes, compatibility counts, support policy,
   security policy, and known differences are documented and tested.
-- The task-oriented MkDocs site and generated API reference build locally with
-  strict warnings; the GitHub Pages workflow is configured but not yet run.
+- The task-oriented MkDocs site and generated API reference pass strict local
+  validation and deploy successfully through GitHub Pages.
 - All three distributions declare Apache-2.0 with canonical license files; the
   main distribution also carries the reviewed BSD/MIT third-party notices.
 
@@ -32,7 +32,6 @@ remaining gates require external GitHub and PyPI state.
 | Gate | Why it remains open | Required owner action |
 | --- | --- | --- |
 | Hosted platform matrix | The configured remote could not be resolved with the available GitHub credentials, so no Actions run exists to verify. | Create or expose the repository, push the release candidate, and require all CI jobs. |
-| Documentation publication | The static site passes its local strict build, but no GitHub Pages deployment exists yet. | Enable GitHub Pages with GitHub Actions as its source and verify the documentation workflow. |
 | Signed artifacts and provenance | Local reproducibility does not create a signed tag, GitHub attestation, or publication provenance. | Configure signing and attest the artifacts built from the release commit. |
 | Distribution publication | `gotpl`, `goduration`, and `gotime` have not been published and tested from PyPI. | Create the projects, configure trusted publishing, publish together, and run the post-publication smoke test. |
 
@@ -44,12 +43,10 @@ the release commit before those gates pass.
 
 1. Create or grant access to the GitHub repository and push the release
    candidate.
-2. Enable GitHub Pages with GitHub Actions as its source and verify the
-   documentation deployment.
-3. Observe the full CPython 3.11-3.14, PyPy 3.11, Linux, macOS, Windows, Go
+2. Observe the full CPython 3.11-3.14, PyPy 3.11, Linux, macOS, Windows, Go
    oracle, package, and benchmark-smoke jobs.
-4. Configure PyPI trusted publishing for all three distributions.
-5. Build from the signed release commit, publish attestations and checksums,
+3. Configure PyPI trusted publishing for all three distributions.
+4. Build from the signed release commit, publish attestations and checksums,
    upload the coordinated distributions, and verify a clean PyPI installation.
 
 The detailed command order and rollback policy are defined in

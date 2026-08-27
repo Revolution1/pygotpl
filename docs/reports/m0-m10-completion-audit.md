@@ -22,7 +22,7 @@ behind those external items.
 | M7 Package architecture | complete | `m7-package-architecture-audit.md`, D012, import-layer tests, three coordinated wheels, and standalone package suites | none |
 | M8 Ecosystem | complete | `m8-acceptance-audit.md`, Sprout inventory/oracle evidence, Helm integration fixtures, CLI example, and integration profiles | none |
 | M9 Python platform | local scope complete | `m9-sandbox.md`, adversarial security suite, current local interpreter matrix, and wheel-only smoke | hosted Linux/macOS/Windows matrix |
-| M10 Version 1.0 | local scope complete | M10 API design, documentation, compatibility, performance, package, reproducibility, and release-readiness reports | earlier external gates, Pages, signing, and publication |
+| M10 Version 1.0 | local scope complete | M10 API design, documentation, compatibility, performance, package, reproducibility, and release-readiness reports | earlier external gates, signing, and publication |
 
 All referenced report paths are relative to this directory unless the artifact
 is a root contract or test suite.
@@ -36,8 +36,8 @@ is a root contract or test suite.
 - PyPy 3.11 coverage is 98.1214% statement and 96.1114% branch.
 - Ruff, formatting, strict Pyright, generated artifacts, and all pinned Go
   oracles pass.
-- The strict MkDocs site build and generated API reference pass locally; the
-  Pages deployment remains external evidence.
+- The strict MkDocs site build, generated API reference, and hosted Pages
+  deployment pass.
 - The full M10 benchmark suite contains no unaccepted regression above policy.
 - `gotpl`, `goduration`, and `gotime` build as `py3-none-any` wheels and pass
   compiler-free installation smoke tests on every locally supported
@@ -46,9 +46,8 @@ is a root contract or test suite.
 ## Open External Sequence
 
 1. Push the release candidate and observe all required GitHub Actions jobs.
-2. Enable GitHub Pages with GitHub Actions as the source and verify deployment.
-3. Configure trusted publishing, signing, and provenance attestations.
-4. Publish the three distributions and verify a clean installation from PyPI.
+2. Configure trusted publishing, signing, and provenance attestations.
+3. Publish the three distributions and verify a clean installation from PyPI.
 
 The authoritative owner checklist is
 [`m10-release-readiness.md`](m10-release-readiness.md). A milestone remains open

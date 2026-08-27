@@ -332,7 +332,7 @@ the pinned native Helm engine.
 ## Documentation
 
 The user documentation is organized as a generated MkDocs site and published
-at <https://blog.kyonr.com/pygotpl/> through GitHub Pages.
+at <http://blog.kyonr.com/pygotpl/> through GitHub Pages.
 
 - [Getting started](docs/getting-started.md)
 - [Template language](docs/template-language.md)

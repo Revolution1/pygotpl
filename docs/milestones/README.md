@@ -16,7 +16,7 @@ documented prerequisite.
 | [M7](m7-package-architecture.md) | Workspace packages and architecture foundation | 8-12 weeks | complete |
 | [M8](m8-ecosystem.md) | Sprout and Helm ecosystem integrations | 4-7 weeks | complete |
 | [M9](m9-python-platform.md) | Sandbox and bounded Python extensions | 4-7 weeks | implementation complete; awaiting hosted matrix |
-| [M10](m10-v1.md) | Stable API and evidence-backed 1.0 release | 3-4 weeks | active; awaiting hosted CI, Pages, and external release gates |
+| [M10](m10-v1.md) | Stable API and evidence-backed 1.0 release | 3-4 weeks | active; awaiting hosted CI and external release gates |
 
 ## Tracking Rules
 

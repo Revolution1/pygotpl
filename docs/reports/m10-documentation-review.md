@@ -8,8 +8,8 @@ the missing onboarding and language guides, generated API reference pages from
 the shipped Python objects, and made documentation validation part of the local
 and hosted quality gates.
 
-Publication remains an external gate until GitHub Pages is enabled and the
-configured workflow completes successfully.
+GitHub Pages publication completed successfully from the release-candidate
+branch on August 27, 2026.
 
 ## Reviewed Material
 
@@ -72,8 +72,9 @@ environment, and publishes the generated artifact. Official Pages actions are
 pinned to immutable commits for their current stable major releases.
 
 Pages uses GitHub Actions and the account's configured Pages domain, producing
-the project URL `https://blog.kyonr.com/pygotpl/`. A checked-in workflow is not
-evidence of successful publication; the deployment must still complete.
+the project URL `http://blog.kyonr.com/pygotpl/`. The account-level custom
+domain does not currently enforce HTTPS; enabling it requires a valid
+certificate for `blog.kyonr.com` in the owner Pages configuration.
 
 ## Verification
 
@@ -81,5 +82,7 @@ evidence of successful publication; the deployment must still complete.
 - All expected landing, guide, manual API, and generated API pages exist.
 - mkdocstrings resolves the public render helpers, template classes, policies,
   function maps, duration objects, and time objects.
+- GitHub Actions run `33039273688` built and deployed the site successfully,
+  and the public page returned HTTP 200 with the expected description.
 - Ruff, formatting, strict Pyright, 1,971 tests, coverage thresholds, generated
   artifacts, and all pinned Go oracles pass in `scripts/check.sh`.

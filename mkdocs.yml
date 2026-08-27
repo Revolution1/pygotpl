@@ -1,6 +1,6 @@
 site_name: gotpl
 site_description: Go-compatible text and HTML templates for Python
-site_url: https://blog.kyonr.com/pygotpl/
+site_url: http://blog.kyonr.com/pygotpl/
 repo_url: https://github.com/Revolution1/pygotpl
 repo_name: Revolution1/pygotpl
 copyright: Copyright &copy; 2026 Revolution1
