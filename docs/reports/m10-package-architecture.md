@@ -93,7 +93,7 @@ Generated Unicode verification now compares against
 The post-migration local gate on CPython 3.14.7, followed by the M10 coverage
 gate, completed with:
 
-- 1,971 tests passing;
+- 1,973 tests passing;
 - Ruff formatting and lint clean;
 - strict Pyright with zero errors;
 - exact statement coverage at 98.1002% and branch coverage at 96.0893%;

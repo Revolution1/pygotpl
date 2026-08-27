@@ -136,8 +136,14 @@ Preview Python and Go releases may run as non-blocking forward-compatibility
 jobs. Stable releases are adopted only after the complete applicable suite
 passes and pinned metadata is updated.
 
-Full fuzz, security, and performance suites may run on scheduled or dedicated
-runners, but release candidates must pass them.
+Full fuzz, security, and performance suites may run on dedicated or manually
+requested runners, but release candidates must pass them.
+
+Hosted jobs run only for pull requests carrying the `release` label, `v*`
+release tags, or an explicit manual dispatch. Ordinary pushes and unlabeled
+pull requests rely on local `scripts/check.sh` evidence and allocate no hosted
+runner. The release label is retained while a candidate is under review so
+synchronized commits rerun the matrix.
 
 `mkdocs build --strict` is the documentation gate. It must resolve navigation,
 internal links, and mkdocstrings objects without warnings. The hosted Pages job

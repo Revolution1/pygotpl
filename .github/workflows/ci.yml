@@ -1,9 +1,11 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -14,6 +16,7 @@ concurrency:
 
 jobs:
   quality:
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'release')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -30,6 +33,7 @@ jobs:
       - run: uv run --frozen --group docs mkdocs build --strict
 
   tests:
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'release')
     name: tests (${{ matrix.os }}, Python ${{ matrix.python }})
     strategy:
       fail-fast: false
@@ -67,6 +71,7 @@ jobs:
         run: uv run --frozen python scripts/check_wheel_matrix.py
 
   pypy:
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'release')
     name: tests (ubuntu-latest, PyPy 3.11)
     runs-on: ubuntu-latest
     steps:
@@ -98,6 +103,7 @@ jobs:
         run: uv run --python pypy3.11 --frozen python scripts/check_wheel_matrix.py
 
   go-oracle:
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'release')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -120,6 +126,7 @@ jobs:
       - run: go -C tools/helm_oracle test ./...
 
   package:
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'release')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -141,6 +148,7 @@ jobs:
           "$GITHUB_WORKSPACE/.venv/bin/pyright" --pythonpath "$GITHUB_WORKSPACE/.package-venv/bin/python" wheel_typecheck.py
 
   benchmark-smoke:
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'release')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7

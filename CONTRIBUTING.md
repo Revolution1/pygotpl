@@ -61,3 +61,9 @@ cancellation, concurrency, exceptions, writers, and value adaptation.
 Describe the behavior, the red test, the implementation, compatibility evidence,
 and performance impact. CI must pass on all required platforms. Known gaps must
 be explicit and assigned to a milestone.
+
+Hosted runners are reserved for release validation. Ordinary pull requests do
+not allocate a runner. Apply the `release` label when a pull request is ready to
+be treated as a release candidate; every subsequent synchronization reruns the
+full hosted gates until that label is removed. Maintainers may use a manual
+workflow dispatch for exceptional validation.

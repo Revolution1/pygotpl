@@ -32,7 +32,7 @@ normal, boundary, and failure evidence or an explicit not-applicable rationale.
 | Sprout | Sprout 1.1.1 | 20 registries, 234 raw entries, 45 aliases, and complete all/hermetic group evidence | compatible for raw registry/group scope |
 | Helm | Helm 4.2.3 | 10 pinned integration cases and a 222-name function-map audit | compatible example/function scope with serializer differences |
 
-The complete local gate on CPython 3.14.7 passes 1,971 tests with no skipped
+The complete local gate on CPython 3.14.7 passes 1,973 tests with no skipped
 release-blocking case, exact 98.1002% statement coverage, and exact 96.0893%
 branch coverage. Go oracle, generated-table, inventory, Ruff, formatting, and
 strict Pyright gates also pass. Hosted operating-system and Python-version

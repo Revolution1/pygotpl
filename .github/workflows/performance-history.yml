@@ -1,15 +1,10 @@
 name: Performance History
 
 on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
   push:
-    branches: [main]
-    paths:
-      - "benchmarks/**"
-      - "src/**"
-      - "uv.lock"
-      - ".github/workflows/performance-history.yml"
-  schedule:
-    - cron: "23 4 * * 1"
+    tags: ["v*"]
   workflow_dispatch:
 
 permissions:
@@ -21,6 +16,7 @@ concurrency:
 
 jobs:
   sampled-comparisons:
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'release')
     runs-on: macos-15
     timeout-minutes: 45
     steps:

@@ -145,8 +145,9 @@ maintenance analysis and objective reopening gates are in
 
 ## Historical Tracking
 
-`.github/workflows/performance-history.yml` runs on relevant pushes to `main`,
-weekly, and on manual dispatch. Its fixed Python 3.14 and Go 1.27 job records:
+`.github/workflows/performance-history.yml` runs for release-labeled pull
+requests, `v*` release tags, and manual dispatch. Its fixed Python 3.14 and Go
+1.27 job records:
 
 - seven-sample distributions for all eight shared render workloads;
 - seven-sample parser and compiler distributions;

@@ -384,8 +384,9 @@ existing objective gates.
 - Hosted-runner history is trend evidence; stable hardware is required for a
   release-blocking decision.
 
-The scheduled performance workflow records Go comparisons, parser, async,
-memory, Jinja, Mako, Chameleon, and profile artifacts for 90 days.
+The release-only performance workflow records Go comparisons, parser, async,
+memory, Jinja, Mako, Chameleon, and profile artifacts for 90 days. It runs for
+release-labeled pull requests, `v*` tags, or an explicit manual dispatch.
 
 ## Reproduction
 

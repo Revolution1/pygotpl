@@ -20,6 +20,19 @@ A release candidate must satisfy the active release milestone and pass:
 
 No release may claim compatibility beyond measured conformance evidence.
 
+## Hosted Workflow Policy
+
+GitHub-hosted runners are intentionally release-only:
+
+- a pull request runs hosted jobs only while it has the `release` label;
+- a `v*` release tag runs the final CI, performance, and documentation jobs;
+- `workflow_dispatch` remains available for an explicit maintainer decision;
+- ordinary branch pushes and unlabeled pull requests allocate no runner.
+
+Adding or synchronizing a release-labeled pull request runs the complete CI and
+performance gates. Its documentation job builds the site but does not publish
+it. Pages deployment occurs only for a release tag or a manual dispatch.
+
 ## Versioning
 
 Before 1.0, minor releases may add or revise unstable API while patch releases
@@ -34,20 +47,22 @@ never hidden inside an unrelated patch release.
 1. Confirm that the milestone exit gates are checked with linked evidence.
 2. Update the version, [`CHANGELOG.md`](https://github.com/Revolution1/pygotpl/blob/main/CHANGELOG.md), compatibility report,
    and benchmark report.
-3. Regenerate `uv.lock` with the required stable uv version.
-4. Run `./scripts/check.sh` from a clean checkout.
-5. Verify the GitHub Pages preview or deployment for the release commit.
-6. Build distributions with `uv build`.
-7. Run `scripts/check_reproducible_builds.sh` with the release epoch and compare
+3. Open or update the release pull request and apply the `release` label.
+4. Regenerate `uv.lock` with the required stable uv version.
+5. Run `./scripts/check.sh` from a clean checkout.
+6. Require the release PR's complete hosted gate to pass before merging.
+7. Build distributions with `uv build`.
+8. Run `scripts/check_reproducible_builds.sh` with the release epoch and compare
    its artifacts with the publication build.
-8. Install the wheel into an isolated environment and run the public smoke test.
+9. Install the wheel into an isolated environment and run the public smoke test.
    Use `python scripts/check_wheel_matrix.py` on every supported interpreter;
    the hosted matrix supplies the required operating-system coverage.
-9. Create a signed release tag after CI passes on the release commit.
-10. Publish through a trusted GitHub Actions environment using PyPI trusted
+10. Create a signed `v*` release tag after the release PR passes and merge it.
+11. Require the tag CI and documentation deployment to pass.
+12. Publish through a trusted GitHub Actions environment using PyPI trusted
    publishing.
-11. Verify package metadata and installation from PyPI.
-12. Publish release notes containing compatibility counts, known differences,
+13. Verify package metadata and installation from PyPI.
+14. Publish release notes containing compatibility counts, known differences,
     security notes, and benchmark environment details.
 
 Publishing automation will be added only after the PyPI projects and trusted

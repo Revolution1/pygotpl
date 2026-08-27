@@ -45,7 +45,8 @@ is a root contract or test suite.
 
 ## Open External Sequence
 
-1. Push the release candidate and observe all required GitHub Actions jobs.
+1. Resolve the first hosted matrix's cross-platform failures, then apply the
+   `release` label to a release PR and require all jobs to pass.
 2. Configure trusted publishing, signing, and provenance attestations.
 3. Publish the three distributions and verify a clean installation from PyPI.
 

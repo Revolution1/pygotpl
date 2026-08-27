@@ -9,7 +9,7 @@ remaining gates require external GitHub and PyPI state.
 
 ## Verified Locally
 
-- `scripts/check.sh` passes with 1,971 tests, Ruff, formatting, strict Pyright,
+- `scripts/check.sh` passes with 1,973 tests, Ruff, formatting, strict Pyright,
   generated-file checks, and every Go oracle.
 - Exact coverage is 98.1002% statement and 96.0893% branch.
 - Six wheel and source-distribution artifacts from two independent builds are
@@ -31,7 +31,7 @@ remaining gates require external GitHub and PyPI state.
 
 | Gate | Why it remains open | Required owner action |
 | --- | --- | --- |
-| Hosted platform matrix | The configured remote could not be resolved with the available GitHub credentials, so no Actions run exists to verify. | Create or expose the repository, push the release candidate, and require all CI jobs. |
+| Hosted platform matrix | The first hosted run exposed missing ignored reference setup, wheel-smoke PATH isolation, and Windows encoding, path, and timezone differences. It is evidence of unresolved gates, not a passing matrix. | Resolve the recorded cross-platform failures, apply the `release` label to a release PR, and require every job to pass. |
 | Signed artifacts and provenance | Local reproducibility does not create a signed tag, GitHub attestation, or publication provenance. | Configure signing and attest the artifacts built from the release commit. |
 | Distribution publication | `gotpl`, `goduration`, and `gotime` have not been published and tested from PyPI. | Create the projects, configure trusted publishing, publish together, and run the post-publication smoke test. |
 
@@ -41,10 +41,10 @@ the release commit before those gates pass.
 
 ## Owner Sequence
 
-1. Create or grant access to the GitHub repository and push the release
-   candidate.
-2. Observe the full CPython 3.11-3.14, PyPy 3.11, Linux, macOS, Windows, Go
-   oracle, package, and benchmark-smoke jobs.
+1. Resolve the failures exposed by the initial hosted matrix.
+2. Open a release PR, apply the `release` label, and observe the full CPython
+   3.11-3.14, PyPy 3.11, Linux, macOS, Windows, Go oracle, package, and
+   benchmark-smoke jobs.
 3. Configure PyPI trusted publishing for all three distributions.
 4. Build from the signed release commit, publish attestations and checksums,
    upload the coordinated distributions, and verify a clean PyPI installation.

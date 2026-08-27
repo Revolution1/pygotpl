@@ -202,8 +202,10 @@ command are in [`reports/m9-sandbox.md`](reports/m9-sandbox.md).
 
 ## Regression Policy
 
-Pull requests run smoke benchmarks. Full comparisons run on the main branch and
-before releases on stable hardware.
+Release-labeled pull requests run smoke benchmarks and sampled comparisons.
+Final comparisons run again for `v*` release tags. Ordinary development pushes,
+unlabeled pull requests, and calendar schedules do not allocate benchmark
+runners; maintainers may request an explicit manual run.
 
 - A statistically credible regression above 5% produces an alert.
 - A regression above 10% in a representative hot path blocks a release unless
@@ -219,7 +221,7 @@ suite also tracks every supported Python minor version so a newer interpreter
 does not conceal regressions for supported users.
 
 The automated history workflow runs the full sampled render, parser, async, and
-memory commands on relevant `main` changes, weekly, and by manual dispatch. It
-uploads revision-named JSON artifacts for 90 days. Hosted-runner artifacts are
-for trend inspection; release blocking still requires the stable-hardware
-methodology above.
+memory commands for release-labeled pull requests, `v*` tags, and manual
+dispatches. It uploads revision-named JSON artifacts for 90 days.
+Hosted-runner artifacts are for trend inspection; release blocking still
+requires the stable-hardware methodology above.

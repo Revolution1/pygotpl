@@ -6,8 +6,8 @@ M0 is technically complete except for external CI evidence. The owner selected
 Apache-2.0, and the approved upstream adaptation policy, canonical license
 files, PEP 639 metadata, third-party notices, and review evidence are recorded
 in `docs/licensing.md` and `docs/reports/m0-license-review.md`. The repository
-has not yet been pushed, so the GitHub Actions matrix cannot be claimed as
-passing.
+is now public, but the first GitHub Actions matrix exposed unresolved setup and
+cross-platform failures, so the hosted gate cannot be claimed as passing.
 
 ## Pinned Baselines
 
@@ -71,4 +71,5 @@ in `m0-python-matrix.md`; hosted evidence remains pending.
 
 ## Remaining Exit Evidence
 
-- Push the repository and observe every required GitHub Actions job passing.
+- Resolve the initial hosted failures and observe every required job passing on
+  a release-labeled pull request.

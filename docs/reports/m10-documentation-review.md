@@ -65,8 +65,9 @@ runtime wheel.
 
 ## GitHub Pages Design
 
-`.github/workflows/pages.yml` builds only on `main` or a manual dispatch. The
-build job has read-only repository permission. The deploy job alone receives
+`.github/workflows/pages.yml` builds for release-labeled pull requests, `v*`
+release tags, or a manual dispatch. A release PR validates documentation without
+publishing it. The deploy job runs only for a tag or manual dispatch, receives
 `pages: write` and `id-token: write`, targets the protected `github-pages`
 environment, and publishes the generated artifact. Official Pages actions are
 pinned to immutable commits for their current stable major releases.
@@ -84,5 +85,5 @@ certificate for `blog.kyonr.com` in the owner Pages configuration.
   function maps, duration objects, and time objects.
 - GitHub Actions run `33039273688` built and deployed the site successfully,
   and the public page returned HTTP 200 with the expected description.
-- Ruff, formatting, strict Pyright, 1,971 tests, coverage thresholds, generated
+- Ruff, formatting, strict Pyright, 1,973 tests, coverage thresholds, generated
   artifacts, and all pinned Go oracles pass in `scripts/check.sh`.
