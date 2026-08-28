@@ -36,4 +36,4 @@ def test_goduration_declares_no_runtime_dependencies() -> None:
 
 def test_top_level_exports_its_version() -> None:
     assert "__version__" in goduration.__all__
-    assert goduration.__version__ == "0.0.0"
+    assert goduration.__version__ == "0.1.0"

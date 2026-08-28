@@ -19,7 +19,7 @@ def test_top_level_time_defaults_to_go_surface() -> None:
 
 def test_top_level_exports_its_version() -> None:
     assert "__version__" in gotime.__all__
-    assert gotime.__version__ == "0.0.0"
+    assert gotime.__version__ == "0.1.0"
 
 
 def test_go_unix_normalizes_nanoseconds_and_exposes_civil_time() -> None:

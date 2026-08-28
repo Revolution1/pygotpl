@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "gotpl"
-version = "0.0.0"
+version = "0.1.0"
 description = "A pure Python implementation of Go templates"
 readme = "README.md"
 license = "Apache-2.0"
@@ -22,8 +22,8 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "goduration>=0.0.0,<2.0.0",
-  "gotime>=0.0.0,<2.0.0",
+  "goduration>=0.1.0,<2.0.0",
+  "gotime>=0.1.0,<2.0.0",
   "tzdata>=2026.3",
   "tzlocal>=5.4.4",
 ]

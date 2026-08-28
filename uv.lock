@@ -609,7 +609,7 @@ wheels = [
 
 [[package]]
 name = "goduration"
-version = "0.0.0"
+version = "0.1.0"
 source = { editable = "packages/goduration" }
 
 [package.dev-dependencies]
@@ -642,7 +642,7 @@ test = [{ name = "pytest", specifier = ">=9.1.1" }]
 
 [[package]]
 name = "gotime"
-version = "0.0.0"
+version = "0.1.0"
 source = { editable = "packages/gotime" }
 dependencies = [
     { name = "goduration" },
@@ -689,7 +689,7 @@ test = [
 
 [[package]]
 name = "gotpl"
-version = "0.0.0"
+version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "goduration" },

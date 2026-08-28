@@ -48,9 +48,9 @@ def main() -> None:
             "--no-deps",
             "--find-links",
             str(distributions),
-            "gotpl==0.0.0",
-            "goduration==0.0.0",
-            "gotime==0.0.0",
+            "gotpl==0.1.0",
+            "goduration==0.1.0",
+            "gotime==0.1.0",
         )
         _run(
             uv,
