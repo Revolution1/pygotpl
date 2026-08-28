@@ -26,10 +26,7 @@ dependencies = ["goduration>=0.1.0,<2.0.0", "tzdata>=2026.3"]
 [dependency-groups]
 test = ["hypothesis>=6.165.10", "pytest>=9.1.1"]
 quality = ["pyright>=1.1.411", "ruff>=0.16.4"]
-dev = [
-  { include-group = "test" },
-  { include-group = "quality" },
-]
+dev = [{ include-group = "test" }, { include-group = "quality" }]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/gotime"]

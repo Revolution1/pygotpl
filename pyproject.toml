@@ -88,10 +88,7 @@ goduration = { workspace = true }
 gotime-py = { workspace = true }
 
 [tool.uv.workspace]
-members = [
-  "packages/goduration",
-  "packages/gotime",
-]
+members = ["packages/goduration", "packages/gotime"]
 
 [tool.pytest.ini_options]
 addopts = "--strict-config --strict-markers --import-mode=importlib"
@@ -100,12 +97,7 @@ testpaths = ["tests", "packages"]
 
 [tool.coverage.run]
 branch = true
-source = [
-  "examples",
-  "goduration",
-  "gotime",
-  "gotpl",
-]
+source = ["examples", "goduration", "gotime", "gotpl"]
 
 [tool.coverage.report]
 fail_under = 95

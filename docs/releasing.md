@@ -61,7 +61,7 @@ never hidden inside an unrelated patch release.
 10. Create a signed `v*` release tag after the release PR passes and merge it.
 11. Require the tag CI and documentation deployment to pass.
 12. Publish through a trusted GitHub Actions environment using PyPI trusted
-   publishing, in dependency order: `goduration`, then `gotime`, then `gotpl`.
+   publishing, in dependency order: `goduration`, then `gotime-py`, then `gotpl`.
 13. Install all three packages from PyPI in a clean environment and verify
    package metadata, declared dependency bounds, imports, and a public render.
 14. Publish release notes containing compatibility counts, known differences,

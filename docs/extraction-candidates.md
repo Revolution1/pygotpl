@@ -12,7 +12,7 @@ versions, typing quality, and differential evidence. A new package must be
 useful outside template rendering and must not force pygotpl users to install
 unrelated dependencies.
 
-`goduration` and `gotime` are the selected distribution names and are declared
+`goduration` and `gotime-py` are the selected distribution names and are declared
 as bounded PyPI dependencies of `gotpl`. The completed M7 in-repository
 extraction does not by itself authorize a repository split; external
 publication still follows the coordinated release gates.

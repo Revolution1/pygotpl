@@ -9,7 +9,7 @@ are named `gotpl`.
 python -m pip install gotpl
 ```
 
-The distribution installs compatible `goduration` and `gotime` versions as
+The distribution installs compatible `goduration` and `gotime-py` versions as
 dependencies; application code does not need to install them separately.
 
 Application code imports `gotpl`:

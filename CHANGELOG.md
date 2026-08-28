@@ -17,7 +17,7 @@ uses [Semantic Versioning](https://semver.org/) for stable releases.
 - Sprig 3.3.0, Slim-Sprig 3.0.0, Sprout 1.1.1, and Helm function profiles that
   remain separate from the default Go registry.
 - Opt-in Python functions, sandbox policies, and per-render execution budgets.
-- Standalone `goduration` and `gotime` distributions with Go-compatible and
+- Standalone `goduration` and `gotime-py` distributions with Go-compatible and
   Python-native object APIs.
 - A miniature Helm CLI example and reusable core multi-source engine.
 - Differential Go oracles, security and property suites, exact coverage gates,
@@ -36,7 +36,7 @@ uses [Semantic Versioning](https://semver.org/) for stable releases.
   under `gotpl._compat` instead of being published as separate distributions.
 - Contextual HTML convenience functions expose the same explicit typed options
   as their text equivalents.
-- Published `gotpl` metadata resolves `goduration` and `gotime` from PyPI with
+- Published `gotpl` metadata resolves `goduration` and `gotime-py` from PyPI with
   compatible pre-2.0 version bounds; workspace sources remain development-only
   overrides.
 
@@ -52,5 +52,5 @@ uses [Semantic Versioning](https://semver.org/) for stable releases.
 
 - Pass the hosted operating-system and interpreter matrix.
 - Sign and attest release artifacts.
-- Publish and verify the coordinated `gotpl`, `goduration`, and `gotime`
+- Publish and verify the coordinated `gotpl`, `goduration`, and `gotime-py`
   distributions.

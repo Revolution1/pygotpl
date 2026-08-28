@@ -8,9 +8,9 @@ import argparse
 import gc
 import statistics
 import time
-import tracemalloc
 from collections.abc import Callable, Sequence
 from functools import partial
+from importlib import import_module
 from io import StringIO
 from pathlib import Path
 
@@ -20,6 +20,11 @@ from gotpl.runtime.linked import LinkedProgram, link_program
 from gotpl.runtime.sync_vm import render_program, render_program_to
 
 from .compare import BenchmarkFixture, load_benchmark
+
+try:
+    tracemalloc = import_module("tracemalloc")
+except ModuleNotFoundError:  # pragma: no cover - PyPy lacks _tracemalloc
+    tracemalloc = None
 
 DEFAULT_FIXTURES = (
     "text_render.json",
@@ -155,11 +160,18 @@ def _measure(
     linked_median = statistics.median(linked_samples)
     delta = (linked_median / generic_median - 1.0) * 100.0
     link_timings = [_sample(link, 1) for _ in range(link_samples)]
-    tracemalloc.start()
-    before, _ = tracemalloc.get_traced_memory()
-    retained_link = link()
-    current, peak = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
+    if tracemalloc is not None:
+        tracemalloc.start()
+        before, _ = tracemalloc.get_traced_memory()
+        retained_link = link()
+        current, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+        link_retained = current - before
+        link_peak = peak - before
+    else:
+        retained_link = link()
+        link_retained = 0
+        link_peak = 0
     if retained_link.program is not linked.program:
         raise RuntimeError("linking did not preserve the generic program")
     return (
@@ -169,7 +181,7 @@ def _measure(
         f"linked_controls={linked.linked_control_count}, "
         f"template_calls={linked.template_call_count}, "
         f"link={statistics.median(link_timings):.1f} ns, "
-        f"link_retained={current - before} B, link_peak={peak - before} B"
+        f"link_retained={link_retained} B, link_peak={link_peak} B"
     )
 
 

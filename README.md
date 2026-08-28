@@ -19,7 +19,7 @@ python -m pip install gotpl
 
 Optional cryptographic and Helm capabilities are available through the
 `crypto` and `helm` extras. `gotpl` installs its compatible `goduration` and
-`gotime` dependencies automatically. See
+`gotime-py` dependencies automatically. See
 [Getting Started](docs/getting-started.md) for the exact commands and supported
 Python versions.
 
