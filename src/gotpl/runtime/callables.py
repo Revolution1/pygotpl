@@ -9,6 +9,8 @@ from inspect import Parameter, Signature, signature
 from types import MappingProxyType, UnionType
 from typing import Any, Literal, Union, get_args, get_origin
 
+from .context import ContextFunction
+
 
 class TemplateCallArityError(TypeError):
     """An internal, stable positional-argument mismatch."""
@@ -71,10 +73,16 @@ class CallSpec:
 class PreparedFunctionRegistry(Mapping[str, Callable[..., object]]):
     """Immutable callables paired with their construction-time signatures."""
 
-    __slots__ = ("_functions", "call_specs", "includes_builtins")
+    __slots__ = (
+        "_functions",
+        "call_specs",
+        "has_context_functions",
+        "includes_builtins",
+    )
     _functions: Mapping[str, Callable[..., object]]
     call_specs: Mapping[str, CallSpec | None]
     includes_builtins: bool
+    has_context_functions: bool
 
     def __init__(
         self,
@@ -97,6 +105,9 @@ class PreparedFunctionRegistry(Mapping[str, Callable[..., object]]):
         self._functions = MappingProxyType(values)
         self.call_specs = MappingProxyType(specs)
         self.includes_builtins = includes_builtins
+        self.has_context_functions = any(
+            isinstance(function, ContextFunction) for function in values.values()
+        )
 
     def __getitem__(self, name: str) -> Callable[..., object]:
         return self._functions[name]
@@ -114,13 +125,47 @@ def prepare_template_function(
 ) -> CallSpec | None:
     """Inspect once and reject signatures a positional template cannot call."""
 
-    spec = call_spec(function)
+    spec = (
+        _context_call_spec(name, function)
+        if isinstance(function, ContextFunction)
+        else call_spec(function)
+    )
     if spec is None or not spec.required_keyword_only:
         return spec
     parameter = spec.required_keyword_only[0]
     raise TypeError(
         f"template function {name!r} has required keyword-only parameter {parameter!r}"
     )
+
+
+def _context_call_spec(name: str, function: ContextFunction) -> CallSpec | None:
+    implementations = tuple(
+        item for item in (function.sync, function.async_) if item is not None
+    )
+    visible: CallSpec | None = None
+    for implementation in implementations:
+        spec = call_spec(implementation)
+        if spec is None:
+            current = None
+        else:
+            if spec.maximum == 0:
+                raise TypeError(
+                    f"context function {name!r} must accept a render context"
+                )
+            current = CallSpec(
+                max(spec.minimum - 1, 0),
+                None if spec.maximum is None else spec.maximum - 1,
+                spec.required_keyword_only,
+                spec.positional_annotations[1:],
+                spec.variadic_annotation,
+                spec.requires_validation,
+            )
+        if visible is not None and current != visible:
+            raise TypeError(
+                f"context function {name!r} sync and async signatures do not match"
+            )
+        visible = current
+    return visible
 
 
 def invoke_template_function(
@@ -154,6 +199,25 @@ def invoke_prepared_template_function(
         if error is not None:
             raise TemplateCallTypeError(error)
     return function(*arguments)
+
+
+def invoke_prepared_context_function(
+    name: str,
+    function: Callable[..., object],
+    context: object,
+    arguments: Sequence[object],
+    spec: CallSpec | None,
+) -> object:
+    """Validate visible arguments and invoke with an injected context."""
+
+    if spec is not None and spec.requires_validation:
+        error = spec.arity_error(name, len(arguments))
+        if error is not None:
+            raise TemplateCallArityError(error)
+        error = spec.type_error(name, arguments)
+        if error is not None:
+            raise TemplateCallTypeError(error)
+    return function(context, *arguments)
 
 
 def call_spec(function: Callable[..., object]) -> CallSpec | None:

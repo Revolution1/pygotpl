@@ -6,6 +6,7 @@ import importlib
 import json
 import tomllib
 from collections.abc import Callable, Mapping
+from functools import lru_cache
 from typing import Any, Protocol, cast
 
 from gotpl.funcs.sprig import text_func_map
@@ -15,6 +16,7 @@ from .errors import MissingOptionalDependencyError
 
 class _YamlModule(Protocol):
     SafeDumper: type[Any]
+    SafeLoader: type[Any]
 
     def dump(
         self,
@@ -28,6 +30,8 @@ class _YamlModule(Protocol):
     ) -> str: ...
 
     def safe_load(self, stream: str) -> object: ...
+
+    def load(self, stream: str, *, Loader: type[Any]) -> object: ...
 
     def safe_dump(
         self,
@@ -53,41 +57,38 @@ def _load_yaml() -> _YamlModule:
         ) from error
 
 
+def load_yaml(stream: str) -> object:
+    """Load Helm YAML values without YAML timestamp coercion."""
+
+    yaml = _load_yaml()
+    return yaml.load(stream, Loader=_yaml_loader(yaml.SafeLoader))
+
+
+@lru_cache(maxsize=2)
+def _yaml_loader(base_loader: type[Any]) -> type[Any]:
+    loader = type("_HelmSafeLoader", (base_loader,), {})
+    loader.yaml_implicit_resolvers = {
+        key: [
+            (tag, pattern)
+            for tag, pattern in resolvers
+            if tag != "tag:yaml.org,2002:timestamp"
+        ]
+        for key, resolvers in base_loader.yaml_implicit_resolvers.items()
+    }
+    return loader
+
+
 def _to_yaml(value: object, *, pretty: bool = False, must: bool = False) -> str:
     try:
         yaml = _load_yaml()
-        if pretty:
-            base_dumper = yaml.SafeDumper
-
-            def increase_indent(
-                dumper: Any,
-                flow: bool = False,
-                indentless: bool = False,
-            ) -> Any:
-                del indentless
-                return base_dumper.increase_indent(dumper, flow, False)
-
-            dumper = type(
-                "_HelmPrettyDumper",
-                (base_dumper,),
-                {"increase_indent": increase_indent},
-            )
-            rendered = yaml.dump(
-                value,
-                Dumper=dumper,
-                allow_unicode=True,
-                default_flow_style=False,
-                indent=2,
-                sort_keys=True,
-            )
-        else:
-            rendered = yaml.safe_dump(
-                value,
-                allow_unicode=True,
-                default_flow_style=False,
-                indent=2,
-                sort_keys=True,
-            )
+        rendered = yaml.dump(
+            value,
+            Dumper=_yaml_dumper(yaml.SafeDumper, pretty),
+            allow_unicode=True,
+            default_flow_style=False,
+            indent=2,
+            sort_keys=True,
+        )
         return rendered.removesuffix("\n")
     except MissingOptionalDependencyError:
         raise
@@ -97,9 +98,42 @@ def _to_yaml(value: object, *, pretty: bool = False, must: bool = False) -> str:
         return ""
 
 
+@lru_cache(maxsize=4)
+def _yaml_dumper(base_dumper: type[Any], pretty: bool) -> type[Any]:
+    attributes: dict[str, object] = {}
+    if pretty:
+
+        def increase_indent(
+            dumper: Any,
+            flow: bool = False,
+            indentless: bool = False,
+        ) -> Any:
+            del indentless
+            return base_dumper.increase_indent(dumper, flow, False)
+
+        attributes["increase_indent"] = increase_indent
+    dumper = type(
+        "_HelmPrettyDumper" if pretty else "_HelmDumper",
+        (base_dumper,),
+        attributes,
+    )
+
+    def represent_string(instance: Any, value: str) -> Any:
+        node = base_dumper.represent_str(instance, value)
+        resolved_tag = instance.resolve(type(node), value, (True, False))
+        if "\n" in value:
+            node.style = "|"
+        elif node.style == "'" or resolved_tag != node.tag:
+            node.style = '"'
+        return node
+
+    dumper.add_representer(str, represent_string)
+    return dumper
+
+
 def _from_yaml(value: str) -> dict[str, object]:
     try:
-        parsed = _load_yaml().safe_load(value)
+        parsed = load_yaml(value)
         if isinstance(parsed, dict):
             mapping = cast(Mapping[object, object], parsed)
             return {str(key): item for key, item in mapping.items()}
@@ -112,7 +146,7 @@ def _from_yaml(value: str) -> dict[str, object]:
 
 def _from_yaml_array(value: str) -> list[object]:
     try:
-        parsed = _load_yaml().safe_load(value)
+        parsed = load_yaml(value)
         return cast(list[object], parsed) if isinstance(parsed, list) else []
     except MissingOptionalDependencyError:
         raise

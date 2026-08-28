@@ -95,3 +95,67 @@ def test_re_match_does_not_leak_into_compatibility_or_ecosystem_maps() -> None:
     )
 
     assert all("reMatch" not in functions for functions in registries)
+
+
+def test_python_extension_categories_can_be_selected_independently() -> None:
+    extensions = PythonExtensions.from_categories("hashing", "compression")
+
+    assert set(extensions.function_map()) == {
+        "bz2Compress",
+        "bz2Decompress",
+        "gzipCompress",
+        "gzipDecompress",
+        "hashDigest",
+        "md5",
+        "sha1",
+        "sha256",
+        "sha512",
+        "zlibCompress",
+        "zlibDecompress",
+        "lzmaCompress",
+        "lzmaDecompress",
+    }
+    with pytest.raises(TemplateSyntaxError, match="function 'reMatch' not defined"):
+        Template('{{reMatch "x" "x"}}', extensions=extensions)
+
+
+def test_python_extension_all_and_common_profiles_are_convenient() -> None:
+    common = PythonExtensions.common().function_map()
+    all_functions = PythonExtensions.all().function_map()
+
+    assert {"pyPrint", "pformat", "b64encode", "sha256", "gzipCompress"} <= set(common)
+    assert "reMatch" not in common
+    assert set(all_functions) == {*common, "reMatch"}
+
+
+def test_python_text_encoding_hashing_and_compression_functions_compose() -> None:
+    extensions = PythonExtensions.all()
+    source = "|".join(
+        (
+            '{{pyPrint "release" 42}}',
+            "{{pformat .mapping}}",
+            '{{sha256 "hello"}}',
+            '{{hashDigest "sha256" "hello"}}',
+            '{{utf8Decode (b64decode (b64encode (utf8Encode "hello")))}}',
+            '{{utf8Decode (gzipDecompress (gzipCompress (utf8Encode "hello")))}}',
+            '{{utf8Decode (zlibDecompress (zlibCompress (utf8Encode "hello")))}}',
+            '{{utf8Decode (bz2Decompress (bz2Compress (utf8Encode "hello")))}}',
+            '{{utf8Decode (lzmaDecompress (lzmaCompress (utf8Encode "hello")))}}',
+            '{{hexDecode (hexEncode (utf8Encode "hello")) | utf8Decode}}',
+        )
+    )
+
+    rendered = Template(source, extensions=extensions).render(
+        {"mapping": {"first": 1, "second": 2}}
+    )
+
+    digest = "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
+    assert rendered == (
+        "release 42|{'first': 1, 'second': 2}|"
+        f"{digest}|{digest}|hello|hello|hello|hello|hello|hello"
+    )
+
+
+def test_python_extension_category_errors_are_actionable() -> None:
+    with pytest.raises(ValueError, match=r"unknown Python extension category.*archive"):
+        PythonExtensions.from_categories("archive")  # type: ignore[arg-type]

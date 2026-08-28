@@ -25,7 +25,25 @@ time precision, and deterministic scheduling.
 Generated signature pages remain deliberately low-redundancy: task guides own
 examples and reference pages link to them. Every changed example was executed
 directly or covered by its focused test suite, and the strict site still
-generates 138 files.
+builds successfully.
+
+## Environment and Extension Coherence Follow-up
+
+The August 28 follow-up reviewed every current user-facing document after
+`Environment`, `gotpl.exts`, the Helm renderer, and the HTML directory example
+landed. It introduced three missing canonical guides:
+
+- reusable templates, environments, associations, batching, and directory
+  loading;
+- runtime extension selection and authoring; and
+- a Jinja2-comparable HTML site integration recipe.
+
+The review separated generic multi-source teaching from Helm, pure function
+registries from context-aware extensions, and library APIs from full
+application recipes. It shortened example READMEs to checkout-local commands,
+repaired stale anchors and internal paths, clarified `PythonExtensions` versus
+`gotpl.exts`, and updated compatibility and performance guidance for the new
+runtime boundary.
 
 ## Reviewed Material
 
@@ -53,11 +71,14 @@ navigation unless a current maintainer workflow links to them.
 The primary navigation follows user intent:
 
 1. Home and installation.
-2. Template, async, HTML, function-library, sandbox, multi-file, and migration
-   guides.
-3. Curated and generated API reference.
-4. Compatibility, performance, and support expectations.
-5. A separate maintainer section for architecture, testing, dependencies,
+2. Core concepts: language, built-ins, reusable objects, async, and HTML.
+3. Extensions and security: pure function libraries, runtime extensions, and
+   sandboxing.
+4. Integration guides: HTML sites, Helm APIs, complete Helm rendering, and Go
+   migration.
+5. Curated and generated API reference.
+6. Compatibility, performance, and support expectations.
+7. A separate maintainer section for architecture, testing, dependencies,
    references, licensing, releasing, and milestones.
 
 The compatibility contract remains authoritative for behavior claims. The API
@@ -95,11 +116,12 @@ certificate for `blog.kyonr.com` in the owner Pages configuration.
 
 ## Verification
 
-- The strict site build completes and generates 138 files.
+- The strict site build completes and generates 147 files.
 - All expected landing, guide, manual API, and generated API pages exist.
 - mkdocstrings resolves the public render helpers, template classes, policies,
   function maps, duration objects, and time objects.
 - GitHub Actions run `33039273688` built and deployed the site successfully,
   and the public page returned HTTP 200 with the expected description.
-- Ruff, formatting, strict Pyright, 1,973 tests, coverage thresholds, generated
-  artifacts, and all pinned Go oracles pass in `scripts/check.sh`.
+- Ruff, formatting, strict Pyright, 2,062 tests, 98.0199% statement coverage,
+  95.6351% branch coverage, generated artifacts, and all pinned Go oracles pass
+  in `scripts/check.sh`.

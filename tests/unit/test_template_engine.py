@@ -51,6 +51,31 @@ def test_template_engine_with_functions_returns_a_new_engine() -> None:
     assert child.render({"page.tpl": "value"}) == {"page.tpl": "<value>"}
 
 
+def test_template_engine_exposes_single_template_and_dynamic_source_rendering() -> None:
+    engine = TemplateEngine.from_sources(
+        {"helpers.tpl": '{{define "label"}}label:{{.}}{{end}}'}
+    )
+
+    assert engine.render_template("label", "one") == "label:one"
+    assert (
+        engine.render_source('{{template "label" .}}', "two", name="dynamic.tpl")
+        == "label:two"
+    )
+
+
+@pytest.mark.asyncio
+async def test_template_engine_exposes_async_single_template_rendering() -> None:
+    async def decorate(value: str) -> str:
+        return f"<{value}>"
+
+    engine = TemplateEngine.from_sources(
+        {"main.tpl": "{{decorate .}}"}, functions={"decorate": decorate}
+    )
+
+    assert await engine.render_template_async("main.tpl", "one") == "<one>"
+    assert await engine.render_source_async("{{decorate .}}", "two") == "<two>"
+
+
 @pytest.mark.asyncio
 async def test_template_engine_awaits_functions_across_source_contexts() -> None:
     async def identify(value: str) -> str:

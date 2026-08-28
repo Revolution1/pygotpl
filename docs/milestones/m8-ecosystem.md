@@ -1,9 +1,10 @@
 # M8: Ecosystem Integrations
 
 > Historical milestone: M10 later reintegrated the `gofmt` and `goregexp`
-> workspace packages under private `gotpl._compat`. References below to those
-> M7 packages describe the boundary validated during M8, not a current public
-> import surface.
+> workspace packages under private `gotpl._compat` and moved Helm late-bound
+> execution into `gotpl.exts.helm.HelmTemplateEngine`. References below to the
+> M7 packages and example-owned Helm orchestration describe the boundary
+> validated during M8, not the current public surface.
 
 ## Outcome
 

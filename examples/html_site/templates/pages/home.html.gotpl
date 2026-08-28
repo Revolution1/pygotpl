@@ -1,0 +1,17 @@
+{{template "site.header" .}}
+    <section class="hero">
+      <p>Python implementation of Go templates</p>
+      <h1>{{.Heading}}</h1>
+      <p>{{.Introduction}}</p>
+    </section>
+    <section aria-labelledby="features-heading">
+      <h2 id="features-heading">What this example demonstrates</h2>
+      <div class="card">
+        <ul>
+          {{range .Features -}}
+          <li>{{.}}</li>
+          {{end -}}
+        </ul>
+      </div>
+    </section>
+{{template "site.footer" .}}

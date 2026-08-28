@@ -133,12 +133,10 @@ those cases.
 Python-native helpers are selected through immutable construction options:
 
 ```python
-from gotpl import PythonExtensions, Template
+from gotpl import Environment
 
-template = Template(
-    r"{{reMatch `(?<=release-)\d+` .}}",
-    extensions=PythonExtensions(re_match=True),
-)
+environment = Environment.pythonic("regex")
+template = environment.from_string(r"{{reMatch `(?<=release-)\d+` .}}")
 
 assert template.render("release-42") == "true"
 ```
@@ -156,16 +154,29 @@ worker process.
 
 `reMatch` is absent by default and never enters Go, Sprig, Slim-Sprig, Sprout,
 or Helm registries. A strict sandbox also rejects it unless `reMatch` appears in
-`allow_functions`.
+`allow_functions`. The other Python-native categories (`text`, `encoding`,
+`hashing`, and `compression`) are similarly explicit function grants. A
+profile such as `Environment.pythonic()` selects functions for compilation; it
+does not bypass a strict sandbox allowlist or bound callback-internal CPU and
+memory use.
+
+Runtime-aware functions require two explicit grants: their visible name in
+`allow_functions` and every declared capability, such as `render-associated`
+or `render-dynamic-source`, in `allow_context_capabilities`. Allowing a function
+name alone cannot grant access to the current template association.
+
+The [runtime extension guide](extensions.md#capabilities-and-sandbox-policy)
+shows a minimal extension with both grants.
 
 ## Configuration and Reuse
 
-Policy, budget, and extension selection are constructor inputs stored on the
-immutable `Template`. `Template.from_sources`, `with_source`, `TemplateEngine`,
-and HTML templates retain the same configuration. Template source cannot alter
-parsing, extensions, budgets, or sandbox grants.
+Policy, budget, function, Python helper, and runtime extension selection are
+immutable construction inputs. Prefer `Environment` when the same policy
+constructs several templates or associations. `Template.from_sources`,
+`with_source`, `TemplateEngine`, and HTML templates retain their configuration.
+Template source cannot alter parsing, extensions, budgets, or sandbox grants.
 
 The configuration is therefore part of the reusable template object's
 identity. Applications that cache compiled templates must include source,
 delimiters, functions, missing-key mode, format mode, sandbox policy, budget,
-and extension configuration in their cache key.
+`PythonExtensions`, and runtime extension configuration in their cache key.

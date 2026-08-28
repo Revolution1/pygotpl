@@ -18,6 +18,7 @@ from gotpl.compile import (
 )
 
 from .callables import CallSpec, PreparedFunctionRegistry
+from .context import ContextFunction
 from .values import INVALID, UNTYPED_NIL, number_value
 
 
@@ -280,10 +281,13 @@ def _link_pipeline(
                 function,
                 spec,
                 tuple(_link_operand(item) for item in command.arguments[1:]),
-                spec is None
-                or (
-                    spec.arity_error(name, argument_count) is None
-                    and not spec.requires_type_validation
+                not isinstance(function, ContextFunction)
+                and (
+                    spec is None
+                    or (
+                        spec.arity_error(name, argument_count) is None
+                        and not spec.requires_type_validation
+                    )
                 ),
             )
         )
@@ -321,6 +325,8 @@ def _link_lookup_pipeline(
             return None
         function = functions.get(name)
         if function is None:
+            return None
+        if isinstance(function, ContextFunction):
             return None
         spec = functions.call_specs.get(name)
         if spec is not None and (

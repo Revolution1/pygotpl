@@ -10,9 +10,9 @@ The repository releases three pure Python distributions:
 
 `gotpl` depends on both value packages. Formatting and RE2 compatibility are
 private `gotpl._compat` implementation modules and are never published as
-independent distributions. Sprig, Slim-Sprig, Sprout, Helm functions, and
-Python-native helpers ship in the `gotpl` wheel and do not create separate
-release lifecycles.
+independent distributions. Sprig, Slim-Sprig, Sprout, Helm functions and
+runtime extensions, and Python-native helpers ship in the `gotpl` wheel and do
+not create separate release lifecycles.
 
 The three distributions use coordinated compatibility testing and semantic
 versioning. Their patch versions need not remain numerically identical, but a

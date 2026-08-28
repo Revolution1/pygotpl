@@ -76,5 +76,37 @@ class TemplateEngine:
             output[name] = await self.template.render_template_async(name, context)
         return output
 
+    def render_template(self, name: str, data: object = None) -> str:
+        """Render one associated template."""
+
+        return self.template.render_template(name, data)
+
+    async def render_template_async(self, name: str, data: object = None) -> str:
+        """Render one associated template and await its functions."""
+
+        return await self.template.render_template_async(name, data)
+
+    def render_source(
+        self,
+        source: str,
+        data: object = None,
+        *,
+        name: str = "template",
+    ) -> str:
+        """Render a dynamic source against the associated namespace."""
+
+        return self.template.render_source(source, data, name=name)
+
+    async def render_source_async(
+        self,
+        source: str,
+        data: object = None,
+        *,
+        name: str = "template",
+    ) -> str:
+        """Render a dynamic source asynchronously against the association."""
+
+        return await self.template.render_source_async(source, data, name=name)
+
 
 __all__ = ["TemplateEngine"]

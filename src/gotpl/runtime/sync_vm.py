@@ -27,8 +27,16 @@ from .callables import (
     CallSpec,
     PreparedFunctionRegistry,
     TemplateCallArityError,
+    invoke_prepared_context_function,
     invoke_prepared_template_function,
     invoke_template_function,
+)
+from .context import (
+    ContextFunction,
+    RenderContext,
+    RenderSession,
+    require_render_session,
+    require_sync_implementation,
 )
 from .gofmt import FormatMode, sprintf
 from .linked import (
@@ -89,6 +97,7 @@ class _ExecutionContext:
     scopes: list[dict[str, object]] | None = None
     dot_stack: list[object] | None = None
     ranges: list["_RangeState"] | None = None
+    session: RenderSession | None = None
 
     def __post_init__(self) -> None:
         self.adapter = (
@@ -185,6 +194,9 @@ def render_program(
     _linked_program: LinkedProgram | None = None,
     _linked_namespace: Mapping[str, LinkedProgram] | None = None,
     _linked_root: LinkedProgram | None = None,
+    _session: RenderSession | None = None,
+    _budget_state: ExecutionBudgetState | None = None,
+    _account_output: bool = True,
 ) -> str:
     """Execute a compiled program synchronously."""
 
@@ -204,6 +216,9 @@ def render_program(
         _linked_program=_linked_program,
         _linked_namespace=_linked_namespace,
         _linked_root=_linked_root,
+        _session=_session,
+        _budget_state=_budget_state,
+        _account_output=_account_output,
     )
     return output.getvalue()
 
@@ -218,6 +233,9 @@ def render_linked_program(
     format_mode: FormatMode = "go",
     budget: ExecutionBudget | None = None,
     sandbox: SandboxPolicy | None = None,
+    _session: RenderSession | None = None,
+    _budget_state: ExecutionBudgetState | None = None,
+    _account_output: bool = True,
 ) -> str:
     """Execute an opt-in linked sidecar through the reference control loop."""
 
@@ -248,6 +266,9 @@ def render_linked_program(
         _linked_program=selected if use_sidecar else None,
         _linked_namespace=linked_namespace if use_sidecar else None,
         _linked_root=linked if use_sidecar else None,
+        _session=_session,
+        _budget_state=_budget_state,
+        _account_output=_account_output,
     )
 
 
@@ -262,6 +283,9 @@ def render_linked_program_to(
     format_mode: FormatMode = "go",
     budget: ExecutionBudget | None = None,
     sandbox: SandboxPolicy | None = None,
+    _session: RenderSession | None = None,
+    _budget_state: ExecutionBudgetState | None = None,
+    _account_output: bool = True,
 ) -> None:
     """Stream an opt-in linked sidecar through the reference control loop."""
 
@@ -292,6 +316,9 @@ def render_linked_program_to(
         _linked_program=selected if use_sidecar else None,
         _linked_namespace=linked_namespace if use_sidecar else None,
         _linked_root=linked if use_sidecar else None,
+        _session=_session,
+        _budget_state=_budget_state,
+        _account_output=_account_output,
     )
 
 
@@ -313,17 +340,23 @@ def render_program_to(
     _linked_program: LinkedProgram | None = None,
     _linked_namespace: Mapping[str, LinkedProgram] | None = None,
     _linked_root: LinkedProgram | None = None,
+    _session: RenderSession | None = None,
+    _account_output: bool = True,
 ) -> None:
     """Execute a compiled program and stream text to a file-like object."""
 
     location = _ExecutionLocation() if _location is None else _location
     try:
         budget_state = (
-            ExecutionBudgetState(budget) if budget is not None else _budget_state
+            _budget_state
+            if _budget_state is not None
+            else ExecutionBudgetState(budget)
+            if budget is not None
+            else None
         )
         budgeted_writer = (
             _BudgetedWriter(writer, budget_state)
-            if budget_state is not None
+            if budget_state is not None and _account_output
             else writer
         )
         _render_program_to(
@@ -342,6 +375,7 @@ def render_program_to(
             _linked_program=_linked_program,
             _linked_namespace=_linked_namespace,
             _linked_root=_linked_root,
+            _session=_session,
         )
     except TemplateExecutionError as error:
         error.attach_location(
@@ -370,6 +404,7 @@ def _render_program_to(
     _linked_program: LinkedProgram | None,
     _linked_namespace: Mapping[str, LinkedProgram] | None,
     _linked_root: LinkedProgram | None,
+    _session: RenderSession | None,
 ) -> None:
     """Execute without translating the current source location."""
 
@@ -407,6 +442,7 @@ def _render_program_to(
         _location,
         _budget_state,
         sandbox,
+        session=_session,
     )
     current_program = program
     instructions = current_program.instructions
@@ -627,6 +663,7 @@ def _render_program_to(
                 _location,
                 context.budget_state,
                 sandbox,
+                session=context.session,
             )
             pc = 0
         else:
@@ -672,7 +709,7 @@ def _evaluate_linked_pipeline(
     for command in pipeline.commands:
         if isinstance(command, LinkedFunctionCommand):
             arguments = [
-                _evaluate_linked_operand(item, context) for item in command.operands
+                _evaluate_linked_argument(item, context) for item in command.operands
             ]
             if value is not INVALID:
                 arguments.append(value)
@@ -689,14 +726,15 @@ def _evaluate_linked_pipeline(
                     command.function,
                     arguments,
                     command.spec,
-                    context.budget_state,
+                    context,
                 )
             )
             continue
         assert isinstance(command, LinkedValueCommand)
-        arguments = [
-            _evaluate_linked_operand(item, context) for item in command.operands
-        ]
+        arguments = [_evaluate_linked_operand(command.operands[0], context)]
+        arguments.extend(
+            _evaluate_linked_argument(item, context) for item in command.operands[1:]
+        )
         if value is not INVALID:
             arguments.append(value)
         first_value = arguments[0]
@@ -707,7 +745,7 @@ def _evaluate_linked_pipeline(
                 first_value,
                 arguments[1:],
                 _UNPREPARED_CALL,
-                context.budget_state,
+                context,
             )
         elif len(arguments) != 1:
             raise TemplateExecutionError("non-callable command has arguments")
@@ -749,6 +787,19 @@ def _evaluate_linked_operand(
             else _lookup_chain(value, operand.fields, context)
         )
     return _evaluate_operand(operand, context)
+
+
+def _evaluate_linked_argument(
+    operand: (
+        Operand
+        | LinkedConstantOperand
+        | LinkedDotOperand
+        | LinkedFieldOperand
+        | LinkedVariableOperand
+    ),
+    context: _ExecutionContext,
+) -> object:
+    return _invoke_argument_method(_evaluate_linked_operand(operand, context), context)
 
 
 def _evaluate_linked_field_pipeline(
@@ -798,7 +849,7 @@ def _finish_linked_lookup_pipeline(
             value,
             [],
             _UNPREPARED_CALL,
-            context.budget_state,
+            context,
         )
     for function in pipeline.functions:
         value = _invoke_linked_unary_function(
@@ -877,7 +928,9 @@ def _evaluate_command(
         function = context.functions.get(name)
         if function is None:
             raise TemplateExecutionError(f"function {name!r} is not defined")
-        arguments = [_evaluate_operand(item, context) for item in command.arguments[1:]]
+        arguments = [
+            _evaluate_argument(item, context) for item in command.arguments[1:]
+        ]
         if piped is not INVALID:
             arguments.append(piped)
         return _invoke_registered_function(
@@ -885,9 +938,12 @@ def _evaluate_command(
             function,
             arguments,
             context.call_specs[name],
-            context.budget_state,
+            context,
         )
-    arguments = [_evaluate_operand(item, context) for item in command.arguments]
+    arguments = [_evaluate_operand(first, context)]
+    arguments.extend(
+        _evaluate_argument(item, context) for item in command.arguments[1:]
+    )
     if piped is not INVALID:
         arguments.append(piped)
     first_value = arguments[0]
@@ -898,11 +954,28 @@ def _evaluate_command(
             first_value,
             arguments[1:],
             _UNPREPARED_CALL,
-            context.budget_state,
+            context,
         )
     if len(arguments) != 1:
         raise TemplateExecutionError("non-callable command has arguments")
     return first_value
+
+
+def _evaluate_argument(operand: Operand, context: _ExecutionContext) -> object:
+    return _invoke_argument_method(_evaluate_operand(operand, context), context)
+
+
+def _invoke_argument_method(value: object, context: _ExecutionContext) -> object:
+    if not is_bound_method(value):
+        return value
+    method_name = getattr(value, "__name__", "method")
+    return _invoke_registered_function(
+        method_name if isinstance(method_name, str) else "method",
+        value,
+        [],
+        _UNPREPARED_CALL,
+        context,
+    )
 
 
 def _evaluate_operand(operand: Operand, context: _ExecutionContext) -> object:
@@ -942,7 +1015,7 @@ def _evaluate_operand(operand: Operand, context: _ExecutionContext) -> object:
             function,
             [],
             context.call_specs[operand.value],
-            context.budget_state,
+            context,
         )
     else:
         raise TemplateExecutionError(f"operand {kind.name} is not directly evaluable")
@@ -960,7 +1033,7 @@ def _lookup_chain(
             break
         if index < len(fields) - 1 and is_bound_method(value):
             value = _invoke_registered_function(
-                member_name, value, [], _UNPREPARED_CALL, context.budget_state
+                member_name, value, [], _UNPREPARED_CALL, context
             )
     return value
 
@@ -970,21 +1043,46 @@ def _invoke_registered_function(
     function: Callable[..., object],
     arguments: list[object],
     spec: object = _UNPREPARED_CALL,
-    budget_state: ExecutionBudgetState | None = None,
+    context: _ExecutionContext | None = None,
 ) -> object:
+    budget_state = None if context is None else context.budget_state
     if budget_state is not None:
         budget_state.consume_function_call()
     try:
-        result = (
-            invoke_template_function(name, function, arguments)
-            if spec is _UNPREPARED_CALL
-            else invoke_prepared_template_function(
+        if isinstance(function, ContextFunction):
+            if context is None:
+                raise TemplateExecutionError(
+                    f"context function {name!r} has no execution context"
+                )
+            session = require_render_session(context.session)
+            location = context.location
+            render_context = RenderContext(
+                session,
+                root=context.root,
+                dot=context.dot,
+                source_name=("template" if location is None else location.source_name),
+                template_name=(
+                    "template" if location is None else location.template_name
+                ),
+            )
+            result = invoke_prepared_context_function(
                 name,
-                function,
+                require_sync_implementation(function),
+                render_context,
                 arguments,
                 cast(CallSpec | None, spec),
             )
-        )
+        else:
+            result = (
+                invoke_template_function(name, function, arguments)
+                if spec is _UNPREPARED_CALL
+                else invoke_prepared_template_function(
+                    name,
+                    function,
+                    arguments,
+                    cast(CallSpec | None, spec),
+                )
+            )
         return unwrap_function_result(reject_awaitable(result))
     except TemplateExecutionError:
         raise

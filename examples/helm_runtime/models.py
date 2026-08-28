@@ -79,6 +79,10 @@ def _empty_values() -> Mapping[str, object]:
     return {}
 
 
+def _empty_annotations() -> Mapping[str, str]:
+    return {}
+
+
 @dataclass(frozen=True, slots=True)
 class Release:
     """Helm release information exposed as the `.Release` global."""
@@ -246,9 +250,13 @@ class Chart:
     app_version: str = ""
     chart_type: str = "application"
     description: str = ""
+    annotations: Mapping[str, str] = field(default_factory=_empty_annotations)
     values: Mapping[str, object] = field(default_factory=_empty_values)
     files: HelmFiles | Mapping[str, str | bytes] = field(default_factory=HelmFiles)
     dependencies: tuple[Chart, ...] = ()
+    dependency_condition: str = ""
+    dependency_tags: tuple[str, ...] = ()
+    dependency_import_values: tuple[object, ...] = ()
 
     def __post_init__(self) -> None:
         if not self.name:
@@ -258,10 +266,17 @@ class Chart:
         if self.chart_type not in {"application", "library"}:
             raise ValueError("chart type must be application or library")
         object.__setattr__(self, "templates", MappingProxyType(dict(self.templates)))
+        object.__setattr__(
+            self, "annotations", MappingProxyType(dict(self.annotations))
+        )
         object.__setattr__(self, "values", MappingProxyType(dict(self.values)))
         if not isinstance(self.files, HelmFiles):
             object.__setattr__(self, "files", HelmFiles(self.files))
         object.__setattr__(self, "dependencies", tuple(self.dependencies))
+        object.__setattr__(self, "dependency_tags", tuple(self.dependency_tags))
+        object.__setattr__(
+            self, "dependency_import_values", tuple(self.dependency_import_values)
+        )
 
     def metadata_values(self, *, is_root: bool) -> Mapping[str, object]:
         return MappingProxyType(
@@ -272,6 +287,7 @@ class Chart:
                 "AppVersion": self.app_version,
                 "Type": self.chart_type,
                 "Description": self.description,
+                "Annotations": self.annotations,
                 "IsRoot": is_root,
             }
         )

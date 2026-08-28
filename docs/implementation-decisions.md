@@ -207,35 +207,41 @@ than prematurely recorded as a permanent simplification.
 
 ### D009: Keep prepared-chart caching out of the Helm example
 
-- Status: accepted deferral
-- Milestone: M8
+- Status: amended; prepared-chart deferral retained
+- Milestone: M8, amended in M10
 - Profiles: `examples.helm_runtime.Engine`, Helm `tpl`
 - Decision: the miniature Helm runtime continues to compile a chart on each
-  `Engine.render()` call and compiles each `tpl` source when invoked. M8 does
-  not add a transparent chart cache or promote a prepared-chart abstraction to
-  `gotpl.funcs.helm`. Applications that need reusable cross-file execution build
-  and retain `gotpl.TemplateEngine` instances in their own
-  runtime layer.
+  `Engine.render()` call. It does not add a transparent chart cache or promote
+  a prepared-chart abstraction to `gotpl.exts.helm`. Within one render only,
+  identical `tpl` sources reuse a bounded compiled dynamic engine keyed by the
+  immutable parent namespace. Applications that need reusable cross-file
+  execution still build and retain `gotpl.TemplateEngine` instances in their
+  own runtime layer.
 - Reason: the Helm engine is an example, while reusable immutable compilation
   already belongs to the core runtime. A transparent cache would need bounded
   lifetime, function-registry identity, option identity, dynamic-source and
   redefinition semantics, concurrency behavior, and strict-sandbox accounting.
   Defining those policies in an example would create a second public runtime
   contract before representative applications establish the required API.
-- Performance effect: on the M8 fixture, Python Helm static cold render is
+- Performance effect: on the M8 fixture, Python Helm static cold render was
   0.415 ms and dynamic `tpl` cold render is 0.441 ms; `tpl` adds 6.3%. Profiling
   attributes most cumulative time to compilation, parser work, and validation
-  of the 222-function registry. Core reusable warm batch execution remains
-  0.0158 ms. No adopted application latency budget is missed.
-- Compatibility effect: none. Avoiding a cache preserves Helm's parse-on-call
-  behavior for dynamic `tpl`, function changes, and definition ordering.
+  of the 222-function registry. Complex-chart profiling later found 96 `tpl`
+  calls but only 19 distinct sources in kube-prometheus-stack. The bounded
+  render-local cache reduced representative Loki and kube-prometheus-stack
+  render medians by 63.2% and 66.5%, respectively.
+- Compatibility effect: the cache is discarded after every render and includes
+  parent namespace identity, so dynamic definitions remain isolated and values
+  are rendered afresh. Chart construction, function changes, separate render
+  calls, and concurrency do not share cached state.
 - Revisit condition: a real embedding application misses an adopted latency
   budget, or the example runtime is proposed for promotion into a supported
   prepared-chart API. Any cache must remain bounded and pass redefinition,
   concurrency, async, and strict-budget tests.
 - Evidence: `benchmarks/helm/fixtures/runtime-v1.json`,
-  `benchmarks/helm_runtime.py`, `tools/helm_oracle/benchmark_test.go`, and
-  `docs/reports/m8-helm-performance.md`.
+  `benchmarks/helm_runtime.py`, `benchmarks/helm_chart.py`,
+  `tools/helm_oracle/benchmark_test.go`, `docs/reports/m8-helm-performance.md`,
+  and `docs/reports/m10-helm-complex-charts.md`.
 
 ### D010: Do not approximate Sprout safe-function generation
 
@@ -415,6 +421,115 @@ than prematurely recorded as a permanent simplification.
   least two non-trivial paths without a >5% unexplained regression elsewhere.
 - Evidence: the M10 release performance report, M6 native-accelerator report,
   and M7 specialized-instruction prototype.
+
+### D015: Put Helm late-bound execution in the reusable library
+
+- Status: accepted, then generalized by D016
+- Milestone: M10 Helm integration follow-up
+- Profiles: `gotpl.exts.helm`, `examples.helm_runtime.Engine`
+- Decision: expose `HelmTemplateEngine` from `gotpl.exts.helm`. It originally
+  owned the associated namespace lifecycle for `include` and `tpl`, the Helm
+  behavior of `required` and `fail`, and per-render recursion and dynamic-source
+  state. D016 retained this surface as a facade over the generic session. The
+  example runtime supplies Chart-specific contexts but no longer implements
+  those functions. Keep `function_map()` as the lower-level escape hatch for
+  applications with a different execution lifecycle.
+- Reason: four required application callbacks made the nominally reusable Helm
+  registry incomplete and forced consumers to copy subtle sync, async,
+  recursion, error, namespace, and caching behavior from an uninstalled
+  example. These behaviors are Helm execution infrastructure, not Chart model
+  policy.
+- Performance effect: the compiled base association can now be retained across
+  calls by direct library users. Dynamic `tpl` caching remains bounded and
+  scoped to one render. The example retains its existing cold-render lifecycle
+  and measured behavior.
+- Compatibility effect: `include`, `tpl`, `required`, and `fail` retain their
+  pinned-oracle behavior. Context-local execution state keeps a shared engine
+  safe across threads and asyncio tasks and prevents dynamic definitions from
+  leaking between renders.
+- Revisit condition: a future public Chart API requires a higher-level package,
+  or runtime policy inputs must be added without weakening the immutable core
+  engine boundary.
+- Evidence: direct public runtime tests, example-engine regression tests,
+  thread reuse, async include/tpl, and dynamic-source cache isolation.
+
+### D016: Generalize late-bound execution through immutable environments
+
+- Status: accepted
+- Milestone: M10 runtime-extension follow-up
+- Profiles: core text/HTML runtime and opt-in ecosystem extensions
+- Decision: introduce an immutable construction `Environment`, explicit
+  context-aware function descriptors, a read-only public render context, and a
+  private per-render session. Keep `from_sources()` as the complete association
+  boundary and keep loaders application-owned. Reimplement Helm late-bound
+  functions over the generic session. Keep Helm explicitly text-only and retain
+  `HelmTemplateEngine` as the convenient source-compatible facade.
+- Reason: Helm's `include` and `tpl` demonstrate a reusable need for controlled
+  access to the active association. Keeping that lifecycle Helm-specific would
+  require every integration to copy recursion, caching, error, budget, and
+  sync/async behavior. A mutable global environment would solve a different
+  problem and weaken construction-time and concurrency guarantees.
+- Performance effect: ordinary templates allocate no render session, and linked
+  direct callables retain their direct path. Reusing a prepared registry removed
+  duplicate Helm cold-construction validation: sampled static and `tpl` medians
+  fell from 0.692/0.745 ms to 0.497/0.559 ms, with median traced peak bytes down
+  from 86,449 to 72,929. The paired linked/reference benchmark retained output
+  parity across text, HTML, Sprig, and a 33-template association.
+- Compatibility effect: the proposal is additive. Existing constructors,
+  function maps, and Helm facade remain supported during migration. Runtime
+  extensions cannot add syntax or alter the default Go compatibility path.
+- Revisit condition: hosted history finds a material ordinary-render
+  regression, another real integration requires lifecycle hooks excluded from
+  the protocol, or a private compiled-association consolidation proves useful
+  without widening the public API.
+- Evidence: the
+  [unified environment and runtime extension design](reports/m10-unified-environment-design.md).
+
+### D017: Separate function registries from context-aware extensions
+
+- Status: accepted
+- Milestone: M10 runtime-extension follow-up
+- Profiles: `gotpl.funcs`, `gotpl.exts`
+- Decision: retain pure compatibility registries under `gotpl.funcs` and expose
+  context-aware integrations under the abbreviated `gotpl.exts` namespace.
+  Rename the public protocol from `RuntimeExtension` to `Extension`, move
+  `HelmExtension` and `HelmTemplateEngine` to `gotpl.exts.helm`, and leave the
+  lower-level Helm `function_map()` under `gotpl.funcs.helm`.
+- Reason: a function registry only contributes template callables, while an
+  extension may require injected render context, per-render state, nested
+  rendering, template-kind restrictions, and sandbox capabilities. Keeping
+  those concepts in separate namespaces makes the common user path discoverable
+  without misclassifying Sprig, Slim-Sprig, or Sprout as runtime extensions.
+- Compatibility effect: pre-1.0 import cleanup only; no legacy alias is shipped.
+  Template behavior and function names are unchanged.
+- Evidence: public API contract, import-layer checks, Helm runtime tests, and
+  strict documentation build.
+
+### D018: Group Python-native functions without changing template syntax
+
+- Status: accepted
+- Milestone: M10 API follow-up
+- Profiles: `gotpl.pythonic`, `Environment.pythonic()`
+- Decision: keep Python-native helpers in a separate immutable registry with
+  `text`, `encoding`, `hashing`, `compression`, and `regex` categories. Offer
+  `common` and `all` profiles, explicit category selection, and
+  `Environment.pythonic(...)` as the high-level constructor. It fixes
+  `format_mode="python"` while retaining Go template syntax, pipelines, and
+  control flow.
+- Reason: a growing list of boolean options makes opt-in selection hard to
+  discover, while a universal global Python namespace would obscure collisions
+  and grant expensive or backtracking functions accidentally. Python's built-in
+  `hash()` is intentionally not exposed because its process-randomized result
+  is unsuitable for rendered output; named cryptographic digests are explicit.
+- Compatibility effect: additive only. The default Go-compatible construction
+  path and existing `PythonExtensions(re_match=True)` usage remain unchanged.
+  Pythonic formatting changes values such as Boolean output by explicit caller
+  selection.
+- Security effect: `common` excludes backtracking `reMatch`; every selected
+  function remains subject to strict sandbox allowlists and callback work is
+  still outside VM budget accounting.
+- Evidence: direct category, profile, composition, sandbox, and environment
+  API tests; strict documentation build.
 
 ## Open Reviews
 

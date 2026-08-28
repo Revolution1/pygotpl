@@ -3,9 +3,12 @@
 The package root is the supported import surface for rendering, reusable
 templates, policies, errors, and compatibility value adapters.
 
-Start with the task-oriented [API overview](../api.md), then use the
-[async](../async.md), [HTML](../html.md), and [sandbox](../sandbox.md) guides for
-runnable examples. This page is the complete generated signature reference.
+Start with the task-oriented [API overview](../api.md). Use
+[Reusable Templates and Environments](../reusable-templates.md) for
+construction and association choices, [Runtime Extensions](../extensions.md)
+for context-aware integration APIs, and the [async](../async.md),
+[HTML](../html.md), and [sandbox](../sandbox.md) guides for their respective
+runtime behavior. This page owns complete generated signatures, not tutorials.
 
 ::: gotpl
     options:
@@ -22,6 +25,11 @@ runnable examples. This page is the complete generated signature reference.
         - Template
         - HTMLTemplate
         - TemplateEngine
+        - Environment
+        - ContextFunction
+        - RenderContext
+        - AsyncRenderContext
+        - Extension
         - ExecutionBudget
         - SandboxPolicy
         - PythonExtensions

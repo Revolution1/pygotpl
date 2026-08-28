@@ -82,6 +82,16 @@ Wrapping caller-controlled text in `HTML` disables the protection shown in the
 first assertion. Other trusted types are similarly context-specific: for
 example, `JS` is not interchangeable with `CSS` or `URL`.
 
+## Template directory example
+
+The repository includes a runnable static-site example comparable to a small
+Jinja2 application using `FileSystemLoader`. It loads a directory into one
+immutable HTML association, shares header and footer definitions, and renders
+separate home and article pages. Follow
+[Build an HTML Site with gotpl](building-html-site.md) for the command, Jinja2
+concept mapping, directory loader, partial definitions, rendering code, and
+production ownership decisions.
+
 ## HTML safety is not a sandbox
 
 Contextual escaping addresses output injection. It does not restrict template

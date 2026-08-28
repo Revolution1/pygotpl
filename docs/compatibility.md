@@ -10,7 +10,7 @@ The pinned compatibility references are:
 - Slim-Sprig `v3.0.0` for its reduced function-map profile.
 - Sprout `v1.1.1` for opt-in registry compatibility.
 - Helm `v4.2.3` for opt-in chart-template compatibility.
-- Python `3.11` and newer.
+- CPython `3.11` through `3.14` and PyPy `3.11`.
 
 CI and oracle scripts enforce these exact revisions. A reference upgrade is a
 deliberate compatibility change and requires a conformance report.
@@ -49,17 +49,17 @@ Status values are `planned`, `partial`, `compatible`, and `documented-difference
 
 | Area | Reference | Status | Target milestone |
 | --- | --- | --- | --- |
-| Lexer and parser | Go 1.27.x | compatible (197 oracle cases) | M1 |
-| Sync `text/template` | Go 1.27.x | partial (68 oracle fixtures; M2 scope complete) | M2 |
+| Lexer and parser | Go 1.27.0 | compatible (197 oracle cases) | M1 |
+| Sync `text/template` | Go 1.27.0 | partial (68 oracle fixtures; M2 scope complete) | M2 |
 | Async function execution | Project extension | compatible (68 sync-parity fixtures) | M3 |
 | Sprig generic/text maps | Sprig 3.3.0 | compatible (211-function strict evidence ledger) | M4 |
 | Sprig hermetic maps | Sprig 3.3.0 | compatible (194 names; exact 17-name exclusion) | M4 |
 | Slim-Sprig generic/text maps | Slim-Sprig 3.0.0 | compatible (164-name differential matrix) | M4 |
 | Slim-Sprig hermetic maps | Slim-Sprig 3.0.0 | compatible (153 names; pinned-fork matrix) | M4 |
-| `html/template` | Go 1.27.x | partial (M5 contextual engine complete; 34 oracle fixtures) | M5 |
+| `html/template` | Go 1.27.0 | partial (M5 contextual engine complete; 34 oracle fixtures) | M5 |
 | Optimized backend decision | Python VM | compatible; AST backend not justified by M6 evidence | M6 |
 | Sprout registries | Sprout 1.1.1 | compatible M8 raw registry/group scope (234-function evidence ledger; safe generation excluded) | M8 |
-| Helm functions and example runtime | Helm 4.2.3 | compatible example scope (10 oracle integration cases) | M8 |
+| Helm functions and runtime extension | Helm 4.2.3 | compatible named scope (10 oracle integration cases) | M8 |
 | `goduration.go` | Go 1.27.0 `time.Duration` | compatible audited surface (74 standalone tests and checked-in oracle vectors) | M7 |
 | `gotime.go` | Go 1.27.0 `time` | partial overall; audited M7 surface passes 218 standalone tests | M7 |
 
@@ -105,9 +105,8 @@ the [M10 compatibility report](reports/m10-compatibility.md).
   source, leaving its parent unchanged. `render_source` parses and renders a
   dynamic source against inherited definitions; its async counterpart also
   awaits registered functions.
-- `gotpl.runtime.engine.TemplateEngine` owns an immutable multi-source `Template`
-  and renders an ordered mapping of named sources with independent per-source
-  contexts. It is also re-exported as `gotpl.TemplateEngine`.
+- `gotpl.TemplateEngine` owns an immutable multi-source `Template` and renders
+  an ordered mapping of named sources with independent per-source contexts.
   `render_async` provides the same result shape while awaiting callbacks.
 - `HTMLTemplate.from_sources` and `with_source` provide the same immutable
   association model while rerunning contextual analysis across the complete
@@ -171,17 +170,25 @@ identity. A custom value may implement `__go_format__(GoFormatSpec)` as the
 Python adaptation of Go's `fmt.Formatter`; Python format mode deliberately
 bypasses this Go-only hook.
 
-The Python extension registry may expose `reMatch(pattern, value)`. It uses
-Python standard-library `re` syntax and search semantics and is intentionally
-separate from Sprig's `regexMatch` and the Go-compatible `goregexp` package.
-It is never enabled by a Go, Sprig, Slim-Sprig, Sprout, Helm, or strict-sandbox
-profile. A caller may add it explicitly to a strict policy's function
-allowlist, accepting Python backtracking risk.
+The Python extension registry exposes independently selected `text`,
+`encoding`, `hashing`, `compression`, and `regex` categories. They use Python
+standard-library behavior and are never enabled by Go, Sprig, Slim-Sprig,
+Sprout, Helm, or strict-sandbox profiles. `reMatch(pattern, value)` uses Python
+`re` syntax and search semantics and remains intentionally separate from
+Sprig's RE2-compatible `regexMatch` and gotpl's private RE2-compatible support.
+A caller may add selected functions to a strict policy allowlist, accepting
+Python regex backtracking or callback-internal resource risk where applicable.
 
 Future Python-native syntax or semantic options must be immutable construction
 configuration and part of template cache identity. Template source cannot
 enable or disable features, parsing rules, or security policy at execution
 time. The default dialect remains Go-compatible.
+
+Context-aware `gotpl.exts` integrations are also intentional project
+extensions. They may inject a controlled render context, associated or dynamic
+rendering services, per-render state, template-kind declarations, and sandbox
+capabilities. They cannot add syntax or alter the default Go function path.
+See [Runtime Extensions](extensions.md) for their public boundary.
 
 Execution sandboxing is an opt-in Python policy. It is distinct from
 `html/template` contextual escaping and cannot change the default exported

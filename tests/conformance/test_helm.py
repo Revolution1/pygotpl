@@ -156,11 +156,14 @@ def test_helm_serialization_and_decoding_functions_match_the_pinned_engine() -> 
             "templates/result.txt": (
                 '{{printf "%q" (toYaml .Values.mapping)}}|'
                 '{{printf "%q" (toYaml .Values.nested)}}|'
+                '{{printf "%q" (toYaml .Values.ambiguousStrings)}}|'
+                '{{printf "%q" (toYaml .Values.multiline)}}|'
                 '{{printf "%q" (toYamlPretty .Values.sequence)}}|'
                 '{{printf "%q" (toToml .Values.mapping)}}|'
                 '{{printf "%q" (toToml .Values.nestedToml)}}|'
                 "{{fromToml .Values.toml}}|"
                 "{{fromYaml .Values.yaml}}|"
+                '{{kindOf (get (fromYaml .Values.yamlDate) "date")}}|'
                 "{{fromYamlArray .Values.yamlArray}}|"
                 "{{fromJson .Values.json}}|"
                 "{{fromJsonArray .Values.jsonArray}}|"
@@ -171,10 +174,19 @@ def test_helm_serialization_and_decoding_functions_match_the_pinned_engine() -> 
     values: dict[str, object] = {
         "mapping": {"foo": "bar"},
         "nested": {"outer": {"inner": "value", "items": [1]}},
+        "ambiguousStrings": {
+            "false": "false",
+            "null": "null",
+            "on": "on",
+            "true": "true",
+            "yes": "yes",
+        },
+        "multiline": {"config.yaml": "line1\nline2\n"},
         "sequence": {"items": [1, 2, 3]},
         "nestedToml": {"mast": {"sail": "white"}},
         "toml": 'hello = "world"',
         "yaml": "hello: world",
+        "yamlDate": "date: 2024-04-01",
         "yamlArray": "- one\n- 2\n- name: helm\n",
         "json": '{"hello":"world"}',
         "jsonArray": '["one",2,{"name":"helm"}]',

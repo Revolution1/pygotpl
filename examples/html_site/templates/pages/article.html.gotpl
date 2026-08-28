@@ -1,0 +1,9 @@
+{{template "site.header" .}}
+    <article>
+      <p>Article</p>
+      <h1>{{.Article.Title}}</h1>
+      <p><strong>{{.Article.Summary}}</strong></p>
+      <p>{{.Article.Body}}</p>
+      <p><a href="{{.Article.SourceURL}}">Return to the source page</a></p>
+    </article>
+{{template "site.footer" .}}

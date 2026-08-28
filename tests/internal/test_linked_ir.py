@@ -127,9 +127,7 @@ def test_link_program_predecodes_static_function_operands() -> None:
 
 
 def test_link_program_specializes_dynamic_function_operands() -> None:
-    template = Template(
-        '{{$name := .Name}}{{printf "%v:%s:%s" . .User $name}}'
-    )
+    template = Template('{{$name := .Name}}{{printf "%v:%s:%s" . .User $name}}')
 
     linked = link_program(template._program, template._runtime_functions)
 

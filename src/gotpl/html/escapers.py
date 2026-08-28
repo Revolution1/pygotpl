@@ -359,9 +359,7 @@ _URL_NORMALIZE_TABLE = tuple(
     for byte in range(256)
 )
 _URL_HEX_BYTES = bytes(
-    1
-    if 48 <= byte <= 57 or 65 <= byte <= 70 or 97 <= byte <= 102
-    else 0
+    1 if 48 <= byte <= 57 or 65 <= byte <= 70 or 97 <= byte <= 102 else 0
     for byte in range(256)
 )
 

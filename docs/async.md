@@ -9,6 +9,7 @@ pipeline.
 | Render one text source | `await gotpl.render_async(...)` |
 | Reuse a compiled root | `await template.render_async(...)` |
 | Render an associated name | `await template.render_template_async(...)` |
+| Batch-render named text roots | `await engine.render_async(...)` |
 | Stream with backpressure | `await template.render_async_to(...)` |
 | Render dynamic associated source | `await template.render_source_async(...)` |
 
@@ -148,3 +149,7 @@ the cancelled awaitable.
 
 Async iterables are not currently consumed by `range`. Async support applies to
 registered functions, called methods, `call` targets, and writers.
+Context-aware integrations can provide a separate `async_` implementation for a
+`ContextFunction`; see [Runtime Extensions](extensions.md#render-context-services).
+Object selection and immutable reuse are covered by
+[Reusable Templates and Environments](reusable-templates.md).

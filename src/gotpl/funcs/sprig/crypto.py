@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import Any, cast
 
-from gotpl.runtime import FunctionResult
+from gotpl.runtime import UNTYPED_NIL, FunctionResult
 
 Entropy = Callable[[int], bytes]
 Clock = Callable[[], datetime]
@@ -419,8 +419,8 @@ def _certificate_result(operation: Callable[[], Certificate]) -> FunctionResult:
 
 def _make_certificate(
     common_name: str,
-    ips: Sequence[object],
-    dns_names: Sequence[object],
+    ips: object,
+    dns_names: object,
     days_valid: int,
     key: Any,
     ca: Certificate | None,
@@ -428,9 +428,11 @@ def _make_certificate(
     clock: Clock | None,
     api: dict[str, Any],
 ) -> Certificate:
+    ip_values = _certificate_sequence(ips)
+    dns_values = _certificate_sequence(dns_names)
     x509 = api["x509"]
     parsed_ips: list[ipaddress.IPv4Address | ipaddress.IPv6Address] = []
-    for value in ips:
+    for value in ip_values:
         if not isinstance(value, str):
             raise TypeError(f"error parsing ip: {value} is not a string")
         try:
@@ -438,7 +440,7 @@ def _make_certificate(
         except ValueError as error:
             raise ValueError(f"error parsing ip: {value}") from error
     parsed_dns: list[str] = []
-    for value in dns_names:
+    for value in dns_values:
         if not isinstance(value, str):
             raise TypeError(
                 f"error processing alternate dns name: {value} is not a string"
@@ -496,6 +498,14 @@ def _make_certificate(
     certificate = builder.sign(private_key=signer, algorithm=algorithm)
     cert_pem = certificate.public_bytes(api["serialization"].Encoding.PEM).decode()
     return Certificate(cert_pem, _serialize_key(key, api))
+
+
+def _certificate_sequence(value: object) -> Sequence[object]:
+    if value is None or value is UNTYPED_NIL:
+        return ()
+    if not isinstance(value, Sequence):
+        raise TypeError(f"{value!r} is not a sequence")
+    return cast(Sequence[object], value)
 
 
 def _load_key(value: str, api: dict[str, Any]) -> Any:

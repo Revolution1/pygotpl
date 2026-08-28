@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from collections.abc import Sequence
 from pathlib import Path
@@ -16,6 +17,48 @@ from examples.helm_runtime import (
     load_chart,
     load_values,
 )
+from gotpl.errors import TemplateError
+from gotpl.funcs.helm import MissingOptionalDependencyError
+
+_MANIFEST_SPLITTER = re.compile(r"(?:^|\s*\n)---\s*(?:\n|$)")
+_KIND = re.compile(r'^\s*kind:\s*["\']?([^\s"\']+)', re.MULTILINE)
+_INSTALL_ORDER = (
+    "Namespace",
+    "NetworkPolicy",
+    "ResourceQuota",
+    "LimitRange",
+    "PodSecurityPolicy",
+    "PodDisruptionBudget",
+    "Secret",
+    "ConfigMap",
+    "StorageClass",
+    "PersistentVolume",
+    "PersistentVolumeClaim",
+    "ServiceAccount",
+    "CustomResourceDefinition",
+    "ClusterRole",
+    "ClusterRoleList",
+    "ClusterRoleBinding",
+    "ClusterRoleBindingList",
+    "Role",
+    "RoleList",
+    "RoleBinding",
+    "RoleBindingList",
+    "Service",
+    "DaemonSet",
+    "Pod",
+    "ReplicationController",
+    "ReplicaSet",
+    "Deployment",
+    "HorizontalPodAutoscaler",
+    "StatefulSet",
+    "Job",
+    "CronJob",
+    "IngressClass",
+    "Ingress",
+    "APIService",
+)
+_KIND_ORDER = {kind: index for index, kind in enumerate(_INSTALL_ORDER)}
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -36,6 +79,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     """Run the miniature Helm renderer and return a process exit code."""
 
     arguments = _parser().parse_args(argv)
+    try:
+        return _run(arguments)
+    except (
+        OSError,
+        TemplateError,
+        MissingOptionalDependencyError,
+        ValueError,
+    ) as error:
+        sys.stderr.write(f"Error: {error}\n")
+        return 1
+
+
+def _run(arguments: argparse.Namespace) -> int:
     chart = load_chart(arguments.chart)
     values: dict[str, object] = {}
     for path in cast(list[Path], arguments.values):
@@ -52,11 +108,32 @@ def main(argv: Sequence[str] | None = None) -> int:
         ),
         capabilities=Capabilities(kube_version=kube),
     )
-    for name in sorted(output):
-        sys.stdout.write(f"---\n# Source: {name}\n{output[name]}")
-        if not output[name].endswith("\n"):
+    for index, (name, rendered) in enumerate(_manifests(output)):
+        if index:
             sys.stdout.write("\n")
+        sys.stdout.write(f"---\n# Source: {name}\n{rendered}")
+        sys.stdout.write("\n")
     return 0
+
+
+def _manifests(output: dict[str, str]) -> list[tuple[str, str]]:
+    manifests: list[tuple[int, str, int, str]] = []
+    unknown_order = len(_INSTALL_ORDER)
+    for name in sorted(output):
+        if Path(name).name == "NOTES.txt":
+            continue
+        documents = _MANIFEST_SPLITTER.split(output[name])
+        for document_index, document in enumerate(documents):
+            rendered = document.strip()
+            if not rendered:
+                continue
+            match = _KIND.search(rendered)
+            kind = match.group(1) if match is not None else ""
+            manifests.append(
+                (_KIND_ORDER.get(kind, unknown_order), name, document_index, rendered)
+            )
+    manifests.sort(key=lambda item: item[:3])
+    return [(name, rendered) for _, name, _, rendered in manifests]
 
 
 def _assign(values: dict[str, object], assignment: str) -> None:

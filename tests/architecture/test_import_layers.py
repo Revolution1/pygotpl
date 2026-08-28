@@ -20,14 +20,28 @@ _ALLOWED_GOTPL_IMPORTS: dict[str, frozenset[str]] = {
     "compile": frozenset({"compile", "parse"}),
     "runtime": frozenset({"_compat", "compile", "errors", "runtime"}),
     "runtime_engine": frozenset({"pythonic", "runtime", "template"}),
+    "environment": frozenset({"exts", "html", "pythonic", "runtime", "template"}),
     "template": frozenset({"compile", "errors", "parse", "pythonic", "runtime"}),
     "html": frozenset({"compile", "errors", "html", "pythonic", "runtime", "template"}),
     "funcs_sprig": frozenset({"_compat", "funcs_sprig", "runtime"}),
     "funcs_slim_sprig": frozenset({"funcs_slim_sprig", "funcs_sprig"}),
     "funcs_sprout": frozenset({"_compat", "funcs_sprig", "funcs_sprout", "runtime"}),
-    "funcs_helm": frozenset({"errors", "funcs_helm", "funcs_sprig"}),
+    "exts": frozenset({"runtime"}),
+    "exts_helm": frozenset(
+        {
+            "environment",
+            "errors",
+            "exts_helm",
+            "funcs_helm",
+            "runtime",
+            "runtime_engine",
+        }
+    ),
+    "funcs_helm": frozenset({"errors", "funcs_helm", "funcs_sprig", "runtime"}),
     "funcs": frozenset({"funcs"}),
-    "__init__": frozenset({"errors", "html", "pythonic", "runtime", "template"}),
+    "__init__": frozenset(
+        {"environment", "errors", "exts", "html", "pythonic", "runtime", "template"}
+    ),
 }
 
 _ALLOWED_WORKSPACE_IMPORTS: dict[str, frozenset[str]] = {
@@ -73,11 +87,11 @@ def _gotpl_owner(path: Path) -> str:
     if relative.parts == ("runtime", "engine.py"):
         return "runtime_engine"
     if (
-        relative.parts[0] == "funcs"
+        relative.parts[0] in {"exts", "funcs"}
         and len(relative.parts) > 1
         and relative.parts[1] != "__init__.py"
     ):
-        return f"funcs_{relative.parts[1]}"
+        return f"{relative.parts[0]}_{relative.parts[1]}"
     return relative.parts[0] if len(relative.parts) > 1 else relative.stem
 
 
@@ -85,6 +99,8 @@ def _gotpl_target_owner(module: str) -> str:
     parts = module.split(".")
     if len(parts) > 2 and parts[1] == "funcs":
         return f"funcs_{parts[2]}"
+    if len(parts) > 2 and parts[1] == "exts":
+        return f"exts_{parts[2]}"
     return parts[1] if len(parts) > 1 else "__init__"
 
 

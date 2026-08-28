@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from examples.helm_runtime import Capabilities, Chart, Engine, Release
-from gotpl import TemplateExecutionError
+from gotpl import Template, TemplateExecutionError
 
 
 def _chart(**templates: str) -> Chart:
@@ -43,6 +43,19 @@ def test_engine_renders_chart_globals_sprig_and_files() -> None:
     }
 
 
+def test_engine_exposes_chart_annotations() -> None:
+    chart = Chart(
+        name="annotated",
+        version="1.0.0",
+        templates={"templates/main.yaml": '{{index .Chart.Annotations "fips"}}'},
+        annotations={"fips": "true"},
+    )
+
+    assert Engine().render(chart) == {
+        "annotated/templates/main.yaml": "true",
+    }
+
+
 def test_engine_include_tpl_required_and_partial_suppression() -> None:
     chart = _chart(
         **{
@@ -75,6 +88,73 @@ def test_tpl_can_include_a_definition_from_its_dynamic_source() -> None:
             ),
         },
     ) == {"moby/templates/main.yaml": "dynamic:value"}
+
+
+def test_tpl_reuses_identical_dynamic_sources_within_one_render(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls = 0
+    original = Template.with_source
+
+    def counted(engine: Template, source: str, *, name: str = "template") -> Template:
+        nonlocal calls
+        calls += 1
+        return original(engine, source, name=name)
+
+    monkeypatch.setattr(Template, "with_source", counted)
+    chart = _chart(
+        **{
+            "templates/first.yaml": "{{tpl .Values.dynamic .}}",
+            "templates/second.yaml": "{{tpl .Values.dynamic .}}",
+        }
+    )
+
+    assert Engine().render(chart, {"dynamic": "{{.Template.Name}}"}) == {
+        "moby/templates/first.yaml": "moby/templates/first.yaml",
+        "moby/templates/second.yaml": "moby/templates/second.yaml",
+    }
+    assert calls == 1
+
+
+def test_tpl_cache_is_scoped_by_dynamic_parent_namespace() -> None:
+    chart = _chart(
+        **{
+            "templates/main.yaml": ("{{tpl .Values.first .}}|{{tpl .Values.second .}}"),
+        }
+    )
+    values = {
+        "inner": '{{include "dynamic" .}}',
+        "first": ('{{define "dynamic"}}first{{end}}{{tpl .Values.inner .}}'),
+        "second": ('{{define "dynamic"}}second{{end}}{{tpl .Values.inner .}}'),
+    }
+
+    assert Engine().render(chart, values) == {
+        "moby/templates/main.yaml": "first|second"
+    }
+
+
+def test_tpl_cache_does_not_cross_render_calls(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls = 0
+    original = Template.with_source
+
+    def counted(engine: Template, source: str, *, name: str = "template") -> Template:
+        nonlocal calls
+        calls += 1
+        return original(engine, source, name=name)
+
+    monkeypatch.setattr(Template, "with_source", counted)
+    chart = _chart(**{"templates/main.yaml": "{{tpl .Values.dynamic .}}"})
+    engine = Engine()
+
+    assert engine.render(chart, {"dynamic": "first"}) == {
+        "moby/templates/main.yaml": "first"
+    }
+    assert engine.render(chart, {"dynamic": "second"}) == {
+        "moby/templates/main.yaml": "second"
+    }
+    assert calls == 2
 
 
 def test_engine_required_and_fail_follow_lint_mode() -> None:
@@ -127,6 +207,35 @@ def test_engine_recurses_into_dependency_value_scopes_and_subcharts() -> None:
     }
 
 
+def test_engine_applies_dependency_conditions_and_tags() -> None:
+    conditioned = Chart(
+        name="conditioned",
+        version="1.0.0",
+        templates={"templates/child.yaml": "conditioned"},
+        dependency_condition="features.conditioned.enabled",
+    )
+    tagged = Chart(
+        name="tagged",
+        version="1.0.0",
+        templates={"templates/child.yaml": "tagged"},
+        dependency_tags=("optional",),
+    )
+    parent = Chart(
+        name="parent",
+        version="1.0.0",
+        templates={"templates/main.yaml": "parent"},
+        dependencies=(conditioned, tagged),
+    )
+
+    assert Engine().render(
+        parent,
+        {
+            "features": {"conditioned": {"enabled": False}},
+            "tags": {"optional": False},
+        },
+    ) == {"parent/templates/main.yaml": "parent"}
+
+
 @pytest.mark.asyncio
 async def test_engine_async_awaits_functions_inside_include_and_tpl() -> None:
     async def identify(value: str) -> str:
@@ -146,3 +255,30 @@ async def test_engine_async_awaits_functions_inside_include_and_tpl() -> None:
     assert await Engine(custom_functions={"identify": identify}).render_async(
         chart, {"name": "value"}
     ) == {"moby/templates/main.yaml": "async:value|async:value"}
+
+
+@pytest.mark.asyncio
+async def test_async_tpl_reuses_identical_dynamic_sources_within_one_render(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls = 0
+    original = Template.with_source
+
+    def counted(engine: Template, source: str, *, name: str = "template") -> Template:
+        nonlocal calls
+        calls += 1
+        return original(engine, source, name=name)
+
+    monkeypatch.setattr(Template, "with_source", counted)
+    chart = _chart(
+        **{
+            "templates/first.yaml": "{{tpl .Values.dynamic .}}",
+            "templates/second.yaml": "{{tpl .Values.dynamic .}}",
+        }
+    )
+
+    assert await Engine().render_async(chart, {"dynamic": "{{.Template.Name}}"}) == {
+        "moby/templates/first.yaml": "moby/templates/first.yaml",
+        "moby/templates/second.yaml": "moby/templates/second.yaml",
+    }
+    assert calls == 1

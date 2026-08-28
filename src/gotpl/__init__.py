@@ -1,5 +1,6 @@
 """Go template compatibility for Python."""
 
+from .environment import Environment
 from .errors import (
     AsyncRequiredError,
     BudgetExceededError,
@@ -8,6 +9,7 @@ from .errors import (
     TemplateExecutionError,
     TemplateSyntaxError,
 )
+from .exts import AsyncRenderContext, ContextFunction, Extension, RenderContext
 from .html import (
     CSS,
     HTML,
@@ -45,10 +47,14 @@ __all__ = [
     "HTML",
     "JS",
     "URL",
+    "AsyncRenderContext",
     "AsyncRequiredError",
     "AsyncTextWriter",
     "BudgetExceededError",
+    "ContextFunction",
+    "Environment",
     "ExecutionBudget",
+    "Extension",
     "FormatMode",
     "FunctionResult",
     "GoFormatSpec",
@@ -61,6 +67,7 @@ __all__ = [
     "JSStr",
     "MissingKeyMode",
     "PythonExtensions",
+    "RenderContext",
     "SandboxPolicy",
     "SandboxViolationError",
     "Srcset",

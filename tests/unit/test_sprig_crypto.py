@@ -12,6 +12,7 @@ from cryptography.x509.oid import NameOID
 import gotpl
 import gotpl.funcs.sprig as sprig
 from gotpl.funcs.sprig import crypto
+from gotpl.runtime import UNTYPED_NIL
 
 
 @pytest.mark.parametrize(
@@ -310,6 +311,21 @@ def test_registered_certificate_entry_points_return_go_results() -> None:
     assert isinstance(self_with_key.value, crypto.Certificate)
     assert isinstance(signed_with_key, gotpl.FunctionResult)
     assert isinstance(signed_with_key.value, crypto.Certificate)
+
+
+def test_registered_certificate_functions_accept_template_nil_sequences() -> None:
+    functions = sprig.generic_func_map(clock=lambda: datetime(2025, 1, 2, tzinfo=UTC))
+    ca_result = functions["genCA"]("ca", 1)
+    assert isinstance(ca_result, gotpl.FunctionResult)
+    assert isinstance(ca_result.value, crypto.Certificate)
+
+    signed_result = functions["genSignedCert"](
+        "leaf", UNTYPED_NIL, ["leaf.example"], 1, ca_result.value
+    )
+
+    assert isinstance(signed_result, gotpl.FunctionResult)
+    assert signed_result.error is None
+    assert isinstance(signed_result.value, crypto.Certificate)
 
 
 def test_ed25519_certificate_uses_algorithm_free_signing() -> None:

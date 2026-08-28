@@ -1,4 +1,4 @@
-"""Reusable Helm-compatible functions for application-owned runtimes."""
+"""Reusable Helm-compatible function registry."""
 
 from .errors import MissingOptionalDependencyError
 from .functions import function_map

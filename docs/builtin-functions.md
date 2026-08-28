@@ -116,17 +116,7 @@ assert render("{{urlquery .}}", "a b&c") == "a+b%26c"
 assert render("{{js .}}", "</script>") == r"\u003C/script\u003E"
 ```
 
-## Implementation
-
-- Semantic name validation is defined in
-  `src/gotpl/parse/semantic.py` as `BUILTIN_FUNCTIONS`.
-- Ordinary implementations and registration live in
-  `src/gotpl/runtime/sync_vm.py`, beginning with `_builtin_functions()`.
-- `and` and `or` use dedicated short-circuit execution in both
-  `src/gotpl/runtime/sync_vm.py` and `src/gotpl/runtime/async_vm.py`.
-- Contextual HTML rewriting and its private escapers live under
-  `src/gotpl/html/`; they are separate from the three legacy helpers above.
-
-The underscored implementation functions are internal and are not supported as
-Python imports. The stable interface is the template-language behavior recorded
-on this page and in the compatibility fixtures.
+These built-ins are always available and are separate from optional
+[function libraries](function-libraries.md), application functions, and
+[runtime extensions](extensions.md). The [compatibility contract](compatibility.md)
+defines the supported Go behavior and evidence boundary.

@@ -37,6 +37,7 @@ The intended package layout is:
 
 ```text
 gotpl/
+    environment.py  immutable construction and extension composition
     parse/          tokens, lexer, parser, AST nodes, and semantic validation
     compile/        immutable instructions and instruction generation
     runtime/        value adaptation, sync/async VMs, and multi-source engine
@@ -46,7 +47,7 @@ gotpl/
         slim_sprig/ reduced fork profile
         sprout/     opt-in Sprout registries and groups
         helm/       reusable opt-in Helm-compatible functions
-    pythonic/       opt-in Python-native functions
+    pythonic/       opt-in Python-native categories and immutable registry
     _compat/        private formatting and RE2-compatible support
 ```
 
@@ -68,13 +69,14 @@ dependency direction:
 | `compile` | Immutable IR and AST-to-IR compilation | `parse`, `compile` |
 | `runtime` | Value adaptation, prepared calls, results, sync VM, async VM | `_compat`, `compile`, `errors`, `runtime` |
 | `runtime.engine` | Public multi-source and per-file-context execution | `pythonic`, `runtime`, `template` |
+| `environment` | Immutable construction policy and extension composition | `html`, `pythonic`, `runtime`, `template` |
 | `template` | Public text-template orchestration | `parse`, `compile`, `runtime`, `errors`, `pythonic` |
 | `html` | Safe content, contextual analysis/rewriting, escapers, HTML API | `compile`, `runtime`, `template`, `errors`, `html`, `pythonic` |
 | `funcs.sprig` | Sprig coercion, names, error adapters, registry | `_compat`, `runtime`, `funcs.sprig` |
 | `funcs.slim_sprig` | Slim-Sprig profile and fork-specific differences | `funcs.sprig`, `funcs.slim_sprig` |
 | `funcs.sprout` | Opt-in Sprout registries, groups, and adapters | `_compat`, `runtime`, `funcs.sprig`, `funcs.sprout` |
-| `funcs.helm` | Reusable Helm-compatible function-map additions | `errors`, `funcs.sprig`, `funcs.helm` |
-| package root | Stable public re-exports | `template`, `html`, `runtime`, `errors`, `pythonic` |
+| `funcs.helm` | Reusable Helm-compatible function-map and late-bound runtime | `environment`, `errors`, `runtime`, `runtime.engine`, `funcs.sprig`, `funcs.helm` |
+| package root | Stable public re-exports | `environment`, `template`, `html`, `runtime`, `errors`, `pythonic` |
 
 Formatting and regular-expression compatibility live under private `_compat`
 because neither incomplete surface is an independent product. Only `runtime`,
@@ -106,6 +108,12 @@ against inherited definitions. Per-file data remains an execution input to
 `render_template()` rather than state stored in a compiled template. Helm,
 gomplate-like integrations, and other multi-file runtimes must build on these
 core primitives instead of maintaining another parser or template namespace.
+
+`Environment` is an immutable construction factory over these same APIs. It
+composes explicit functions and runtime extensions, but owns neither sources nor
+a loader or mutable cache. `from_string()` constructs one reusable template;
+`from_sources()` constructs a `TemplateEngine`. HTML construction remains
+explicit through `from_html_string()` and `from_html_sources()`.
 
 Construction and parsing may be mutable. Once exposed for execution, a compiled
 template must be safe to share between threads and asyncio tasks.
@@ -176,14 +184,26 @@ created per render and shared by frames in one associated-template execution.
 Workspace compatibility packages remain below this layer and never import the
 policy, VM, or extension registry.
 
+Functions that execute against the current association use an explicit
+`ContextFunction`. The VM injects a read-only `RenderContext` or
+`AsyncRenderContext` backed by a private per-render session. Sessions own nested
+render depth, shared budget counters, bounded dynamic-source caching, and
+extension-local state. Ordinary callables retain the non-session path.
+
+Helm's `include` and `tpl` use this generic mechanism through `HelmExtension`.
+`HelmTemplateEngine` remains a convenience facade rather than owning a second
+context-local runtime. Compiled associations remain reusable across threads and
+asyncio tasks; no mutable render state is stored on them.
+
 Slim-Sprig is exposed as a named subset of the Sprig registry rather than a
 second implementation. Sprout has its own registry namespace because its names,
 aliases, notices, and grouped loading behavior have diverged from Sprig.
-`gotpl.funcs.helm` provides reusable function-map additions only; it does not own a
-chart model, loader, or rendering engine. The miniature runtime under
-`examples/helm_runtime` supplies chart globals and Helm-specific `include` and
-`tpl` orchestration on top of `TemplateEngine`. Those names never enter the Go
-built-in or Sprig maps.
+`gotpl.funcs.helm` provides only the reusable function-map compatibility layer.
+Context-aware integration lives in `gotpl.exts.helm`, which provides
+`HelmExtension` and the `HelmTemplateEngine` facade. Neither package owns a
+chart model, loader, repository client, or cluster client. The miniature runtime
+under `examples/helm_runtime` supplies chart globals and collection on top of
+that engine. Helm names never enter the Go built-in or Sprig maps.
 
 Optional integrations must be importable without their third-party extras.
 Functions that require an unavailable extra fail when that capability is

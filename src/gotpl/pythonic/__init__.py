@@ -1,5 +1,5 @@
 """Explicit Python-native template functions."""
 
-from .regex import PythonExtensions
+from .registry import PythonExtensions
 
 __all__ = ["PythonExtensions"]

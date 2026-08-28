@@ -7,14 +7,9 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from typing import cast
 
-from gotpl.errors import TemplateExecutionError
-from gotpl.funcs.helm import function_map
-from gotpl.runtime import INVALID, FunctionResult
-from gotpl.runtime.engine import TemplateEngine
+from gotpl.exts.helm import HelmTemplateEngine
 
 from .models import Capabilities, Chart, Release
-
-_RECURSION_LIMIT = 1000
 
 
 @dataclass(frozen=True, slots=True)
@@ -104,7 +99,7 @@ class Engine:
             reverse=True,
         )
         sources = {name: renderables[name].source for name in ordered}
-        template_engine = self._build_template_async(sources)
+        template_engine = self._build_template(sources)
         contexts: dict[str, object] = {}
         for name in ordered:
             item = renderables[name]
@@ -121,136 +116,15 @@ class Engine:
             name: value.replace("<no value>", "") for name, value in rendered.items()
         }
 
-    def _build_template(self, sources: Mapping[str, str]) -> TemplateEngine:
-        holder: dict[str, TemplateEngine] = {}
-        included: dict[str, int] = {}
-        dynamic_index = 0
-
-        def include(name: str, data: object) -> object:
-            count = included.get(name, 0)
-            if count > _RECURSION_LIMIT:
-                return FunctionResult.failure(
-                    ValueError(
-                        "rendering template has a nested reference name: "
-                        f"{name}: unable to execute template"
-                    ),
-                    "",
-                )
-            included[name] = count + 1
-            try:
-                return holder["engine"].template.render_template(name, data)
-            except TemplateExecutionError as error:
-                return FunctionResult.failure(error, "")
-            finally:
-                included[name] -= 1
-
-        def tpl(source: str, data: object) -> object:
-            nonlocal dynamic_index
-            dynamic_index += 1
-            name = f"__helm_tpl_{dynamic_index}__"
-            parent = holder["engine"]
-            dynamic = parent.with_source(source, name=name)
-            holder["engine"] = dynamic
-            try:
-                return dynamic.template.render(data).replace("<no value>", "")
-            except Exception as error:
-                return FunctionResult.failure(error, "")
-            finally:
-                holder["engine"] = parent
-
-        def required(message: str, value: object) -> object:
-            missing = value is None or value is INVALID or value == ""
-            if missing and not self.lint_mode:
-                return FunctionResult.failure(ValueError(message), value="")
-            return "" if missing else value
-
-        def fail(message: str) -> object:
-            if self.lint_mode:
-                return ""
-            return FunctionResult.failure(ValueError(message), value="")
-
-        functions = function_map(
-            include=include,
-            tpl=tpl,
-            required=required,
-            fail=fail,
-            lookup=self.lookup,
-            enable_dns=self.enable_dns,
-            custom=self.custom_functions,
-        )
-        engine = TemplateEngine.from_sources(
+    def _build_template(self, sources: Mapping[str, str]) -> HelmTemplateEngine:
+        return HelmTemplateEngine.from_sources(
             sources,
-            functions=functions,
-            missing_key="error" if self.strict else "zero",
-        )
-        holder["engine"] = engine
-        return engine
-
-    def _build_template_async(self, sources: Mapping[str, str]) -> TemplateEngine:
-        holder: dict[str, TemplateEngine] = {}
-        included: dict[str, int] = {}
-        dynamic_index = 0
-
-        async def include(name: str, data: object) -> object:
-            count = included.get(name, 0)
-            if count > _RECURSION_LIMIT:
-                return FunctionResult.failure(
-                    ValueError(
-                        "rendering template has a nested reference name: "
-                        f"{name}: unable to execute template"
-                    ),
-                    "",
-                )
-            included[name] = count + 1
-            try:
-                return await holder["engine"].template.render_template_async(name, data)
-            except TemplateExecutionError as error:
-                return FunctionResult.failure(error, "")
-            finally:
-                included[name] -= 1
-
-        async def tpl(source: str, data: object) -> object:
-            nonlocal dynamic_index
-            dynamic_index += 1
-            name = f"__helm_tpl_{dynamic_index}__"
-            parent = holder["engine"]
-            dynamic = parent.with_source(source, name=name)
-            holder["engine"] = dynamic
-            try:
-                rendered = await dynamic.template.render_async(data)
-                return rendered.replace("<no value>", "")
-            except Exception as error:
-                return FunctionResult.failure(error, "")
-            finally:
-                holder["engine"] = parent
-
-        def required(message: str, value: object) -> object:
-            missing = value is None or value is INVALID or value == ""
-            if missing and not self.lint_mode:
-                return FunctionResult.failure(ValueError(message), value="")
-            return "" if missing else value
-
-        def fail(message: str) -> object:
-            if self.lint_mode:
-                return ""
-            return FunctionResult.failure(ValueError(message), value="")
-
-        functions = function_map(
-            include=include,
-            tpl=tpl,
-            required=required,
-            fail=fail,
-            lookup=self.lookup,
+            strict=self.strict,
+            lint_mode=self.lint_mode,
             enable_dns=self.enable_dns,
-            custom=self.custom_functions,
+            custom_functions=self.custom_functions,
+            lookup=self.lookup,
         )
-        engine = TemplateEngine.from_sources(
-            sources,
-            functions=functions,
-            missing_key="error" if self.strict else "zero",
-        )
-        holder["engine"] = engine
-        return engine
 
     def _collect(
         self,
@@ -272,6 +146,8 @@ class Engine:
             "Subcharts": subcharts,
         }
         for child in chart.dependencies:
+            if not _dependency_enabled(child, values):
+                continue
             child_input = values.get(child.name, {})
             child_values = _merge_values(
                 child.values,
@@ -320,3 +196,32 @@ def _merge_values(
         else:
             merged[key] = value
     return merged
+
+
+def _dependency_enabled(chart: Chart, values: Mapping[str, object]) -> bool:
+    enabled = True
+    tags = values.get("tags")
+    if chart.dependency_tags and isinstance(tags, Mapping):
+        tag_values = cast(Mapping[object, object], tags)
+        selected: list[object | None] = [
+            tag_values.get(tag) for tag in chart.dependency_tags
+        ]
+        has_true = any(value is True for value in selected)
+        has_false = any(value is False for value in selected)
+        enabled = has_true or not has_false
+    for condition in chart.dependency_condition.split(","):
+        found, value = _path_value(values, condition.strip())
+        if found and isinstance(value, bool):
+            return value
+    return enabled
+
+
+def _path_value(values: Mapping[str, object], path: str) -> tuple[bool, object | None]:
+    if not path:
+        return False, None
+    current: object = values
+    for key in path.split("."):
+        if not isinstance(current, Mapping) or key not in current:
+            return False, None
+        current = cast(Mapping[object, object], current)[key]
+    return True, current

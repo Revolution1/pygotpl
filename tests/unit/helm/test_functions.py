@@ -16,7 +16,10 @@ def _late_function(*_arguments: object) -> str:
 
 
 def test_helm_package_exports_only_reusable_function_support() -> None:
-    assert helm.__all__ == ["MissingOptionalDependencyError", "function_map"]
+    assert helm.__all__ == [
+        "MissingOptionalDependencyError",
+        "function_map",
+    ]
     assert not hasattr(helm, "Engine")
     assert not hasattr(helm, "Chart")
     assert not hasattr(helm, "load_chart")

@@ -1,9 +1,10 @@
 # M8 Acceptance Audit
 
-> Historical architecture note: this audit predates M10 decision D012. Its
-> five-wheel and standalone `goregexp` evidence remains valid for M8, while the
-> current release has three distributions and keeps the regex engine private
-> under `gotpl._compat`.
+> Historical architecture note: this audit predates M10 decisions D012 and
+> D015. Its five-wheel and standalone `goregexp` evidence remains valid for M8,
+> while the current release has three distributions, keeps the regex engine
+> private under `gotpl._compat`, and provides Helm late-bound execution through
+> `gotpl.exts.helm.HelmTemplateEngine`.
 
 ## Outcome
 

@@ -66,14 +66,20 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
-  - User Guide:
+  - Core Concepts:
       - Template Language: template-language.md
       - Built-in Functions: builtin-functions.md
+      - Reusable Templates and Environments: reusable-templates.md
       - Async Rendering: async.md
       - HTML Templates: html.md
+  - Extensions and Security:
       - Function Libraries: function-libraries.md
+      - Runtime Extensions: extensions.md
       - Sandboxing: sandbox.md
-      - Multi-file and Helm Integration: helm.md
+  - Integration Guides:
+      - Build an HTML Site: building-html-site.md
+      - Helm Functions and Runtime: helm.md
+      - Build a Helm Renderer: building-helm.md
       - Migration from Go: migration.md
   - API Reference:
       - API Overview: api.md
@@ -81,13 +87,14 @@ nav:
       - Function Registries: reference/functions.md
       - goduration: reference/goduration.md
       - gotime: reference/gotime.md
-  - Compatibility:
+  - Project Status:
       - Compatibility Contract: compatibility.md
       - Performance: performance.md
       - Support Policy: support.md
   - Maintainers:
       - Architecture: architecture.md
       - API Design Review: reports/m10-api-design-review.md
+      - Runtime Extension Design: reports/m10-unified-environment-design.md
       - Documentation Review: reports/m10-documentation-review.md
       - Testing: testing.md
       - Dependencies: dependencies.md

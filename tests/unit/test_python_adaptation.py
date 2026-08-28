@@ -83,6 +83,12 @@ def test_bound_methods_are_invoked_as_template_commands() -> None:
     assert gotpl.render('{{.surround "[" "]"}}', profile) == "[Ada]"
 
 
+def test_bound_methods_are_invoked_when_passed_as_function_arguments() -> None:
+    profile = Profile("Ada")
+
+    assert gotpl.render('{{printf "%s" .greeting}}', profile) == "Hello, Ada"
+
+
 def test_bound_method_annotations_reject_incompatible_arguments() -> None:
     with pytest.raises(gotpl.TemplateExecutionError, match="expected str, got int"):
         gotpl.render("{{.surround 1 2}}", Profile("Ada"))

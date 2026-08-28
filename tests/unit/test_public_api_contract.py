@@ -4,6 +4,8 @@ from inspect import signature
 
 import gotpl
 import gotpl.compile as compile_api
+import gotpl.exts as exts
+import gotpl.exts.helm as helm_exts
 import gotpl.funcs.helm as helm
 import gotpl.funcs.slim_sprig as slim_sprig
 import gotpl.funcs.sprig as sprig
@@ -15,13 +17,17 @@ import gotpl.runtime as runtime_api
 
 ROOT_API = {
     "CSS",
+    "ContextFunction",
     "HTML",
     "JS",
     "URL",
     "AsyncRequiredError",
+    "AsyncRenderContext",
     "AsyncTextWriter",
     "BudgetExceededError",
     "ExecutionBudget",
+    "Environment",
+    "Extension",
     "FormatMode",
     "FunctionResult",
     "GoFormatSpec",
@@ -34,6 +40,7 @@ ROOT_API = {
     "JSStr",
     "MissingKeyMode",
     "PythonExtensions",
+    "RenderContext",
     "SandboxPolicy",
     "SandboxViolationError",
     "Srcset",
@@ -94,6 +101,7 @@ def test_reusable_template_method_surfaces_are_frozen() -> None:
     }
     assert all(callable(getattr(gotpl.Template, name)) for name in shared)
     assert all(callable(getattr(gotpl.HTMLTemplate, name)) for name in shared)
+    assert callable(gotpl.Environment.pythonic)
 
 
 def test_text_and_html_convenience_functions_expose_matching_options() -> None:
@@ -119,7 +127,17 @@ def test_text_and_html_convenience_functions_expose_matching_options() -> None:
 def test_function_library_public_apis_are_frozen() -> None:
     assert set(sprig.__all__) == FUNCTION_MAP_API
     assert set(slim_sprig.__all__) == FUNCTION_MAP_API
-    assert set(helm.__all__) == {"MissingOptionalDependencyError", "function_map"}
+    assert set(helm.__all__) == {
+        "MissingOptionalDependencyError",
+        "function_map",
+    }
+    assert set(exts.__all__) == {
+        "AsyncRenderContext",
+        "ContextFunction",
+        "Extension",
+        "RenderContext",
+    }
+    assert set(helm_exts.__all__) == {"HelmExtension", "HelmTemplateEngine"}
     assert set(pythonic.__all__) == {"PythonExtensions"}
     assert set(sprout.__all__) == {
         "INVENTORY",

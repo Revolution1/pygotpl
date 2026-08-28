@@ -28,7 +28,8 @@ The M10 package review made these import paths canonical:
 | `pygotpl.sprig` | `gotpl.funcs.sprig` |
 | `pygotpl.slim_sprig` | `gotpl.funcs.slim_sprig` |
 | `pygotpl.sprout` | `gotpl.funcs.sprout` |
-| `pygotpl.helm` | `gotpl.funcs.helm` |
+| `pygotpl.helm` runtime | `gotpl.exts.helm` |
+| `pygotpl.helm` function map | `gotpl.funcs.helm` |
 | `pygotpl.extras.PythonExtensions` | `gotpl.pythonic.PythonExtensions` |
 | `gofmt` distribution | private `gotpl._compat`; use gotpl public formatting APIs |
 | `goregexp` distribution | private `gotpl._compat`; use a function registry or `gotpl.pythonic` |
@@ -84,9 +85,9 @@ awaitable; use `render_async` for mixed synchronous and asynchronous callbacks.
 | Execute several named roots with separate data | `TemplateEngine.from_sources(...).render(contexts)` |
 
 Use `Template.from_sources()` for one associated namespace; a runnable
-[multi-source example](helm.md#core-cross-file-execution) shows selecting a root
-with `render_template()`. `TemplateEngine` is the additional batch API for
-rendering several roots with independent contexts:
+[multi-source example](reusable-templates.md#associate-named-sources) shows
+selecting a root with `render_template()`. `TemplateEngine` is the additional
+batch API for rendering several roots with independent contexts:
 
 ```python
 from gotpl import TemplateEngine
@@ -109,8 +110,10 @@ assert engine.render(
 
 `with_source()` derives a new immutable namespace. `render_source()` and
 `render_source_async()` compile dynamic source against existing definitions.
-These are the core primitives used by the miniature Helm example and intended
-for gomplate-like runtimes.
+`Environment` reuses functions and construction policy across otherwise
+independent templates. See
+[Reusable Templates and Environments](reusable-templates.md) for the complete
+selection and directory-loading guide.
 
 ## Missing Keys and Formatting
 
@@ -163,9 +166,12 @@ template = Template('{{"hello world" | title}}', functions=text_func_map())
 assert template.render() == "Hello World"
 ```
 
-Slim-Sprig, Sprout, and Helm maps live under `gotpl.funcs`. They never alter
-the default Go function registry. Heavy crypto and serializer dependencies are
-optional extras and load only when their functions need them.
+Slim-Sprig and Sprout registries, plus the lower-level Helm function map, live
+under `gotpl.funcs`. They never alter the default Go function registry.
+Context-aware integrations such as Helm `include` and `tpl` live under
+`gotpl.exts`; see [Runtime Extensions](extensions.md). Heavy crypto and
+serializer dependencies are optional extras and load only when their functions
+need them.
 
 ## HTML Templates
 

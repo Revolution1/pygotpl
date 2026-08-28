@@ -65,14 +65,22 @@ assert result == '<a href="/search?q=python%20%26%20go">&lt;Search&gt;</a>'
   and registering Python functions.
 - [Template Language](docs/template-language.md) — pipelines, control flow,
   variables, associations, and built-ins.
+- [Reusable Templates and Environments](docs/reusable-templates.md) — choose
+  `Template`, `HTMLTemplate`, `Environment`, or `TemplateEngine`; load named
+  sources; and reuse immutable configuration.
 - [Async Rendering](docs/async.md) — async callbacks, writers, cancellation,
   and concurrency.
 - [HTML Templates](docs/html.md) — contextual escaping and trusted content.
 - [Function Libraries](docs/function-libraries.md) — Sprig, Slim-Sprig,
-  Sprout, Helm, and Python-native profiles.
+  Sprout, Helm-compatible functions, and Python-native helpers.
+- [Runtime Extensions](docs/extensions.md) — context-aware integrations,
+  associated rendering, capabilities, and extension authoring.
 - [Sandboxing](docs/sandbox.md) — policies, budgets, and the security boundary.
-- [Multi-file and Helm Integration](docs/helm.md) — associated sources and
-  batch rendering.
+- [Build an HTML Site](docs/building-html-site.md) — a Jinja2-style template
+  directory with reusable header and footer definitions.
+- [Helm Functions and Runtime](docs/helm.md) and
+  [Build a Helm Renderer](docs/building-helm.md) — reusable Helm APIs and the
+  complete local-chart application workflow.
 - [API Overview](docs/api.md) — the candidate 1.0 public surface.
 - [Compatibility](docs/compatibility.md) and
   [Performance](docs/performance.md) — measured support and benchmark evidence.

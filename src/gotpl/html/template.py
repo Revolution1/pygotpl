@@ -27,6 +27,7 @@ from gotpl.runtime import (
     render_program_to,
 )
 from gotpl.runtime.callables import PreparedFunctionRegistry
+from gotpl.runtime.context import RenderSession
 from gotpl.runtime.gofmt import sprintf
 from gotpl.runtime.linked import LinkedProgram, link_program
 from gotpl.runtime.sync_vm import (
@@ -207,6 +208,7 @@ class HTMLTemplate:
     def render(self, data: object = None) -> str:
         """Render the HTML template synchronously."""
 
+        session = self._new_render_session()
         if not self._use_linked:
             return render_program(
                 self._program,
@@ -217,6 +219,8 @@ class HTMLTemplate:
                 _namespace=self._namespace,
                 budget=self._text.budget,
                 sandbox=self._text.sandbox,
+                _session=session,
+                _budget_state=None if session is None else session.budget_state,
             )
         return render_linked_program(
             self._linked_program,
@@ -226,11 +230,14 @@ class HTMLTemplate:
             format_mode=self._text.format_mode,
             budget=self._text.budget,
             sandbox=self._text.sandbox,
+            _session=session,
+            _budget_state=None if session is None else session.budget_state,
         )
 
     def render_to(self, writer: TextIO, data: object = None) -> None:
         """Render synchronously to a text writer."""
 
+        session = self._new_render_session()
         if not self._use_linked:
             render_program_to(
                 self._program,
@@ -242,6 +249,8 @@ class HTMLTemplate:
                 _namespace=self._namespace,
                 budget=self._text.budget,
                 sandbox=self._text.sandbox,
+                _session=session,
+                _budget_state=None if session is None else session.budget_state,
             )
             return
         render_linked_program_to(
@@ -253,11 +262,14 @@ class HTMLTemplate:
             format_mode=self._text.format_mode,
             budget=self._text.budget,
             sandbox=self._text.sandbox,
+            _session=session,
+            _budget_state=None if session is None else session.budget_state,
         )
 
     async def render_async(self, data: object = None) -> str:
         """Render the HTML template while awaiting function results."""
 
+        session = self._new_render_session()
         return await render_program_async(
             self._program,
             data,
@@ -267,6 +279,8 @@ class HTMLTemplate:
             _namespace=self._namespace,
             budget=self._text.budget,
             sandbox=self._text.sandbox,
+            _session=session,
+            _budget_state=None if session is None else session.budget_state,
         )
 
     async def render_async_to(
@@ -274,6 +288,7 @@ class HTMLTemplate:
     ) -> None:
         """Render asynchronously to a synchronous or asynchronous writer."""
 
+        session = self._new_render_session()
         await render_program_async_to(
             self._program,
             writer,
@@ -284,12 +299,15 @@ class HTMLTemplate:
             _namespace=self._namespace,
             budget=self._text.budget,
             sandbox=self._text.sandbox,
+            _session=session,
+            _budget_state=None if session is None else session.budget_state,
         )
 
     def render_template(self, name: str, data: object = None) -> str:
         """Render one associated named HTML template synchronously."""
 
         program = self._associated_program(name)
+        session = self._new_render_session()
         if not self._use_linked:
             return render_program(
                 program,
@@ -300,6 +318,8 @@ class HTMLTemplate:
                 _namespace=self._namespace,
                 budget=self._text.budget,
                 sandbox=self._text.sandbox,
+                _session=session,
+                _budget_state=None if session is None else session.budget_state,
             )
         return render_linked_program(
             self._linked_program,
@@ -310,6 +330,8 @@ class HTMLTemplate:
             format_mode=self._text.format_mode,
             budget=self._text.budget,
             sandbox=self._text.sandbox,
+            _session=session,
+            _budget_state=None if session is None else session.budget_state,
         )
 
     def render_template_to(
@@ -321,6 +343,7 @@ class HTMLTemplate:
         """Render one associated named HTML template to a text writer."""
 
         program = self._associated_program(name)
+        session = self._new_render_session()
         if not self._use_linked:
             render_program_to(
                 program,
@@ -332,6 +355,8 @@ class HTMLTemplate:
                 _namespace=self._namespace,
                 budget=self._text.budget,
                 sandbox=self._text.sandbox,
+                _session=session,
+                _budget_state=None if session is None else session.budget_state,
             )
             return
         render_linked_program_to(
@@ -344,6 +369,8 @@ class HTMLTemplate:
             format_mode=self._text.format_mode,
             budget=self._text.budget,
             sandbox=self._text.sandbox,
+            _session=session,
+            _budget_state=None if session is None else session.budget_state,
         )
 
     async def render_template_async(
@@ -354,6 +381,7 @@ class HTMLTemplate:
         """Render one associated named HTML template asynchronously."""
 
         program = self._associated_program(name)
+        session = self._new_render_session()
         return await render_program_async(
             program,
             data,
@@ -363,6 +391,8 @@ class HTMLTemplate:
             _namespace=self._namespace,
             budget=self._text.budget,
             sandbox=self._text.sandbox,
+            _session=session,
+            _budget_state=None if session is None else session.budget_state,
         )
 
     async def render_template_async_to(
@@ -374,6 +404,7 @@ class HTMLTemplate:
         """Render one associated named HTML template to an asynchronous writer."""
 
         program = self._associated_program(name)
+        session = self._new_render_session()
         await render_program_async_to(
             program,
             writer,
@@ -384,7 +415,126 @@ class HTMLTemplate:
             _namespace=self._namespace,
             budget=self._text.budget,
             sandbox=self._text.sandbox,
+            _session=session,
+            _budget_state=None if session is None else session.budget_state,
         )
+
+    def _new_render_session(self) -> RenderSession | None:
+        if not self._runtime_functions.has_context_functions:
+            return None
+        return RenderSession.create(self, self._text.budget)
+
+    def _render_template_in_session(
+        self,
+        name: str,
+        data: object,
+        session: RenderSession,
+    ) -> str:
+        program = self._associated_program(name)
+        with session.nested():
+            return render_program(
+                program,
+                data,
+                functions=self._runtime_functions,
+                missing_key=self._text.missing_key,
+                format_mode=self._text.format_mode,
+                _namespace=self._namespace,
+                _depth=session.depth,
+                budget=self._text.budget,
+                sandbox=self._text.sandbox,
+                _session=session,
+                _budget_state=session.budget_state,
+                _account_output=False,
+            )
+
+    async def _render_template_async_in_session(
+        self,
+        name: str,
+        data: object,
+        session: RenderSession,
+    ) -> str:
+        program = self._associated_program(name)
+        with session.nested():
+            return await render_program_async(
+                program,
+                data,
+                functions=self._runtime_functions,
+                missing_key=self._text.missing_key,
+                format_mode=self._text.format_mode,
+                _namespace=self._namespace,
+                _depth=session.depth,
+                budget=self._text.budget,
+                sandbox=self._text.sandbox,
+                _session=session,
+                _budget_state=session.budget_state,
+                _account_output=False,
+            )
+
+    def _render_source_in_session(
+        self,
+        source: str,
+        data: object,
+        *,
+        name: str,
+        session: RenderSession,
+    ) -> str:
+        cache_key = (id(self), name, source)
+        cached = session.dynamic_cache.get(cache_key)
+        derived = (
+            cached
+            if isinstance(cached, HTMLTemplate)
+            else self.with_source(source, name=name)
+        )
+        if cached is None and len(session.dynamic_cache) < 128:
+            session.dynamic_cache[cache_key] = derived
+        with session.nested(derived):
+            return render_program(
+                derived._program,
+                data,
+                functions=derived._runtime_functions,
+                missing_key=derived._text.missing_key,
+                format_mode=derived._text.format_mode,
+                _namespace=derived._namespace,
+                _depth=session.depth,
+                budget=derived._text.budget,
+                sandbox=derived._text.sandbox,
+                _session=session,
+                _budget_state=session.budget_state,
+                _account_output=False,
+            )
+
+    async def _render_source_async_in_session(
+        self,
+        source: str,
+        data: object,
+        *,
+        name: str,
+        session: RenderSession,
+    ) -> str:
+        cache_key = (id(self), name, source)
+        cached = session.dynamic_cache.get(cache_key)
+        derived = (
+            cached
+            if isinstance(cached, HTMLTemplate)
+            else self.with_source(source, name=name)
+        )
+        if cached is None and len(session.dynamic_cache) < 128:
+            session.dynamic_cache[cache_key] = derived
+        with session.nested(derived):
+            return await render_program_async(
+                derived._program,
+                data,
+                functions=derived._runtime_functions,
+                missing_key=derived._text.missing_key,
+                format_mode=derived._text.format_mode,
+                _namespace=derived._namespace,
+                _depth=session.depth,
+                budget=derived._text.budget,
+                sandbox=derived._text.sandbox,
+                _session=session,
+                _budget_state=session.budget_state,
+                _account_output=False,
+            )
 
     def _associated_program(self, name: str) -> Program:
         program = self._namespace.get(name)

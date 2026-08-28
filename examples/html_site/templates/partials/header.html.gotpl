@@ -1,0 +1,30 @@
+{{define "site.header" -}}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Title}} · {{.SiteName}}</title>
+  <style>
+    :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+    body { margin: 0; line-height: 1.6; }
+    header, main, footer { margin: auto; max-width: 52rem; padding: 1.25rem; }
+    header { align-items: center; display: flex; justify-content: space-between; }
+    nav { display: flex; gap: 1rem; }
+    .brand { font-size: 1.25rem; font-weight: 700; text-decoration: none; }
+    .hero { padding-block: 4rem; }
+    .card { border: 1px solid currentColor; border-radius: .75rem; padding: 1rem; }
+    footer { border-top: 1px solid currentColor; opacity: .75; }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="brand" href="/home.html">{{.SiteName}}</a>
+    <nav aria-label="Primary navigation">
+      {{range .Navigation -}}
+      <a href="{{.URL}}">{{.Label}}</a>
+      {{end -}}
+    </nav>
+  </header>
+  <main>
+{{- end}}

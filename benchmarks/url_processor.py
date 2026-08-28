@@ -44,9 +44,7 @@ def _branching_processor(value: str, *, normalize: bool) -> str:
     index = 0
     while index < len(data):
         byte = data[index]
-        is_alphanumeric = (
-            97 <= byte <= 122 or 65 <= byte <= 90 or 48 <= byte <= 57
-        )
+        is_alphanumeric = 97 <= byte <= 122 or 65 <= byte <= 90 or 48 <= byte <= 57
         if (
             is_alphanumeric
             or byte in unreserved

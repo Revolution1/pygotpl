@@ -45,6 +45,7 @@ class SandboxPolicy:
     allow_properties: frozenset[str]
     allow_methods: frozenset[str]
     allow_functions: frozenset[str]
+    allow_context_capabilities: frozenset[str]
     allow_custom_lookup: bool
     max_template_chars: int
     default_budget: ExecutionBudget
@@ -56,6 +57,7 @@ class SandboxPolicy:
         allow_properties: Iterable[str] = (),
         allow_methods: Iterable[str] = (),
         allow_functions: Iterable[str] = (),
+        allow_context_capabilities: Iterable[str] = (),
         allow_custom_lookup: bool = False,
         max_template_chars: int = 1_000_000,
         default_budget: ExecutionBudget | None = None,
@@ -66,6 +68,11 @@ class SandboxPolicy:
         object.__setattr__(self, "allow_properties", frozenset(allow_properties))
         object.__setattr__(self, "allow_methods", frozenset(allow_methods))
         object.__setattr__(self, "allow_functions", frozenset(allow_functions))
+        object.__setattr__(
+            self,
+            "allow_context_capabilities",
+            frozenset(allow_context_capabilities),
+        )
         object.__setattr__(self, "allow_custom_lookup", allow_custom_lookup)
         object.__setattr__(self, "max_template_chars", max_template_chars)
         object.__setattr__(
@@ -82,6 +89,7 @@ class SandboxPolicy:
         allow_properties: Iterable[str] = (),
         allow_methods: Iterable[str] = (),
         allow_functions: Iterable[str] = (),
+        allow_context_capabilities: Iterable[str] = (),
         allow_custom_lookup: bool = False,
         max_template_chars: int = 1_000_000,
         default_budget: ExecutionBudget | None = None,
@@ -93,6 +101,7 @@ class SandboxPolicy:
             allow_properties=allow_properties,
             allow_methods=allow_methods,
             allow_functions=allow_functions,
+            allow_context_capabilities=allow_context_capabilities,
             allow_custom_lookup=allow_custom_lookup,
             max_template_chars=max_template_chars,
             default_budget=default_budget,
@@ -106,6 +115,16 @@ class SandboxPolicy:
             rendered = ", ".join(denied)
             raise SandboxViolationError(
                 f"registered functions are not allowed by the sandbox: {rendered}"
+            )
+
+    def validate_context_capabilities(self, capabilities: Iterable[str]) -> None:
+        """Reject render-context capabilities not explicitly granted."""
+
+        denied = sorted(set(capabilities) - self.allow_context_capabilities)
+        if denied:
+            raise SandboxViolationError(
+                "runtime context capabilities are not allowed by the sandbox: "
+                + ", ".join(denied)
             )
 
 

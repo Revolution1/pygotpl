@@ -135,6 +135,21 @@ uses the pinned Helm engine rather than a locally simulated function map. The
 measured baseline and hotspot interpretation are recorded in
 [`reports/m8-helm-performance.md`](reports/m8-helm-performance.md).
 
+Complete unpacked charts can be measured with separate load, cold render,
+manifest preparation, and end-to-end phases:
+
+```console
+uv run --frozen --extra all python -m benchmarks.helm_chart \
+  /path/to/unpacked/chart -f /path/to/values.yaml \
+  --samples 7 --profile-iterations 1 --top 15
+```
+
+The runner loads dependencies from the local chart and records the chart
+version and output digest. Third-party charts are deliberately not checked in;
+the tested chart versions, semantic comparison, measured medians, and remaining
+hotspots are recorded in
+[`reports/m10-helm-complex-charts.md`](reports/m10-helm-complex-charts.md).
+
 Shared render fixtures may declare one of four modes:
 
 - `warm_render` reuses a compiled template and returns a string;
@@ -251,6 +266,31 @@ uv run --frozen python -m benchmarks.native_accelerator --samples 7
 
 See [`reports/m6-profiling.md`](reports/m6-profiling.md) and
 [`reports/m6-native-accelerator-decision.md`](reports/m6-native-accelerator-decision.md).
+
+## Environment and Extension Cost
+
+`Environment` validates and prepares shared function configuration once, then
+reuses it when constructing templates and associations. Retain an environment
+when policy is shared, and retain the resulting `Template`, `HTMLTemplate`, or
+`TemplateEngine` when sources are stable. Rebuilding either object for every
+render turns construction cost into request latency.
+
+Ordinary function-only templates do not allocate a runtime extension session.
+A session is created only when the selected registry contains a
+`ContextFunction`; nested calls then share budget counters, depth, extension
+state, and the bounded dynamic-source cache for that top-level render.
+
+On the Apple M5 / CPython 3.14.7 environment used for the extension design
+follow-up, prepared-registry reuse reduced sampled static Helm cold rendering
+from 0.692 ms to 0.497 ms and dynamic `tpl` cold rendering from 0.745 ms to
+0.559 ms. Median traced peak memory fell from 86,449 to 72,929 bytes. These are
+construction-path measurements, not latency guarantees. The exact command,
+samples, and interpretation are recorded in the
+[runtime extension design](reports/m10-unified-environment-design.md#implementation-evidence).
+
+Helm's dynamic-source cache is scoped to one top-level render and one immutable
+parent association. Repeated `tpl` strings within that render can reuse compiled
+work; values, budgets, and extension state do not leak into later renders.
 
 ## Opt-in Policy Cost
 

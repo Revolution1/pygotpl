@@ -1,21 +1,24 @@
-# Helm Functions and Runtime Example
+# Helm Functions and Runtime
+
+For a command-first walkthrough and a complete application example, start with
+[Build a Helm Renderer with gotpl](building-helm.md).
 
 ## Package Boundary
 
-`gotpl.funcs.helm` provides reusable Helm-compatible function-map additions for
-applications that own their rendering model. It does not expose a Chart class,
-loader, release model, or Helm rendering engine.
+`gotpl.funcs.helm` provides the reusable Helm-compatible function registry.
+`gotpl.exts.helm` provides `HelmExtension` and the convenient
+`HelmTemplateEngine` facade. The generic gotpl render session owns the lifecycle
+required by `include`, `tpl`, `required`, and `fail`. Neither package exposes a
+Chart class, chart loader, release model, repository client, or cluster client.
 
-The public `gotpl.TemplateEngine` API compiles named sources into one immutable
-association, accepts an independent context for each selected source, and
-provides matching synchronous and asynchronous batch APIs. Applications should
-use the package-root export rather than importing runtime implementation
-modules.
+The public `gotpl.TemplateEngine` compiles named sources into one immutable
+association. Generic association and batch-rendering concepts are owned by
+[Reusable Templates and Environments](reusable-templates.md); this page covers
+only Helm-specific behavior.
 
-The repository's `examples/helm_runtime` package demonstrates how an
-application can combine those pieces into a miniature Helm chart runtime. The
-CLI in `examples/helm_cli.py` is an integration example, not a supported
-replacement for the Helm application.
+The repository's `examples/helm_runtime` package builds Chart values and file
+contexts on top of the reusable engine. The CLI in `examples/helm_cli.py` is an
+integration example, not a supported replacement for the Helm application.
 
 ## Installation
 
@@ -30,48 +33,62 @@ Importing `gotpl.funcs.helm` and using dependency-free functions do not require
 the extra. A serializer whose dependency is absent raises an actionable
 `MissingOptionalDependencyError`.
 
-## Building an Application Function Map
+## Reusable Helm Execution
 
-Helm's `include`, `tpl`, `required`, and `fail` functions depend on application
-execution state. The application supplies those late-bound callables:
+Use `HelmExtension` when an application already constructs templates through a
+generic environment:
 
 ```python
-from gotpl import Template
-from gotpl.funcs.helm import function_map
+from gotpl import Environment
+from gotpl.exts.helm import HelmExtension
 
-
-def include(name: str, value: object) -> str:
-    return f"{name}:{value}"
-
-
-def tpl(source: str, value: object) -> str:
-    return source.replace("{{.}}", str(value))
-
-
-def required(message: str, value: object) -> object:
-    if value in (None, ""):
-        raise ValueError(message)
-    return value
-
-
-def fail(message: str) -> object:
-    raise ValueError(message)
-
-
-functions = function_map(
-    include=include,
-    tpl=tpl,
-    required=required,
-    fail=fail,
+engine = Environment(
+    extensions=(HelmExtension(),),
+    missing_key="zero",
+).from_sources(
+    {
+        "helpers.tpl": '{{define "label"}}{{.}}-label{{end}}',
+        "main.txt": '{{include "label" .}}|{{tpl "{{.}}-tpl" .}}',
+    }
 )
 
-template = Template('{{include "label" .}}', functions=functions)
-assert template.render("demo") == "label:demo"
-assert functions["getHostByName"]("example.invalid") == ""
+assert engine.render_template("main.txt", "demo") == "demo-label|demo-tpl"
 ```
 
-The returned mapping combines the Helm text function profile with those
-bindings, YAML, TOML, and decoding helpers. It removes Sprig's `env` and
+This is the extensible path: the same environment can compose application
+functions, immutable policies, and other runtime extensions. Function-name
+collisions are rejected instead of silently changing the selected profile.
+
+Use `HelmTemplateEngine` when associated sources invoke Helm's late-bound
+functions and no other environment customization is needed:
+
+```python
+from gotpl.exts.helm import HelmTemplateEngine
+
+engine = HelmTemplateEngine.from_sources(
+    {
+        "helpers.tpl": '{{define "label"}}{{.name}}-label{{end}}',
+        "main.txt": (
+            '{{include "label" .}}|{{tpl .dynamic .}}|'
+            '{{required "name required" .name}}'
+        ),
+    }
+)
+
+output = engine.render(
+    {"main.txt": {"name": "demo", "dynamic": '{{include "label" .}}'}}
+)
+assert output == {"main.txt": "demo-label|demo-label|demo"}
+```
+
+Both APIs compile their base association once. Every render receives isolated
+include-recursion state and a bounded dynamic `tpl` cache, so the same instance
+can be reused across threads and asyncio tasks. `render_async()` awaits both
+ordinary asynchronous functions and calls made through `include` or `tpl`.
+
+The lower-level `function_map()` remains available for applications with their
+own execution engine. Such applications must bind `include`, `tpl`, `required`,
+and `fail` explicitly. The returned mapping removes Sprig's `env` and
 `expandenv`, disables DNS by default, and uses an empty `lookup` result when no
 cluster adapter is supplied. Pass `enable_dns=True` only for a runtime that
 intentionally grants that capability.
@@ -80,82 +97,17 @@ intentionally grants that capability.
 custom names against the returned profile before overriding unless replacement
 is deliberate and tested.
 
-## Core Cross-file Execution
+## Application Layer
 
-Use `Template.from_sources()` when multiple sources form one template
-association and the application selects the root to render:
+The surrounding application still owns chart loading and the `.Values`,
+`.Chart`, `.Release`, `.Files`, `.Capabilities`, `.Subcharts`, and `.Template`
+root objects. The repository's `examples/helm_runtime` package demonstrates
+that layer without making a chart model part of gotpl's stable API.
 
-```python
-from gotpl import Template
-
-templates = Template.from_sources(
-    {
-        "helpers.tpl": '{{define "greeting"}}Hello {{.}}{{end}}',
-        "page.txt": '{{template "greeting" .Name}}',
-    }
-)
-
-assert templates.render_template("page.txt", {"Name": "Ada"}) == "Hello Ada"
-```
-
-Definitions from every source share the same immutable namespace. Use
-`render_template()` when the desired root is not the first source in the
-mapping.
-
-### Batch rendering
-
-`TemplateEngine` adds a batch API when several named roots need independent
-contexts:
-
-```python
-from gotpl import TemplateEngine
-
-engine = TemplateEngine.from_sources(
-    {
-        "helpers.tpl": '{{define "label"}}{{.prefix}}:{{.value}}{{end}}',
-        "first.txt": '{{template "label" .}}',
-        "second.txt": '{{template "label" .}}',
-    }
-)
-
-output = engine.render(
-    {
-        "first.txt": {"prefix": "one", "value": 1},
-        "second.txt": {"prefix": "two", "value": 2},
-    }
-)
-
-assert output == {"first.txt": "one:1", "second.txt": "two:2"}
-```
-
-`render_async()` awaits asynchronous functions while preserving the order of
-the application-provided contexts mapping.
-`with_source()` derives a new immutable engine with one added dynamic source.
-
-## Miniature Helm Example
-
-Within a repository checkout, the example runtime can be used directly:
-
-```python
-from examples.helm_runtime import Engine, Release, load_chart
-
-chart = load_chart("tests/fixtures/helm/basic")
-output = Engine().render(chart, release=Release(name="demo"))
-
-assert "basic/templates/configmap.yaml" in output
-assert "name: demo-basic" in output["basic/templates/configmap.yaml"]
-```
-
-The example supplies `.Values`, `.Chart`, `.Release`, `.Files`,
-`.Capabilities`, `.Subcharts`, and `.Template`, plus chart traversal and Helm's
-late-bound `include` and `tpl` behavior. Its fixed default capabilities match
-the pinned Helm v4.2.3 build, including the ordered 55-entry API-version set.
-
-The example intentionally supports unpacked chart directories only. Repository
-access, dependency downloading, installation, release storage, and cluster
-operations are outside its scope and are not pygotpl library APIs.
-The example path above exists in a repository checkout; it is not installed in
-the `gotpl` wheel.
+Follow [Build a Helm Renderer](building-helm.md) for the runnable CLI, values
+precedence, dependency preparation, direct Python integration, complex-chart
+command, `lookup` injection, and current example limitations. The example path
+exists only in a repository checkout and is not installed in the `gotpl` wheel.
 
 ## Security Boundary
 

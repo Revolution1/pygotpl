@@ -94,7 +94,8 @@ and do not dynamically inherit caller variables, matching Go.
 
 Use `Template.from_sources()` to associate definitions from several named
 sources. Use `render_template()` to execute a particular root or definition.
-See the runnable [associated-source example](helm.md#core-cross-file-execution).
+See the runnable
+[associated-source example](reusable-templates.md#associate-named-sources).
 `block` is shorthand for defining a default template and invoking it in place.
 
 ## Whitespace and comments

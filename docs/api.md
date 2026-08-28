@@ -8,7 +8,8 @@ release. Constructor parameters and public methods documented here are part of
 the same contract.
 
 For most applications, begin with `render`, `render_async`, `Template`, or
-`HTMLTemplate`. `TemplateEngine` serves multi-source runtimes. Policies,
+`HTMLTemplate`. `Environment` reuses construction choices and
+`TemplateEngine` serves multi-source runtimes. Policies,
 budgets, trusted HTML types, and Go-oriented value adapters are advanced APIs
 for explicit safety or compatibility requirements.
 
@@ -65,7 +66,37 @@ Text constructors and helpers accept these keyword options:
 | `budget=None` | Optional per-render `ExecutionBudget`. |
 | `extensions=None` | Optional immutable `PythonExtensions`. |
 
+The final option is the original `Template` constructor name for
+`PythonExtensions`. `Environment` uses the unambiguous `python_extensions=` for
+that object and reserves `extensions=` for context-aware `gotpl.exts`
+integrations.
+
 ## Reusable Templates
+
+### `Environment`
+
+`Environment` is an immutable factory for applications that reuse a function
+profile, delimiters, missing-key behavior, sandbox, or execution budget. It
+does not discover files or own a mutable template cache.
+
+```python
+from gotpl import Environment
+
+environment = Environment(functions={"upper": str.upper}, missing_key="error")
+template = environment.from_string("{{upper .name}}")
+engine = environment.from_sources({"main.txt": "{{upper .name}}"})
+html = environment.from_html_string("<p>{{.name}}</p>")
+html_set = environment.from_html_sources({"main.html": "<p>{{.name}}</p>"})
+```
+
+`with_functions(..., replace=False)` and `with_extensions(...)` return new
+environments. `Environment.pythonic()` is the short constructor for Go
+template syntax with `format_mode="python"` and selected Python-native helper
+categories; `Environment.pythonic()` selects `common`, and
+`Environment.pythonic("all")` additionally selects Python regex. Accidental
+name collisions fail at construction time. See
+[Reusable Templates and Environments](reusable-templates.md) for object
+selection, associations, directory loading, and immutable derivation.
 
 ### `Template`
 
@@ -94,7 +125,7 @@ ordered mapping of source name to source text. `with_source` returns a new
 association and never mutates its parent. `with_functions` returns an immutable
 derivative that reuses compiled programs while adding or replacing registered
 callbacks. See the runnable
-[associated-source example](helm.md#core-cross-file-execution).
+[associated-source example](reusable-templates.md#associate-named-sources).
 
 ### `HTMLTemplate`
 
@@ -114,11 +145,16 @@ engine.with_source(source, *, name="template") -> TemplateEngine
 engine.with_functions(functions) -> TemplateEngine
 engine.render(contexts) -> dict[str, str]
 await engine.render_async(contexts) -> dict[str, str]
+engine.render_template(name, data=None) -> str
+await engine.render_template_async(name, data=None) -> str
+engine.render_source(source, data=None, *, name="template") -> str
+await engine.render_source_async(source, data=None, *, name="template") -> str
 ```
 
 Each key in `contexts` selects a named source and supplies that source's dot
 value. Output preserves input mapping order. The
-[batch-rendering example](helm.md#batch-rendering) shows the complete
+[batch-rendering example](reusable-templates.md#batch-render-independent-roots)
+shows the complete
 construction and result.
 
 ## Values and Formatting
@@ -210,7 +246,9 @@ else:
 
 `SandboxPolicy(...)` and `SandboxPolicy.strict(...)` construct immutable
 allowlists for attributes, properties, methods, registered functions, and
-custom lookup. `ExecutionBudget(...)` independently limits output characters,
+custom lookup. Context-aware functions additionally require their declared
+capabilities in `allow_context_capabilities`. `ExecutionBudget(...)`
+independently limits output characters,
 range iterations, associated-template depth, and function calls. Passing a
 policy without a budget uses the policy's default budget.
 
@@ -265,7 +303,16 @@ else:
     raise AssertionError("missing key did not fail")
 ```
 
-## Function Libraries
+## Functions and Extensions
+
+Framework authors may wrap a callable in `ContextFunction` when it needs the
+current immutable association. The VM injects `RenderContext` or
+`AsyncRenderContext`; template-visible arguments remain ordinary positional
+arguments. `Extension` groups such callables for explicit composition through
+`Environment`. The extension API is exposed from `gotpl.exts`; it does not
+expose VM scopes or instructions. The
+[runtime extension guide](extensions.md) owns runnable consumer and author
+examples, render-context services, state, and capability grants.
 
 Sprig and Slim-Sprig expose the following functions from
 `gotpl.funcs.sprig` and `gotpl.funcs.slim_sprig`:
@@ -282,10 +329,14 @@ Sprout exposes immutable inventory types, `registry(name)`, `group(name)`, and
 `Handler`. Build an explicit function map with
 `Handler(registry("strings"), registry("numeric")).build()`.
 
-Helm exposes `gotpl.funcs.helm.function_map(...)`. Applications must provide
-the runtime-owned `include`, `tpl`, `required`, and `fail` callables. `lookup`,
-DNS, and custom overrides are explicit options. Serializer and diagnostic
-differences are documented in [Helm Integration](helm.md).
+Helm exposes `gotpl.exts.helm.HelmExtension` for composition with a generic
+`Environment` and `HelmTemplateEngine` as the shortest Helm-specific facade.
+Both provide library-owned `include`, `tpl`, `required`, and `fail` behavior.
+The lower-level `gotpl.funcs.helm.function_map(...)` remains available for
+applications that own an alternative execution lifecycle and bind those
+callables themselves.
+`lookup`, DNS, and custom overrides are explicit options. Serializer and
+diagnostic differences are documented in [Helm Integration](helm.md).
 
 See [Function Libraries](function-libraries.md) for profile selection,
 capability warnings, runnable Sprig/Slim-Sprig/Sprout examples, and safe
@@ -293,10 +344,13 @@ composition with application functions.
 
 ## Python-Native Functions
 
-`PythonExtensions(re_match=True)` enables `reMatch`, which uses Python
-`re.search` semantics. It never replaces Sprig's RE2-compatible `regexMatch`
-and is disabled by default. The [sandbox guide](sandbox.md#python-rematch)
-contains the runnable example and its backtracking-risk boundary.
+`PythonExtensions.from_categories("regex")` enables `reMatch`, which uses
+Python `re.search` semantics. `PythonExtensions.common()` selects text,
+encoding, hashing, and compression helpers; `PythonExtensions.all()` also adds
+Python regex. These never replace Sprig's RE2-compatible `regexMatch` and are
+disabled by default. The [function-library guide](function-libraries.md#python-native-helpers)
+lists every helper, and the [sandbox guide](sandbox.md#python-rematch) covers
+the backtracking-risk boundary.
 
 ## Version
 

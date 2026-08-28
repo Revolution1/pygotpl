@@ -2,8 +2,10 @@
 
 ## Requirements
 
-gotpl supports Python 3.11 and newer. Runtime use does not require Go, a C
-compiler, a subprocess, or a compiled extension.
+gotpl supports CPython 3.11 through 3.14 and PyPy 3.11. Runtime use does not
+require Go, a C compiler, a subprocess, or a compiled extension. See the
+[support policy](support.md#python-and-platform-support) for the exact tested
+matrix and pre-1.0 versioning boundary.
 
 ## Installation
 
@@ -70,51 +72,38 @@ assert greeting.render({"Name": "Linus"}) == "Hello Linus"
 Templates are immutable from the caller's perspective and may be shared across
 threads and asyncio tasks.
 
-## Register a function
+## Reuse configuration across templates
 
 Functions must be registered before parsing because the Go grammar validates
-function names during template construction:
+function names during template construction. Use an `Environment` when several
+templates share functions, missing-key behavior, delimiters, sandbox policy, or
+runtime extensions:
 
 ```python
-from gotpl import Template
+from gotpl import Environment
 
 
 def title(value: str) -> str:
     return value.title()
 
 
-template = Template("{{title .}}", functions={"title": title})
-assert template.render("hello gopher") == "Hello Gopher"
-```
-
-### Extend an already compiled template
-
-Templates stay immutable. Use `with_functions()` to derive a template with an
-added or replaced registry while reusing its compiled programs and associated
-template namespace:
-
-```python
-from gotpl import Template
-
-plain = Template("{{decorate .}}", functions={"decorate": str})
-loud = plain.with_functions(
-    {
-        "decorate": lambda value: f"<{value}>",
-        "upper": lambda value: str(value).upper(),
-    }
+environment = Environment(
+    functions={"title": title},
+    missing_key="error",
 )
 
-assert plain.render("hello") == "hello"
-assert loud.render("hello") == "<hello>"
-assert loud.render_source("{{upper .}}", "hello") == "HELLO"
+greeting = environment.from_string("Hello {{title .Name}}")
+heading = environment.from_html_string("<h1>{{title .Name}}</h1>")
+
+assert greeting.render({"Name": "ada"}) == "Hello Ada"
+assert heading.render({"Name": "linus"}) == "<h1>Linus</h1>"
 ```
 
-An original source cannot refer to an unknown function and then add it after
-construction: Go-compatible semantic validation rejects the unknown name while
-compiling. Register those names in the constructor. Newly added names are
-available to later `with_source()` and `render_source()` calls. The same
-`with_functions()` method is available on `HTMLTemplate` and `TemplateEngine`;
-HTML derivatives rerun contextual analysis.
+An environment is immutable configuration, not a filesystem loader or mutable
+template cache. Construct it once, then create as many unrelated templates or
+complete source associations as the application needs. The
+[reusable-template guide](reusable-templates.md) explains object selection,
+directory loading, `TemplateEngine`, and immutable derivation.
 
 ## Next steps
 
@@ -124,8 +113,10 @@ HTML derivatives rerun contextual analysis.
   [async rendering](async.md).
 - Add Sprig, Slim-Sprig, Sprout, Helm, or Python-native functions through
   [explicit function libraries](function-libraries.md).
-- Compile associated files and batch-render named roots in the
-  [multi-file guide](helm.md#core-cross-file-execution).
+- Compile associated files, load directories, and batch-render named roots in
+  [reusable templates and environments](reusable-templates.md).
+- Add associated or dynamic rendering behavior through
+  [runtime extensions](extensions.md).
 - Set policy and resource limits for untrusted input in the
   [sandbox guide](sandbox.md).
 - Browse construction options and the complete public surface in the

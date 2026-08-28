@@ -78,27 +78,67 @@ optional extra.
 
 ## Helm
 
-`gotpl.funcs.helm.function_map()` supplies reusable Helm-compatible functions.
-The surrounding application owns chart loading, `.Values`, `.Release`,
-`.Chart`, capabilities, and the runtime-specific `include`, `tpl`, `required`,
-and `fail` callables. See [Multi-file and Helm integration](helm.md).
+`gotpl.funcs.helm.function_map()` is the lower-level Helm-compatible function
+registry for applications that intentionally own the execution callbacks for
+`include`, `tpl`, `required`, and `fail`. Most applications should use the
+context-aware `gotpl.exts.helm.HelmExtension` instead. See
+[Runtime Extensions](extensions.md#helm-extension) for the abstraction and
+[Helm Functions and Runtime](helm.md) for Helm-specific configuration.
 
 ## Python-native helpers
 
-Python helpers are separately opt-in:
+Python helpers are separately opt-in and are grouped by standard-library
+category. The most direct entry point for applications that want Go template
+syntax but Python values, formatting, and helpers is `Environment.pythonic()`:
 
 ```python
-from gotpl import PythonExtensions, Template
+from gotpl import Environment
 
-template = Template(
-    r"{{reMatch `(?<=v)\d+` .}}",
-    extensions=PythonExtensions(re_match=True),
+environment = Environment.pythonic(
+    "all",  # include the regex category as well
+    functions={"typeName": lambda value: type(value).__name__},
 )
-assert template.render("v12") == "true"
+template = environment.from_string(
+    '{{pyPrint .items}}|{{typeName .items}}|{{reMatch "ell" .name}}'
+)
+assert template.render({"items": [1, 2], "name": "hello"}) == "[1, 2]|list|True"
 ```
 
-`reMatch` uses Python `re.search` behavior. It never replaces Sprig's
-RE2-compatible `regexMatch`.
+With no arguments, `Environment.pythonic()` enables the `common` profile:
+`text`, `encoding`, `hashing`, and `compression`. Select only what an
+application needs with `Environment.pythonic("hashing", "compression")`, or
+select a profile explicitly with `Environment(python_extensions="common")` or
+`Environment(python_extensions="all")`.
+
+| Category | Functions |
+| --- | --- |
+| `text` | `pyPrint`, `pformat` |
+| `encoding` | `utf8Encode`, `utf8Decode`, `b64encode`, `b64decode`, `hexEncode`, `hexDecode` |
+| `hashing` | `hashDigest`, `md5`, `sha1`, `sha256`, `sha512` |
+| `compression` | `gzipCompress`/`gzipDecompress`, `zlibCompress`/`zlibDecompress`, `bz2Compress`/`bz2Decompress`, `lzmaCompress`/`lzmaDecompress` |
+| `regex` | `reMatch` |
+
+Compression and decoding helpers exchange Python `bytes`; use
+`utf8Encode`/`utf8Decode` or base64 helpers at a text boundary. For example,
+`{{"hello" | utf8Encode | gzipCompress | b64encode}}` is portable text.
+
+`reMatch` uses Python `re.search` behavior and is deliberately excluded from
+`common` because Python regex can backtrack. It never replaces Sprig's
+RE2-compatible `regexMatch`. `PythonExtensions` remains available when an
+application wants an explicit value object:
+
+```python
+from gotpl import Environment, PythonExtensions
+
+environment = Environment(
+    python_extensions=PythonExtensions.from_categories("hashing", "compression"),
+)
+```
+
+Do not use Python's built-in `hash()` as a template helper: its result is
+intentionally randomized between processes. Use an explicit digest such as
+`sha256` instead. Python helpers are a function registry, not a render-context
+extension, so they remain separate from `gotpl.exts`.
 
 ## Combine a registry with application functions
 

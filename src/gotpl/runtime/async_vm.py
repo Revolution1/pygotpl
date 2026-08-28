@@ -18,8 +18,15 @@ from .awaitables import is_awaitable
 from .callables import (
     CallSpec,
     TemplateCallArityError,
+    invoke_prepared_context_function,
     invoke_prepared_template_function,
     invoke_template_function,
+)
+from .context import (
+    AsyncRenderContext,
+    ContextFunction,
+    RenderSession,
+    require_render_session,
 )
 from .gofmt import FormatMode
 from .policy import ExecutionBudget, ExecutionBudgetState, SandboxPolicy
@@ -65,6 +72,9 @@ async def render_program_async(
     _logical_builtins: frozenset[str] | None = None,
     budget: ExecutionBudget | None = None,
     sandbox: SandboxPolicy | None = None,
+    _session: RenderSession | None = None,
+    _budget_state: ExecutionBudgetState | None = None,
+    _account_output: bool = True,
 ) -> str:
     """Execute a compiled program and return its text asynchronously."""
 
@@ -81,6 +91,9 @@ async def render_program_async(
         _logical_builtins=_logical_builtins,
         budget=budget,
         sandbox=sandbox,
+        _session=_session,
+        _budget_state=_budget_state,
+        _account_output=_account_output,
     )
     return output.getvalue()
 
@@ -100,17 +113,23 @@ async def render_program_async_to(
     budget: ExecutionBudget | None = None,
     sandbox: SandboxPolicy | None = None,
     _budget_state: ExecutionBudgetState | None = None,
+    _session: RenderSession | None = None,
+    _account_output: bool = True,
 ) -> None:
     """Execute a compiled program against a sync or async text writer."""
 
     location = _ExecutionLocation() if _location is None else _location
     try:
         budget_state = (
-            ExecutionBudgetState(budget) if budget is not None else _budget_state
+            _budget_state
+            if _budget_state is not None
+            else ExecutionBudgetState(budget)
+            if budget is not None
+            else None
         )
         budgeted_writer: AsyncTextWriter = (
             _AsyncBudgetedWriter(writer, budget_state)
-            if budget_state is not None
+            if budget_state is not None and _account_output
             else writer
         )
         await _render_program_async_to(
@@ -126,6 +145,7 @@ async def render_program_async_to(
             _location=location,
             sandbox=sandbox,
             _budget_state=budget_state,
+            _session=_session,
         )
     except TemplateExecutionError as error:
         error.attach_location(
@@ -151,6 +171,7 @@ async def _render_program_async_to(
     _location: _ExecutionLocation,
     sandbox: SandboxPolicy | None,
     _budget_state: ExecutionBudgetState | None,
+    _session: RenderSession | None,
 ) -> None:
     _location.program = program
     _location.position = 0
@@ -185,6 +206,7 @@ async def _render_program_async_to(
         _location,
         _budget_state,
         sandbox,
+        session=_session,
     )
     current_program = program
     instructions = current_program.instructions
@@ -329,6 +351,7 @@ async def _render_program_async_to(
                 _location,
                 context.budget_state,
                 sandbox,
+                session=context.session,
             )
             pc = 0
         else:
@@ -399,7 +422,7 @@ async def _evaluate_command(
         if function is None:
             raise TemplateExecutionError(f"function {name!r} is not defined")
         arguments = [
-            await _evaluate_operand(item, context) for item in command.arguments[1:]
+            await _evaluate_argument(item, context) for item in command.arguments[1:]
         ]
         if piped is not INVALID:
             arguments.append(piped)
@@ -408,9 +431,12 @@ async def _evaluate_command(
             function,
             arguments,
             context.call_specs[name],
-            context.budget_state,
+            context,
         )
-    arguments = [await _evaluate_operand(item, context) for item in command.arguments]
+    arguments = [await _evaluate_operand(first, context)]
+    arguments.extend(
+        [await _evaluate_argument(item, context) for item in command.arguments[1:]]
+    )
     if piped is not INVALID:
         arguments.append(piped)
     first_value = arguments[0]
@@ -421,11 +447,25 @@ async def _evaluate_command(
             first_value,
             arguments[1:],
             _UNPREPARED_CALL,
-            context.budget_state,
+            context,
         )
     if len(arguments) != 1:
         raise TemplateExecutionError("non-callable command has arguments")
     return first_value
+
+
+async def _evaluate_argument(operand: Operand, context: _ExecutionContext) -> object:
+    value = await _evaluate_operand(operand, context)
+    if not is_bound_method(value):
+        return value
+    method_name = getattr(value, "__name__", "method")
+    return await _invoke_registered_function(
+        method_name if isinstance(method_name, str) else "method",
+        value,
+        [],
+        _UNPREPARED_CALL,
+        context,
+    )
 
 
 async def _evaluate_operand(operand: Operand, context: _ExecutionContext) -> object:
@@ -462,7 +502,7 @@ async def _evaluate_operand(operand: Operand, context: _ExecutionContext) -> obj
             function,
             [],
             context.call_specs[operand.value],
-            context.budget_state,
+            context,
         )
     else:
         raise TemplateExecutionError(f"operand {kind.name} is not directly evaluable")
@@ -480,7 +520,7 @@ async def _lookup_chain(
             break
         if index < len(fields) - 1 and is_bound_method(value):
             value = await _invoke_registered_function(
-                field, value, [], _UNPREPARED_CALL, context.budget_state
+                field, value, [], _UNPREPARED_CALL, context
             )
     return value
 
@@ -490,21 +530,48 @@ async def _invoke_registered_function(
     function: Callable[..., object],
     arguments: list[object],
     spec: object = _UNPREPARED_CALL,
-    budget_state: ExecutionBudgetState | None = None,
+    context: _ExecutionContext | None = None,
 ) -> object:
+    budget_state = None if context is None else context.budget_state
     if budget_state is not None:
         budget_state.consume_function_call()
     try:
-        value = (
-            invoke_template_function(name, function, arguments)
-            if spec is _UNPREPARED_CALL
-            else invoke_prepared_template_function(
+        if isinstance(function, ContextFunction):
+            if context is None:
+                raise TemplateExecutionError(
+                    f"context function {name!r} has no execution context"
+                )
+            session = require_render_session(context.session)
+            location = context.location
+            render_context = AsyncRenderContext(
+                session,
+                root=context.root,
+                dot=context.dot,
+                source_name=("template" if location is None else location.source_name),
+                template_name=(
+                    "template" if location is None else location.template_name
+                ),
+            )
+            implementation = function.async_ or function.sync
+            assert implementation is not None
+            value = invoke_prepared_context_function(
                 name,
-                function,
+                implementation,
+                render_context,
                 arguments,
                 cast(CallSpec | None, spec),
             )
-        )
+        else:
+            value = (
+                invoke_template_function(name, function, arguments)
+                if spec is _UNPREPARED_CALL
+                else invoke_prepared_template_function(
+                    name,
+                    function,
+                    arguments,
+                    cast(CallSpec | None, spec),
+                )
+            )
         if is_awaitable(value):
             value = await value
         return unwrap_function_result(value)
