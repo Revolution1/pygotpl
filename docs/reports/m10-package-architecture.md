@@ -74,8 +74,8 @@ cache, and support ambiguity without protecting an established stable API.
 
 ## Dependency and Import Evidence
 
-Published root metadata depends on `goduration>=0.0.0,<2.0.0` and
-`gotime>=0.0.0,<2.0.0`; `gotime` declares the same pre-2.0 bound for
+Published root metadata depends on `goduration>=0.1.0,<2.0.0` and
+`gotime-py>=0.1.0,<2.0.0`; `gotime-py` declares the same pre-2.0 bound for
 `goduration`. Local `[tool.uv.sources]` entries select workspace members only
 during development and are not wheel metadata. The executable architecture
 test verifies:

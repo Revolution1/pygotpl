@@ -1,0 +1,35 @@
+name: Publish goduration
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish goduration to PyPI
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - name: Check out release
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.12.5"
+          enable-cache: true
+
+      - name: Build goduration
+        run: uv build --package goduration --out-dir dist
+
+      - name: Publish goduration
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/

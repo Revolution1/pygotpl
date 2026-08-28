@@ -28,7 +28,7 @@ The complete Go 1.27 API inventory and delivery order are tracked in
 ## Installation
 
 ```console
-python -m pip install gotime
+python -m pip install gotime-py
 ```
 
 The compatible `goduration` release is installed automatically.

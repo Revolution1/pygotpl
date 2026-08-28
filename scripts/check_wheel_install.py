@@ -37,7 +37,7 @@ def main() -> None:
     for name, expected_files in {
         "gotpl": {"LICENSE", "THIRD_PARTY_NOTICES.md"},
         "goduration": {"LICENSE"},
-        "gotime": {"LICENSE"},
+        "gotime-py": {"LICENSE"},
     }.items():
         installed = distribution(name)
         assert installed.metadata["License-Expression"] == "Apache-2.0"

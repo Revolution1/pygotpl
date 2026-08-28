@@ -3,7 +3,7 @@ requires = ["hatchling>=1.32.0"]
 build-backend = "hatchling.build"
 
 [project]
-name = "gotime"
+name = "gotime-py"
 version = "0.1.0"
 description = "Dual-surface Go-compatible and Python-native time values"
 readme = "README.md"

@@ -138,7 +138,7 @@ jobs:
       - run: uv build --all-packages
       - run: ./scripts/check_reproducible_builds.sh
       - run: uv venv .package-venv
-      - run: uv pip install --python .package-venv/bin/python --no-index --no-deps --find-links dist gotpl==0.0.0 goduration==0.0.0 gotime==0.0.0
+      - run: uv pip install --python .package-venv/bin/python --no-index --no-deps --find-links dist gotpl==0.1.0 goduration==0.1.0 gotime-py==0.1.0
       - run: uv pip install --python .package-venv/bin/python tzdata==2026.3 tzlocal==5.4.4
       - run: .package-venv/bin/python scripts/check_wheel_install.py
       - name: Type-check an isolated wheel consumer

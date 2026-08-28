@@ -13,7 +13,7 @@ matrix and pre-1.0 versioning boundary.
 python -m pip install gotpl
 ```
 
-This installs compatible `goduration` and `gotime` releases automatically.
+This installs compatible `goduration` and `gotime-py` releases automatically.
 Optional capabilities are installed only when an application needs them:
 
 ```console
@@ -24,12 +24,12 @@ python -m pip install "gotpl[helm]"
 Installing an extra makes its dependencies available; it does not implicitly
 add functions to a template. Function registries remain explicit.
 
-Install `goduration` or `gotime` directly only when using those standalone APIs
+Install `goduration` or `gotime-py` directly only when using those standalone APIs
 without the template engine:
 
 ```console
 python -m pip install goduration
-python -m pip install gotime
+python -m pip install gotime-py
 ```
 
 ## Render a template

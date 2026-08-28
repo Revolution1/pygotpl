@@ -1,6 +1,6 @@
 # gotime API
 
-Install the standalone package with `pip install gotime`.
+Install the standalone package with `pip install gotime-py`.
 
 Top-level `gotime.Time` is the Go-compatible surface. Import
 `gotime.python.Time` for the Python-native surface.

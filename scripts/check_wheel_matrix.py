@@ -50,7 +50,7 @@ def main() -> None:
             str(distributions),
             "gotpl==0.1.0",
             "goduration==0.1.0",
-            "gotime==0.1.0",
+            "gotime-py==0.1.0",
         )
         _run(
             uv,

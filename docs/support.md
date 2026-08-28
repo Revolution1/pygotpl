@@ -6,7 +6,8 @@ The repository releases three pure Python distributions:
 
 - `gotpl`, the template engine and opt-in function libraries;
 - `goduration`, the standalone duration value API; and
-- `gotime`, the standalone time API, which depends on `goduration`.
+- `gotime-py`, the standalone time API, which provides the `gotime` import
+	package and depends on `goduration`.
 
 `gotpl` depends on both value packages. Formatting and RE2 compatibility are
 private `gotpl._compat` implementation modules and are never published as

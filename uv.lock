@@ -5,7 +5,7 @@ requires-python = ">=3.11"
 [manifest]
 members = [
     "goduration",
-    "gotime",
+    "gotime-py",
     "gotpl",
 ]
 
@@ -641,7 +641,7 @@ quality = [
 test = [{ name = "pytest", specifier = ">=9.1.1" }]
 
 [[package]]
-name = "gotime"
+name = "gotime-py"
 version = "0.1.0"
 source = { editable = "packages/gotime" }
 dependencies = [
@@ -693,7 +693,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "goduration" },
-    { name = "gotime" },
+    { name = "gotime-py" },
     { name = "tzdata" },
     { name = "tzlocal" },
 ]
@@ -763,7 +763,7 @@ requires-dist = [
     { name = "cryptography", marker = "extra == 'all'", specifier = ">=50.0.1" },
     { name = "cryptography", marker = "extra == 'crypto'", specifier = ">=50.0.1" },
     { name = "goduration", editable = "packages/goduration" },
-    { name = "gotime", editable = "packages/gotime" },
+    { name = "gotime-py", editable = "packages/gotime" },
     { name = "pyyaml", marker = "extra == 'all'", specifier = ">=6.0.3" },
     { name = "pyyaml", marker = "extra == 'helm'", specifier = ">=6.0.3" },
     { name = "pyyaml", marker = "extra == 'yaml'", specifier = ">=6.0.3" },
