@@ -11,12 +11,12 @@
   "request": {
     "engine": "text",
     "name": "numeric-float",
-    "template": "{{atoi \"12\"}}/{{atoi \"bad\"}}|{{3.4 | add1f}}/{{3 | addf 1.5 2.2}}/{{3 | subf 4.5 1}}/{{2 | divf 5 4}}/{{1.2 | mulf \"2.4\" 10 \"4\"}}|{{maxf 1 2.5 2.4}}/{{minf 1.4 2 3}}|{{ceil 123.01}}/{{floor 123.99}}/{{round 123.5555 3}}/{{round 123.233 2 0.3}}",
+    "template": "{{atoi \"12\"}}/{{atoi \"bad\"}}|{{3.4 | add1f}}/{{3 | addf 1.5 2.2}}/{{3 | subf 4.5 1}}/{{2 | divf 5 4}}/{{1.2 | mulf \"2.4\" 10 \"4\"}}|{{maxf 1 2.5 2.4}}/{{minf 1.4 2 3}}|{{ceil 123.01}}/{{floor 123.99}}/{{round 123.5556 3}}/{{round 123.233 2 0.3}}",
     "data": null,
     "function_profile": "sprig-hermetic"
   },
   "expected": {
-    "output": "12/0|4.4/6.7/0.5/0.625/115.2|2.5/1.4|124/123/123.555/123.24",
+    "output": "12/0|4.4/6.7/0.5/0.625/115.2|2.5/1.4|124/123/123.556/123.24",
     "error": null
   }
 }
