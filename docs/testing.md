@@ -117,22 +117,27 @@ percentage printed by `coverage report` is informational only.
 
 ## CI Matrix
 
-The required matrix includes:
+The required CI tiers include:
 
-- CPython 3.11, 3.12, 3.13, and 3.14.
-- CPython 3.14 as the primary development job.
-- PyPy 3.11.
-- Linux, macOS, and Windows.
-- The exact pinned Go reference.
-- Ruff, strict Pyright, a strict generated-documentation build, unit tests,
-  conformance tests, and package installation.
+- A primary CPython 3.14 Linux job with Ruff, strict Pyright, a strict
+  generated-documentation build, the complete test suite, and the exact
+  branch-aware coverage gate.
+- Runtime suites on Linux for CPython 3.11, 3.12, and 3.13 and PyPy 3.11, plus
+  CPython 3.14 on macOS.
+- An installed-wheel public-API smoke test on Windows with CPython 3.14.
+- A separate exact pinned Go reference job and a separate reproducible package
+  build and isolated installation job.
 
-Every supported-interpreter job also runs `scripts/check_wheel_matrix.py`. It
-builds the three coordinated universal wheels, installs the project artifacts
-without consulting an index or building dependencies from source, installs
-only binary runtime dependencies, removes Go and compiler commands from
-`PATH`, and exercises the public installation smoke test. A source-tree test
-run does not substitute for this wheel check.
+The matrix is deliberately tiered instead of taking the Cartesian product of
+every interpreter and operating system. Compatibility behavior and coverage
+are established once in the primary job; alternate interpreters run the
+architecture, async, security, unit, and workspace-package suites without
+repeating Go-backed conformance or coverage collection. Windows validates the
+three coordinated universal wheels through `scripts/check_wheel_matrix.py`,
+which installs the project artifacts without consulting an index or building
+dependencies from source, removes Go and compiler commands from `PATH`, and
+exercises the public installation smoke test. A source-tree test run does not
+substitute for the Linux and Windows wheel checks.
 
 Preview Python and Go releases may run as non-blocking forward-compatibility
 jobs. Stable releases are adopted only after the complete applicable suite

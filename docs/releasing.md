@@ -56,8 +56,9 @@ never hidden inside an unrelated patch release.
 8. Run `scripts/check_reproducible_builds.sh` with the release epoch and compare
    its artifacts with the publication build.
 9. Install the wheel into an isolated environment and run the public smoke test.
-   Use `python scripts/check_wheel_matrix.py` on every supported interpreter;
-   the hosted matrix supplies the required operating-system coverage.
+   Use `python scripts/check_wheel_matrix.py` on the primary Linux interpreter;
+   the hosted Windows wheel job supplies the second operating-system check,
+   while source-tree runtime jobs cover the remaining supported interpreters.
 10. Create a signed `v*` release tag after the release PR passes and merge it.
 11. Require the tag CI and documentation deployment to pass.
 12. Publish through a trusted GitHub Actions environment using PyPI trusted

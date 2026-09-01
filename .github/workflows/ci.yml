@@ -15,8 +15,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  quality:
+  primary:
     if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'release')
+    name: primary (ubuntu-latest, Python 3.14)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -31,81 +32,68 @@ jobs:
       - run: uv run --frozen ruff format --check .
       - run: uv run --frozen pyright
       - run: uv run --frozen --group docs mkdocs build --strict
+      - uses: actions/setup-go@v7
+        with:
+          go-version: "1.27.0"
+          cache-dependency-path: |
+            tools/oracle/go.sum
+            tools/sprig_oracle/go.sum
+            tools/helm_oracle/go.sum
+      - name: Sync pinned upstream references
+        run: ./scripts/sync_references.sh
+      - run: uv run --frozen coverage run -m pytest -q
+      - run: uv run --frozen coverage report
+      - run: uv run --frozen coverage json -o coverage-summary.json
+      - run: uv run --frozen python scripts/check_coverage.py coverage-summary.json
 
-  tests:
+  runtime-compatibility:
     if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'release')
-    name: tests (${{ matrix.os }}, Python ${{ matrix.python }})
+    name: runtime (${{ matrix.os }}, ${{ matrix.label }})
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        python: ["3.11", "3.12", "3.13", "3.14"]
+        include:
+          - os: ubuntu-latest
+            python: "3.11"
+            label: Python 3.11
+          - os: ubuntu-latest
+            python: "3.12"
+            label: Python 3.12
+          - os: ubuntu-latest
+            python: "3.13"
+            label: Python 3.13
+          - os: macos-latest
+            python: "3.14"
+            label: Python 3.14
+          - os: ubuntu-latest
+            python: "pypy3.11"
+            label: PyPy 3.11
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python }}
-      - uses: actions/setup-go@v7
-        with:
-          go-version: "1.27.0"
-          cache-dependency-path: |
-            tools/oracle/go.sum
-            tools/sprig_oracle/go.sum
-            tools/helm_oracle/go.sum
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           enable-cache: true
-      - run: uv sync --frozen --extra all --all-groups
-      - name: Sync pinned upstream references
-        shell: bash
-        run: ./scripts/sync_references.sh
-      - run: uv run --frozen coverage run -m pytest -q
-      - run: uv run --frozen coverage report
-      - run: uv run --frozen coverage json -o coverage-summary.json
-      - run: uv run --frozen python scripts/check_coverage.py coverage-summary.json
-      - name: Test workspace distributions from member directories
-        shell: bash
-        run: |
-          for package in goduration gotime; do
-            uv run --directory "packages/$package" --frozen pytest -q
-          done
-      - name: Build and smoke-test wheels on this interpreter
-        run: uv run --frozen python scripts/check_wheel_matrix.py
+      - run: uv sync --python "${{ matrix.python }}" --frozen --extra all --all-groups
+      - name: Run interpreter and runtime suites
+        run: >-
+          uv run --python "${{ matrix.python }}" --frozen pytest -q
+          tests/architecture tests/async tests/security tests/unit packages
 
-  pypy:
+  windows-wheel:
     if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'release')
-    name: tests (ubuntu-latest, PyPy 3.11)
-    runs-on: ubuntu-latest
+    name: wheel smoke (windows-latest, Python 3.14)
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
-          python-version: "pypy3.11"
-      - uses: actions/setup-go@v7
-        with:
-          go-version: "1.27.0"
-          cache-dependency-path: |
-            tools/oracle/go.sum
-            tools/sprig_oracle/go.sum
-            tools/helm_oracle/go.sum
+          python-version: "3.14"
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
-        with:
-          enable-cache: true
-      - run: uv sync --python pypy3.11 --frozen --extra all --all-groups
-      - name: Sync pinned upstream references
-        run: ./scripts/sync_references.sh
-      - run: uv run --python pypy3.11 --frozen coverage run -m pytest -q
-      - run: uv run --python pypy3.11 --frozen coverage report
-      - run: uv run --python pypy3.11 --frozen coverage json -o coverage-summary.json
-      - run: uv run --python pypy3.11 --frozen python scripts/check_coverage.py coverage-summary.json
-      - name: Test workspace distributions from member directories
-        run: |
-          for package in goduration gotime; do
-            uv run --python pypy3.11 --directory "packages/$package" --frozen pytest -q
-          done
-      - name: Build and smoke-test wheels on PyPy
-        run: uv run --python pypy3.11 --frozen python scripts/check_wheel_matrix.py
+      - run: python scripts/check_wheel_matrix.py
 
   go-oracle:
     if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'release')
@@ -156,21 +144,3 @@ jobs:
           cp scripts/wheel_typecheck.py "$RUNNER_TEMP/wheel_typecheck.py"
           cd "$RUNNER_TEMP"
           "$GITHUB_WORKSPACE/.venv/bin/pyright" --pythonpath "$GITHUB_WORKSPACE/.package-venv/bin/python" wheel_typecheck.py
-
-  benchmark-smoke:
-    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'release')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.14"
-      - uses: actions/setup-go@v7
-        with:
-          go-version: "1.27.0"
-          cache: false
-      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
-      - run: uv sync --frozen --all-groups
-      - run: uv run --frozen python -m benchmarks.compare
-      - run: uv run --frozen python -m benchmarks.helm_runtime --samples 1 --iterations 10 --memory-samples 1 --profile-iterations 1 --top 3
-      - run: uv run --frozen python -m benchmarks.sandbox --iterations 10 --samples 1

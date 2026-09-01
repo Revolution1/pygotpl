@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 from dataclasses import FrozenInstanceError
 
 import pytest
@@ -134,8 +135,12 @@ def test_python_text_encoding_hashing_and_compression_functions_compose() -> Non
         (
             '{{pyPrint "release" 42}}',
             "{{pformat .mapping}}",
+            '{{md5 "hello"}}',
+            '{{sha1 "hello"}}',
             '{{sha256 "hello"}}',
+            '{{sha512 "hello"}}',
             '{{hashDigest "sha256" "hello"}}',
+            '{{utf8Decode "already text"}}',
             '{{utf8Decode (b64decode (b64encode (utf8Encode "hello")))}}',
             '{{utf8Decode (gzipDecompress (gzipCompress (utf8Encode "hello")))}}',
             '{{utf8Decode (zlibDecompress (zlibCompress (utf8Encode "hello")))}}',
@@ -149,10 +154,15 @@ def test_python_text_encoding_hashing_and_compression_functions_compose() -> Non
         {"mapping": {"first": 1, "second": 2}}
     )
 
-    digest = "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
+    encoded = b"hello"
+    md5_digest = hashlib.md5(encoded).hexdigest()
+    sha1_digest = hashlib.sha1(encoded).hexdigest()
+    sha256_digest = hashlib.sha256(encoded).hexdigest()
+    sha512_digest = hashlib.sha512(encoded).hexdigest()
     assert rendered == (
         "release 42|{'first': 1, 'second': 2}|"
-        f"{digest}|{digest}|hello|hello|hello|hello|hello|hello"
+        f"{md5_digest}|{sha1_digest}|{sha256_digest}|{sha512_digest}|"
+        f"{sha256_digest}|already text|hello|hello|hello|hello|hello|hello"
     )
 
 

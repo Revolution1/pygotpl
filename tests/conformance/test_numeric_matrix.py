@@ -77,7 +77,9 @@ _EXPRESSIONS = (
     "floor `-0`",
     "floor -1.2",
     "round 1.25 1",
-    "round 123.5555 3",
+    # Keep this above the binary half-threshold: Go's math.Pow result differs
+    # between amd64 and arm64 for the adjacent 123.5555 boundary case.
+    "round 123.5556 3",
     "round -1.24 1",
     "round 123.233 2 0.3",
     "round 1 400",

@@ -5,6 +5,23 @@ uses [Semantic Versioning](https://semver.org/) for stable releases.
 
 ## Unreleased
 
+### Fixed
+
+- Stabilize Sprig rounding conformance at the three-decimal half-threshold
+  across amd64 and arm64 Go oracle hosts.
+
+### CI
+
+- Replace the full operating-system/interpreter Cartesian product with a
+  tiered release matrix: one complete Linux conformance and coverage job,
+  focused alternate-interpreter and macOS runtime jobs, and a Windows installed
+  wheel smoke test.
+- Remove repeated workspace-package tests and the duplicate CI benchmark smoke;
+  pinned Go checks, reproducible builds, Windows wheel installation, and the
+  dedicated sampled performance workflow remain release gates.
+
+## [0.1.0] - 2026-08-28
+
 ### Added
 
 - Pure Python `text/template` and contextual `html/template` parsing,
@@ -48,9 +65,10 @@ uses [Semantic Versioning](https://semver.org/) for stable releases.
 - Unqualified compatibility claims remain prohibited for areas whose complete
   upstream conformance suite has not yet been ported.
 
-### Release blockers
+### Known limitations
 
-- Pass the hosted operating-system and interpreter matrix.
-- Sign and attest release artifacts.
-- Publish and verify the coordinated `gotpl`, `goduration`, and `gotime-py`
-  distributions.
+- Complete `text/template`, `html/template`, and `gotime` compatibility remains
+  classified as partial beyond the measured scopes above.
+- The original tag CI exposed hosted-workflow and platform-fixture issues that
+  were corrected after the release; the published pure Python wheels passed
+  their trusted-publishing workflows.

@@ -24,7 +24,7 @@ def test_every_billed_job_has_the_required_release_gate() -> None:
     performance = WORKFLOWS["performance"].read_text(encoding="utf-8")
     pages = WORKFLOWS["pages"].read_text(encoding="utf-8")
 
-    assert ci.count(RELEASE_PR_GATE) == 6
+    assert ci.count(RELEASE_PR_GATE) == 5
     assert performance.count(RELEASE_PR_GATE) == 1
     assert pages.count(RELEASE_PR_GATE) == 1
     assert pages.count("\n    if: github.event_name != 'pull_request'\n") == 1
